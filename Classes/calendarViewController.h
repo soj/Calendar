@@ -17,17 +17,18 @@
 #define TIMER_INTERVAL	0.03
 #define PIXELS_PER_HOUR	100.0
 
-@interface calendarViewController : UIViewController <CalendarViewDelegate> {
-	CalendarView *_calendarView;
-	NSTimer *_updateTimer;
-	EventBlock *_activeEventBlock;
+@interface calendarViewController : UIViewController <CalendarViewDelegate, UIScrollViewDelegate> {
+	IBOutlet CalendarView *calendarView;
 	
-	float _scrollVel;
+	EventBlock *_activeEventBlock;
 }
+
+@property (nonatomic, retain) IBOutlet CalendarView *calendarView;
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 
 - (NSTimeInterval)pixelToTime:(float)pixel;
 - (void)createGestureRecognizers;
-- (void)runLoop;
 
 @end
 

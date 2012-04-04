@@ -21,24 +21,41 @@
 #define LINE_BIG_FONT_SIZE	20.0
 
 #define BG_BLACK			0.05
-#define LINES_WHITE			0.61
+#define LINES_WHITE			0.9
 
 #define SECONDS_PER_HOUR	3600
 
 @interface CalendarView : UIView {
 	id<CalendarViewDelegate> delegate;
 	
+	NSMutableSet *_visibleEntities;
 	NSMutableArray *_eventBlocks;
 	float _pixelsPerHour;
 	NSTimeInterval _topTime;  // The timeSinceReferenceDate corresponding to the top of the screen
+	NSTimeInterval _baseTime;
 }
 
 @property (retain) id delegate;
 @property NSTimeInterval topTime;
+@property NSTimeInterval baseTime;
 @property float pixelsPerHour;
 
 - (void)addEventBlock:(EventBlock*)eventBlock;
+
+- (NSArray*)getVisibleHours;
+- (NSArray*)getVisibleEventBlocks;
+- (BOOL)visibilityChange;
+
+- (BOOL)isMidnight:(int)refHour;
+- (NSInteger)calendarHourFromReferenceHour:(int)refHour;
+- (float)yPosFromRefHour:(int)refHour;
+- (NSString*)dateStringFromRefHour:(int)refHour withFormat:(NSString*)format;
+
 - (void)drawInContext:(CGContextRef)context;
-- (void)update;
+- (void)drawCalendarLinesInContext:(CGContextRef)context;
+- (void)drawEventBlocksInContext:(CGContextRef)context;
+- (void)drawHourLine:(int)refHour inContext:(CGContextRef)context;
+- (void)drawDayLine:(int)refHour inContext:(CGContextRef)context;
+- (void)drawLineAtY:(int)yPos inContext:(CGContextRef)context;
 
 @end
