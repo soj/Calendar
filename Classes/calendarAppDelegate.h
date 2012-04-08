@@ -8,15 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-@class calendarViewController;
+@class CalendarViewController;
 
 @interface calendarAppDelegate : NSObject <UIApplicationDelegate> {
     UIWindow *window;
-    calendarViewController *viewController;
+    CalendarViewController *viewController;
 }
 
 @property (nonatomic, retain) IBOutlet UIWindow *window;
-@property (nonatomic, retain) IBOutlet calendarViewController *viewController;
+@property (nonatomic, retain) IBOutlet CalendarViewController *viewController;
 
 @end
 

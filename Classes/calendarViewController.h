@@ -7,28 +7,38 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EntityManager.h"
 #import "CalendarViewDelegate.h"
-#import "CalendarView.h"
+#import "CalendarDay.h"
 #import "EventBlock.h"
 
-#define SCROLL_DECEL	0.98
-#define SCROLL_RATIO	1.0
-#define SCROLL_MAX		15000.0
-#define TIMER_INTERVAL	0.03
-#define PIXELS_PER_HOUR	100.0
+#define PIXELS_PER_HOUR			100.0
+#define TIME_INTERVAL_BUFFER	SECONDS_PER_HOUR * 24
+#define SCROLL_BUFFER			TIME_INTERVAL_BUFFER / SECONDS_PER_HOUR * PIXELS_PER_HOUR
 
-@interface calendarViewController : UIViewController <CalendarViewDelegate, UIScrollViewDelegate> {
-	IBOutlet CalendarView *calendarView;
+@interface CalendarViewController : UIViewController <CalendarViewDelegate, UIScrollViewDelegate> {
+	EntityManager *_entityManager;
 	
 	EventBlock *_activeEventBlock;
+	NSMutableSet *_visibleEntities;
+		
+	NSTimeInterval _baseTime;
+	NSTimeInterval _topTime;
+	float _pixelsPerHour;
 }
 
-@property (nonatomic, retain) IBOutlet CalendarView *calendarView;
+- (int)getScreenHeight;
+- (int)getScreenWidth;
+
+- (void)createCalendarDayIfNecessary;
+- (BOOL)visibilityChange;
+- (BOOL)getEntityVisibility:(CalendarEntity*)ent;
+- (void)createGestureRecognizers;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 
 - (NSTimeInterval)pixelToTime:(float)pixel;
-- (void)createGestureRecognizers;
+- (float)getPixelsPerHour;
 
 @end
 

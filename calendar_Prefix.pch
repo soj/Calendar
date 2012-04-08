@@ -6,3 +6,6 @@
     #import <Foundation/Foundation.h>
     #import <UIKit/UIKit.h>
 #endif
+
+#define SECONDS_PER_HOUR	3600
+#define HOURS_PER_DAY		24

@@ -7,24 +7,16 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "CalendarViewDelegate.h"
-
-#define MIN_TIME_INTERVAL	3600/2
+#import "CalendarEntity.h"
 
 #define BORDER_COLOR		[UIColor colorWithRed:0 green:0 blue:0 alpha:0.4]
 #define EVENT_DX			65.0
 
-@interface EventBlock : NSObject {
-	id<CalendarViewDelegate> delegate;
-	
-	NSTimeInterval _startTime;
-	NSTimeInterval _endTime;
+@interface EventBlock : CalendarEntity <UITextFieldDelegate> {
+	UITextField *_textField;
 }
 
-@property (retain) id delegate;
-
-@property (setter=setStartTime) NSTimeInterval startTime;
-@property (setter=setEndTime) NSTimeInterval endTime;
+- (void)setFocus;
 
 - (void)drawInContext:(CGContextRef)context;
 

@@ -7,32 +7,47 @@
 //
 
 #import "EventBlock.h"
-
+#import <QuartzCore/QuartzCore.h>
 
 @implementation EventBlock
 
-@synthesize delegate, startTime=_startTime, endTime=_endTime;
-
-- (void)setStartTime:(NSTimeInterval)startTime {
-	_startTime = startTime;
-	if (_endTime - startTime < MIN_TIME_INTERVAL) {
-		_endTime = startTime + MIN_TIME_INTERVAL;
-	}
+- (id)initWithSize:(CGSize)size startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
+	[super initWithSize:size startTime:startTime endTime:endTime andDelegate:delegate];
+	
+	[self setRemoveWhenInvisible:NO];
+	
+	_textField = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, 250, 100)];
+	[_textField setTextColor:[UIColor whiteColor]];
+	[_textField layer].shadowColor = [[UIColor blackColor] CGColor];
+	[_textField layer].shadowOffset = CGSizeMake(0, -1);
+	[_textField layer].shadowOpacity = 0.4;
+	[_textField layer].shadowRadius = 0;
+	[_textField setKeyboardAppearance:UIKeyboardAppearanceAlert];
+	[_textField setReturnKeyType:UIReturnKeyDone];
+	[_textField setDelegate:self];
+	[_textField setAdjustsFontSizeToFitWidth:YES];
+	[_textField setMinimumFontSize:16.0];
+	[_textField setFont:[UIFont systemFontOfSize:25.0]];
+	[self addSubview:_textField];
+	
+	return self;
 }
 
-- (void)setEndTime:(NSTimeInterval)endTime {
-	_endTime = endTime;
-	if (endTime - _startTime < MIN_TIME_INTERVAL) {
-		_endTime = _startTime + MIN_TIME_INTERVAL;
-	}
+- (void)setFocus {
+	[_textField becomeFirstResponder];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+	[_textField resignFirstResponder];
+	return YES;
 }
 
 - (void)drawInContext:(CGContextRef)context {
 	// Set the rectangle area
-	float topPx = [delegate timeToPixel:_startTime];
-	float bottomPx = [delegate timeToPixel:_endTime];
+	float topPx = 0;
+	float bottomPx = [_delegate timeToPixel:_endTime] - [self frame].origin.y;
 	float leftPx = EVENT_DX;
-	float rightPx = [UIScreen mainScreen].bounds.size.width;
+	float rightPx = [self frame].size.width;
 	CGRect eventRect = CGRectMake(leftPx, topPx, rightPx - leftPx, bottomPx - topPx);
 	CGContextSaveGState(context);
 	CGContextClipToRect(context, eventRect);

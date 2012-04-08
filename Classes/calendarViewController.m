@@ -6,11 +6,9 @@
 //  Copyright 2012 University of Waterloo. All rights reserved.
 //
 
-#import "calendarViewController.h"
+#import "CalendarViewController.h"
 
-@implementation calendarViewController
-
-@synthesize calendarView;
+@implementation CalendarViewController
 
 #pragma mark -
 #pragma mark ViewController Methods
@@ -19,15 +17,31 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
-	[calendarView setDelegate:self];
-	[(UIScrollView*)self.view setContentSize:CGSizeMake(0, SCREEN_H + 400)];
+	[(UIScrollView*)self.view setContentSize:CGSizeMake(0, [self getScreenHeight] + 400)];
+	NSLog(@"Wut %d", [self getScreenHeight] + 400);
 	
-	NSTimeInterval startTime = [[NSDate date] timeIntervalSinceReferenceDate];
-	[calendarView setTopTime:startTime];
-	[calendarView setBaseTime:startTime];
-	[calendarView setPixelsPerHour:PIXELS_PER_HOUR];
-	
+	_entityManager = [[EntityManager alloc] initWithView:self.view andDelegate:self];
+	_baseTime = _topTime = [[NSDate date] timeIntervalSinceReferenceDate];
+	_visibleEntities = [[NSMutableSet alloc] init];
+	_pixelsPerHour = PIXELS_PER_HOUR;
+		
 	[self createGestureRecognizers];
+	
+	int topTime = _topTime - TIME_INTERVAL_BUFFER;
+	int calHourOffset = [self calendarHourFromReferenceHour:(topTime / SECONDS_PER_HOUR)];
+	int topTimeOffset = topTime - calHourOffset * SECONDS_PER_HOUR - ((int)topTime % SECONDS_PER_HOUR);
+	int bottomTime = topTime + [self getVisibleTimeInterval] + TIME_INTERVAL_BUFFER * 2 * 10;
+	
+	while (topTimeOffset < bottomTime) {
+		NSNumber *day = [NSNumber numberWithInt:(topTimeOffset / SECONDS_PER_HOUR / HOURS_PER_DAY)];
+		
+		if (![_entityManager entityExistsWithClass:[CalendarDay class] andKey:day]) {
+			CalendarDay *newDay = [_entityManager createCalendarDayWithStartTime:topTimeOffset];
+			[_entityManager registerEntity:newDay withKey:day];
+		}
+		
+		topTimeOffset += SECONDS_PER_HOUR * HOURS_PER_DAY;
+	}
 }
 
 // Override to allow orientations other than the default portrait orientation.
@@ -36,41 +50,132 @@
     return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
+- (int)getScreenHeight {
+	return [self.view frame].size.height;
+}
+
+- (int)getScreenWidth {
+	return [[UIScreen mainScreen] bounds].size.width;
+}
+
+#pragma mark -
+#pragma mark CalendarViewDelegate Methods
+
+- (NSTimeInterval)pixelToTime:(float)pixel {
+	return _baseTime + pixel / _pixelsPerHour * SECONDS_PER_HOUR;
+}
+
+- (float)timeToPixel:(NSTimeInterval)time {
+	return (time - _baseTime) / (float)SECONDS_PER_HOUR * _pixelsPerHour;
+}
+
+- (float)getPixelsPerHour {
+	return _pixelsPerHour;
+}
+
+- (NSTimeInterval)getVisibleTimeInterval {
+	return [self getScreenHeight] / _pixelsPerHour * SECONDS_PER_HOUR;
+}
+
+- (NSInteger)calendarHourFromReferenceHour:(int)refHour {
+	NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:(refHour * SECONDS_PER_HOUR)];
+	NSCalendar *calendar = [NSCalendar currentCalendar];
+	NSDateComponents *components = [calendar components:NSHourCalendarUnit fromDate:date];
+	NSInteger calHour = [components hour];
+	return calHour;
+}
+
+#pragma mark -
+#pragma mark Entity Management
+
+- (BOOL)visibilityChange {
+	NSMutableSet *compSet = [[NSMutableSet alloc] init];	
+	NSEnumerator *ents = [[_entityManager allEntities] objectEnumerator];
+	CalendarEntity *ent;
+	while (ent = [ents nextObject]) {
+		if ([self getEntityVisibility:ent]) {
+			[compSet addObject:ent];
+		} else if ([ent removeWhenInvisible]) {
+			[_entityManager removeEntity:ent];
+		}
+	}
+	
+	if (![compSet isEqualToSet:_visibleEntities]) {
+		[_visibleEntities release];
+		_visibleEntities = compSet;
+		
+		return YES;
+	}
+	
+	return NO;
+}
+
+- (void)createCalendarDayIfNecessary {
+	int topTime = _topTime - TIME_INTERVAL_BUFFER;
+	int calHourOffset = [self calendarHourFromReferenceHour:(topTime / SECONDS_PER_HOUR)];
+	int topTimeOffset = topTime - calHourOffset * SECONDS_PER_HOUR - ((int)topTime % SECONDS_PER_HOUR);
+	int bottomTime = topTime + [self getVisibleTimeInterval] + TIME_INTERVAL_BUFFER * 2;
+	
+	while (topTimeOffset < bottomTime) {
+		NSNumber *day = [NSNumber numberWithInt:(topTimeOffset / SECONDS_PER_HOUR / HOURS_PER_DAY)];
+		
+		if (![_entityManager entityExistsWithClass:[CalendarDay class] andKey:day]) {
+			CalendarDay *newDay = [_entityManager createCalendarDayWithStartTime:topTimeOffset];
+			[_entityManager registerEntity:newDay withKey:day];
+		}
+		
+		topTimeOffset += SECONDS_PER_HOUR * HOURS_PER_DAY;
+	}
+	
+	[self visibilityChange];
+}
+
+- (BOOL)getEntityVisibility:(CalendarEntity*)ent {
+	float topPixel = [self timeToPixel:[ent startTime]];
+	float bottomPixel = [self timeToPixel:[ent endTime]];
+	int scrollOffset = [(UIScrollView*)self.view contentOffset].y;
+	return
+		(topPixel > scrollOffset && topPixel < [self getScreenHeight] + scrollOffset + SCROLL_BUFFER) ||
+		(bottomPixel > scrollOffset - SCROLL_BUFFER && bottomPixel < [self getScreenHeight] + scrollOffset) ||
+		(topPixel < scrollOffset && bottomPixel > [self getScreenHeight] + scrollOffset);
+}
+
 #pragma mark -
 #pragma mark Gesture Recognizers
 
 - (void)createGestureRecognizers {
     UITapGestureRecognizer *singleFingerDTap =
 		[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
-    singleFingerDTap.numberOfTapsRequired = 2;
-    [calendarView addGestureRecognizer:singleFingerDTap];
+    singleFingerDTap.numberOfTapsRequired = 1;
+    [self.view addGestureRecognizer:singleFingerDTap];
     [singleFingerDTap release];
 	
 	UILongPressGestureRecognizer *longPress =
 	[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-    [calendarView addGestureRecognizer:longPress];
+    [self.view addGestureRecognizer:longPress];
     [longPress release];
 	
     UIPinchGestureRecognizer *pinchGesture =
 		[[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
-    [calendarView addGestureRecognizer:pinchGesture];
+    [self.view addGestureRecognizer:pinchGesture];
     [pinchGesture release];
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer*)recognizer {
-	float yLoc = [recognizer locationInView:calendarView].y;
+	NSLog(@"Long press");
+	
+	float yLoc = [recognizer locationInView:self.view].y;
 	
 	if (_activeEventBlock == NULL) {
-		_activeEventBlock = [[EventBlock alloc] init];
-		_activeEventBlock.delegate = self;
-		[calendarView addEventBlock:_activeEventBlock];
-		_activeEventBlock.startTime = [self pixelToTime:yLoc];
+		_activeEventBlock = [_entityManager createEventBlockWithStartTime:[self pixelToTime:yLoc]];
 	}
 	
 	_activeEventBlock.endTime = [self pixelToTime:yLoc];
-	[calendarView setNeedsDisplay];
+	[self visibilityChange];
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
+		[_activeEventBlock setFocus];
+		
 		[_activeEventBlock release];
 		_activeEventBlock = NULL;
 	}
@@ -83,36 +188,16 @@
 	[recognize scale];
 }
 
-- (void)touchDown:(id)sender {
-}
-
-- (void)touchUp:(id)sender {
-}
-
-#pragma mark -
-#pragma mark Utility Functions
-
-- (NSTimeInterval)pixelToTime:(float)pixel {
-	return [calendarView baseTime] + pixel / [calendarView pixelsPerHour] * SECONDS_PER_HOUR;
-}
-
-- (float)timeToPixel:(NSTimeInterval)time {
-	return (time - [calendarView baseTime]) / (float)SECONDS_PER_HOUR * [calendarView pixelsPerHour];
-}
-
 #pragma mark -
 #pragma mark UIScrollViewDelegate Methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	[(UIScrollView*)self.view setContentSize:CGSizeMake(0, [scrollView contentOffset].y + SCREEN_H + 400)];
+	// Allow for infinite scrolling
+	[scrollView setContentSize:CGSizeMake(0, [scrollView contentOffset].y + [self getScreenHeight] + 400)];
 	
-	NSTimeInterval topTime = (NSTimeInterval)[scrollView contentOffset].y / [calendarView pixelsPerHour] * SECONDS_PER_HOUR + [calendarView baseTime];
-	[calendarView setTopTime:topTime];
+	_topTime = (NSTimeInterval)[scrollView contentOffset].y / _pixelsPerHour * SECONDS_PER_HOUR + _baseTime;
 	
-	if ([calendarView visibilityChange]) {
-//		[calendarView setFrame:CGRectMake(0, 0, SCREEN_W, [scrollView contentOffset].y + SCREEN_H + 400)];
-		[calendarView setNeedsDisplay];
-	}
+	[self createCalendarDayIfNecessary];
 }
 
 #pragma mark -
