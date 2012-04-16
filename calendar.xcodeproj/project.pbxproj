@@ -20,6 +20,7 @@
 		299DF98715195A3700958CF4 /* CalendarDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 299DF98615195A3700958CF4 /* CalendarDay.m */; };
 		299DFA1D15197D2700958CF4 /* Images in Resources */ = {isa = PBXBuildFile; fileRef = 299DFA1A15197D2700958CF4 /* Images */; };
 		29D98125151C14BC00B1E158 /* EventBlock.m in Sources */ = {isa = PBXBuildFile; fileRef = 29D98124151C14BC00B1E158 /* EventBlock.m */; };
+		29E54FE2153CBCF800D1B82F /* EventManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E54FE1153CBCF800D1B82F /* EventManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -44,6 +45,8 @@
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29D98123151C14BC00B1E158 /* EventBlock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventBlock.h; sourceTree = "<group>"; };
 		29D98124151C14BC00B1E158 /* EventBlock.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventBlock.m; sourceTree = "<group>"; };
+		29E54FE0153CBCF800D1B82F /* EventManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EventManager.h; sourceTree = "<group>"; };
+		29E54FE1153CBCF800D1B82F /* EventManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EventManager.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* calendar_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = calendar_Prefix.pch; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* calendar-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "calendar-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -78,6 +81,8 @@
 				29D98123151C14BC00B1E158 /* EventBlock.h */,
 				29D98124151C14BC00B1E158 /* EventBlock.m */,
 				299DFC051519AC9000958CF4 /* CalendarViewDelegate.h */,
+				29E54FE0153CBCF800D1B82F /* EventManager.h */,
+				29E54FE1153CBCF800D1B82F /* EventManager.m */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -201,6 +206,7 @@
 				29D98125151C14BC00B1E158 /* EventBlock.m in Sources */,
 				294DCC8C152C16BD00637E0A /* CalendarEntity.m in Sources */,
 				2992F1C0152D409E0035E70B /* EntityManager.m in Sources */,
+				29E54FE2153CBCF800D1B82F /* EventManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

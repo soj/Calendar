@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>ActivePerspectiveName</key>
-	<string>Debug</string>
+	<string>Project</string>
 	<key>AllowedModules</key>
 	<array>
 		<dict>
@@ -277,7 +277,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>5</integer>
+									<integer>13</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
@@ -299,6 +299,8 @@
 							<string>MainColumn</string>
 							<real>265</real>
 						</array>
+						<key>RubberWindowFrame</key>
+						<string>0 55 1362 691 0 0 1366 746 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXSmartGroupTreeModule</string>
@@ -309,12 +311,14 @@
 					<key>Dock</key>
 					<array>
 						<dict>
+							<key>BecomeActive</key>
+							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>29A281ED15192326008DB89F</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>CalendarViewController.m</string>
+								<string>EventBlock.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -322,11 +326,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>29A281EE15192326008DB89F</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>CalendarViewController.m</string>
+										<string>EventBlock.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>2992F789153161550035E70B</string>
+										<string>2992F78F1533E5C90035E70B</string>
 										<key>history</key>
 										<array>
 											<string>299DF99D15195DBB00958CF4</string>
@@ -335,7 +339,6 @@
 											<string>2992F6E31530AD990035E70B</string>
 											<string>2992F6E41530AD990035E70B</string>
 											<string>2992F75415315F960035E70B</string>
-											<string>2992F75515315F960035E70B</string>
 											<string>2992F75815315F960035E70B</string>
 											<string>2992F75A15315F960035E70B</string>
 											<string>2992F775153160640035E70B</string>
@@ -345,7 +348,8 @@
 											<string>2992F782153161510035E70B</string>
 											<string>2992F783153161510035E70B</string>
 											<string>2992F784153161510035E70B</string>
-											<string>2992F785153161510035E70B</string>
+											<string>2992F78D1533E5C90035E70B</string>
+											<string>2992F78E1533E5C90035E70B</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -360,6 +364,8 @@
 							<dict>
 								<key>Frame</key>
 								<string>{{0, 0}, {1075, 465}}</string>
+								<key>RubberWindowFrame</key>
+								<string>0 55 1362 691 0 0 1366 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
@@ -437,6 +443,8 @@
 									<dict>
 										<key>Frame</key>
 										<string>{{10, 27}, {1075, 153}}</string>
+										<key>RubberWindowFrame</key>
+										<string>0 55 1362 691 0 0 1366 746 </string>
 									</dict>
 									<key>Module</key>
 									<string>PBXBuildResultsModule</string>
@@ -520,8 +528,6 @@
 					<dict>
 						<key>Frame</key>
 						<string>{{0, 0}, {1362, 199}}</string>
-						<key>RubberWindowFrame</key>
-						<string>0 55 1362 691 0 0 1366 746 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXDebugCLIModule</string>
@@ -596,11 +602,7 @@
 							</array>
 							<key>Frame</key>
 							<string>{{664, 0}, {698, 216}}</string>
-							<key>RubberWindowFrame</key>
-							<string>0 55 1362 691 0 0 1366 746 </string>
 						</dict>
-						<key>RubberWindowFrame</key>
-						<string>0 55 1362 691 0 0 1366 746 </string>
 					</dict>
 					<key>Module</key>
 					<string>PBXDebugSessionModule</string>
@@ -664,7 +666,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>2992F787153161510035E70B</string>
 		<string>2992EFC7152CE9A00035E70B</string>
 		<string>2992EFC9152CE9A00035E70B</string>
 		<string>/Users/fravic/Dropbox/Projects/calendar/calendar.xcodeproj</string>
