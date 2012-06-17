@@ -21,7 +21,7 @@
 }
 
 - (float)yPosFromRefHour:(int)refHour {
-	return [_delegate timeToPixel:(refHour * SECONDS_PER_HOUR)] - [self frame].origin.y + OVERFLOW_TOP;
+	return [_delegate timeOffsetToPixel:(refHour * SECONDS_PER_HOUR)] - [self frame].origin.y + OVERFLOW_TOP;
 }
 
 - (void)drawLineAtY:(int)yPos inContext:(CGContextRef)context {
