@@ -4,5 +4,6 @@
 - (float)timeOffsetToPixel:(NSTimeInterval)time;
 - (NSTimeInterval)pixelToTimeOffset:(float)pixel;
 - (float)getPixelsPerHour;
-- (NSInteger)calendarHourFromReferenceHour:(int)refHour;
+- (NSInteger)calendarHourFromTime:(NSTimeInterval)time;
+- (NSTimeInterval)floorTimeToStartOfDay:(NSTimeInterval)time;
 @end

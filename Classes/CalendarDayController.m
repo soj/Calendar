@@ -2,29 +2,36 @@
 
 @implementation CalendarDayController
 
+@synthesize startTime=_startTime;
+
 #pragma mark -
 #pragma mark ViewController Methods
 
-- (id)initWithDelegate:(id<CalendarDayDelegate>)delegate {
+- (id)initWithStartTime:(NSTimeInterval)startTime andDelegate:(id<CalendarDayDelegate>)delegate {
 	self = [super initWithNibName:@"CalendarDayController" bundle:nil];
 
 	if (self) {
 		_delegate = delegate;
-		_baseTime = _topTime = [[NSDate date] timeIntervalSinceReferenceDate];
+		_startTime = startTime;		// TODO: Assert that this is midnight of some day
 		_eventBlocks = [[NSMutableSet alloc] init];
+		NSLog(@"%d %d", (int)_startTime, (int)[_delegate floorTimeToStartOfDay:_startTime]);
+		NSAssert((int)_startTime == (int)[_delegate floorTimeToStartOfDay:_startTime],
+				 @"The start time provided must be the first second of a given day");
 		
 		[self createGestureRecognizers];
-		[self.view addSubview:[self createCalendarDayWithStartTime:_baseTime]];
+		[self createCalendarDay];
 	}
 	
 	return self;
 }
 
-- (CalendarDay*)createCalendarDayWithStartTime:(NSTimeInterval)startTime {
+- (void)createCalendarDay {
 	CGSize size = CGSizeMake([self.view frame].size.width, [_delegate getPixelsPerHour] * HOURS_PER_DAY);
-	int endTime = startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
-	CalendarDay *newDay = [[CalendarDay alloc] initWithSize:size startTime:startTime endTime:endTime andDelegate:_delegate];
-	return newDay;
+	NSTimeInterval endTime = _startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
+	CalendarDay *newDay = [[CalendarDay alloc] initWithSize:size startTime:_startTime endTime:endTime andDelegate:_delegate];
+	
+	[self.view setContentSize:size];
+	[self.view addSubview:newDay];
 }
 
 - (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)startTime {
@@ -62,7 +69,7 @@
 		// TODO: Create new event block
 	}
 	
-	_activeEventBlock.endTime = _baseTime + [_delegate pixelToTimeOffset:yLoc];
+	_activeEventBlock.endTime = _startTime + [_delegate pixelToTimeOffset:yLoc];
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
 		[_activeEventBlock setFocus];
@@ -83,7 +90,7 @@
 #pragma mark UIScrollViewDelegate Methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	_topTime = (NSTimeInterval)[scrollView contentOffset].y / [_delegate getPixelsPerHour] * SECONDS_PER_HOUR + _baseTime;
+	_topTime = (NSTimeInterval)[scrollView contentOffset].y / [_delegate getPixelsPerHour] * SECONDS_PER_HOUR + _startTime;
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {

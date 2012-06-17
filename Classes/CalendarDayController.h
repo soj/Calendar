@@ -11,13 +11,15 @@
 	CalendarEvent *_activeEventBlock;
 	NSMutableSet *_eventBlocks;
 		
-	NSTimeInterval _baseTime;
+	NSTimeInterval _startTime;
 	NSTimeInterval _topTime;
 }
 
-- (id)initWithDelegate:(id <CalendarDayDelegate>)delegate;
+@property (readonly) NSTimeInterval startTime;
+
+- (id)initWithStartTime:(NSTimeInterval)startTime andDelegate:(id <CalendarDayDelegate>)delegate;
 - (void)createGestureRecognizers;
-- (CalendarDay*)createCalendarDayWithStartTime:(NSTimeInterval)startTime;
+- (void)createCalendarDay;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 

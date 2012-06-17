@@ -17,12 +17,11 @@
 @interface CalendarDay : CalendarEntity {	
 }
 
-- (BOOL)isMidnight:(int)refHour;
-- (float)yPosFromRefHour:(int)refHour;
-- (NSString*)dateStringFromRefHour:(int)refHour withFormat:(NSString*)format;
+- (float)yPosFromTime:(NSTimeInterval)time;
+- (NSString*)dateStringFromTime:(NSTimeInterval)time withFormat:(NSString*)format;
 
-- (void)drawHourLine:(int)refHour inContext:(CGContextRef)context;
-- (void)drawDayLine:(int)refHour inContext:(CGContextRef)context;
+- (void)drawHourLine:(NSTimeInterval)time inContext:(CGContextRef)context;
+- (void)drawDayLine:(NSTimeInterval)time inContext:(CGContextRef)context;
 - (void)drawLineAtY:(int)yPos inContext:(CGContextRef)context;
 
 @end

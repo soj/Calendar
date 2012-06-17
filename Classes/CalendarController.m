@@ -6,23 +6,55 @@
     [super viewDidLoad];
 	
 	_pixelsPerHour = PIXELS_PER_HOUR;
+	_calendarDays = [[NSMutableDictionary alloc] init];
+
 	
-	// Get current day
-	int currentDay = [[NSDate date] timeIntervalSinceReferenceDate] / SECONDS_PER_DAY;
+	[self setToday:[self floorTimeToStartOfDay:[[NSDate date] timeIntervalSinceReferenceDate]]];
 	
-	// Create this day and the two days around it
-	[self createDateControllerForDay:(currentDay - 1)];
-	[self createDateControllerForDay:currentDay];
-	[self createDateControllerForDay:(currentDay + 1)];
+	CGSize totalSize = CGSizeMake(PIXELS_PER_DAY * 3, 480.0);
+	[(UIScrollView*)self.view setContentSize:totalSize];
 }
 
 #pragma mark -
 #pragma mark CalendarController Methods
 
-- (void)createDateControllerForDay:(int)day {
-	CalendarDayController *newDateController = [[CalendarDayController alloc] initWithDelegate:self];
-	[_calendarDays setObject:newDateController forKey:[NSNumber numberWithInt:day]];
-	[self.view addSubview:newDateController.view];
+- (void)createDayControllerForStartTime:(NSTimeInterval)startTime {
+	CalendarDayController *dayController;
+	
+	if ([_calendarDays objectForKey:[NSNumber numberWithInt:startTime]] != nil) {
+		dayController = [_calendarDays objectForKey:[NSNumber numberWithInt:startTime]];
+	} else {
+		dayController = [[CalendarDayController alloc] initWithStartTime:startTime andDelegate:self];
+		[_calendarDays setObject:dayController forKey:[NSNumber numberWithInt:startTime]];
+	}
+
+	if (![dayController.view superview]) {
+		[self.view addSubview:dayController.view];
+	}
+	
+	CGRect frame = dayController.view.frame;
+	frame.origin.x = ((int)startTime - (int)_yesterday) / SECONDS_PER_DAY * PIXELS_PER_DAY;
+	[dayController.view setFrame:frame];
+}
+
+- (void)setToday:(NSTimeInterval)today {
+	_today = today;
+	_yesterday = [self floorTimeToStartOfDay:(_today - SECONDS_PER_DAY)];
+	_tomorrow = [self floorTimeToStartOfDay:(_today + SECONDS_PER_DAY)];
+	
+	NSEnumerator *e = [_calendarDays objectEnumerator];
+	CalendarDayController *calDay;
+	while (calDay = [e nextObject]) {
+		if ([calDay startTime] != _today) {
+			[calDay.view removeFromSuperview];
+		}
+    }
+	
+	[self createDayControllerForStartTime:_today];
+	[self createDayControllerForStartTime:_yesterday];
+	[self createDayControllerForStartTime:_tomorrow];
+	
+	[(UIScrollView*)self.view setContentOffset:CGPointMake(PIXELS_PER_DAY, 0) animated:NO];
 }
 
 #pragma mark -
@@ -40,12 +72,35 @@
 	return _pixelsPerHour;
 }
 
-- (NSInteger)calendarHourFromReferenceHour:(int)refHour {
-	NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:(refHour * SECONDS_PER_HOUR)];
+- (NSInteger)calendarHourFromTime:(NSTimeInterval)time {
+	NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:time];
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	NSDateComponents *components = [calendar components:NSHourCalendarUnit fromDate:date];
 	NSInteger calHour = [components hour];
 	return calHour;
+}
+
+- (NSTimeInterval)floorTimeToStartOfDay:(NSTimeInterval)time {
+	NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:time];
+	NSCalendar *calendar = [NSCalendar currentCalendar];
+	NSDateComponents *components = [calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:date];
+
+	int modTime = [components hour] * SECONDS_PER_HOUR + [components minute] * SECONDS_PER_MINUTE + [components second];
+	if (modTime == SECONDS_PER_DAY) return time;
+	return time - modTime;
+}
+
+#pragma mark -
+#pragma mark UIScrollViewDelegate Methods
+
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
+	if ([scrollView contentOffset].x == 0) {
+		_today -= SECONDS_PER_DAY;
+	} else if ([scrollView contentOffset].x == PIXELS_PER_DAY * 2) {
+		_today += SECONDS_PER_DAY;
+	}
+	
+	[self setToday:_today];
 }
 
 #pragma mark -

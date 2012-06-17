@@ -8,19 +8,15 @@
 	return self;
 }
 
-- (BOOL)isMidnight:(int)refHour {
-	return [_delegate calendarHourFromReferenceHour:refHour] == 0;
-}
-
-- (NSString*)dateStringFromRefHour:(int)refHour withFormat:(NSString*)format {
-	NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:(refHour * SECONDS_PER_HOUR)];
+- (NSString*)dateStringFromTime:(NSTimeInterval)time withFormat:(NSString*)format {
+	NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:time];
 	NSDateFormatter *dateFrmt = [[NSDateFormatter alloc] init];
 	[dateFrmt setDateFormat:format];
 	return [[dateFrmt stringFromDate:date] lowercaseString];
 }
 
-- (float)yPosFromRefHour:(int)refHour {
-	return [_delegate timeOffsetToPixel:(refHour * SECONDS_PER_HOUR - _startTime)] - [self frame].origin.y + OVERFLOW_TOP;
+- (float)yPosFromTime:(NSTimeInterval)time {
+	return [_delegate timeOffsetToPixel:(time - _startTime)] - [self frame].origin.y + OVERFLOW_TOP;
 }
 
 - (void)drawLineAtY:(int)yPos inContext:(CGContextRef)context {
@@ -29,31 +25,31 @@
 	CGContextStrokePath(context);
 }
 
-- (void)drawDayLine:(int)refHour inContext:(CGContextRef)context {
-	float yPos = [self yPosFromRefHour:refHour];
+- (void)drawDayLine:(NSTimeInterval)time inContext:(CGContextRef)context {
+	float yPos = [self yPosFromTime:time];
 
 	CGContextSetLineWidth(context, 5.0);
 	[self drawLineAtY:yPos inContext:context];
 
 	CGPoint textPoint = CGPointMake(LINE_TEXT_X, yPos + LINE_TEXT_BIG_DY);
-	[[self dateStringFromRefHour:refHour withFormat:@"EEE"] drawAtPoint:textPoint withFont:[UIFont boldSystemFontOfSize:LINE_BIG_FONT_SIZE]];
+	[[self dateStringFromTime:time withFormat:@"EEE"] drawAtPoint:textPoint withFont:[UIFont boldSystemFontOfSize:LINE_BIG_FONT_SIZE]];
 	
 	textPoint = CGPointMake(LINE_TEXT_X, yPos + LINE_TEXT_SUB_DY);
-	[[self dateStringFromRefHour:refHour withFormat:@"MMM dd"] drawAtPoint:textPoint withFont:[UIFont systemFontOfSize:LINE_FONT_SIZE]];
+	[[self dateStringFromTime:time withFormat:@"MMM dd"] drawAtPoint:textPoint withFont:[UIFont systemFontOfSize:LINE_FONT_SIZE]];
 }
 
-- (void)drawHourLine:(int)refHour inContext:(CGContextRef)context {
-	float yPos = [self yPosFromRefHour:refHour];
+- (void)drawHourLine:(NSTimeInterval)time inContext:(CGContextRef)context {
+	float yPos = [self yPosFromTime:time];
 	
 	CGContextSetLineWidth(context, 1.0);
 	[self drawLineAtY:yPos inContext:context];
 	
 	CGPoint textPoint = CGPointMake(LINE_TEXT_X, yPos + LINE_TEXT_DY);
-	[[self dateStringFromRefHour:refHour withFormat:@"h a"] drawAtPoint:textPoint withFont:[UIFont systemFontOfSize:LINE_FONT_SIZE]];
+	[[self dateStringFromTime:time withFormat:@"h a"] drawAtPoint:textPoint withFont:[UIFont systemFontOfSize:LINE_FONT_SIZE]];
 }
 
-- (void)drawHalfHourLine:(int)refHour inContext:(CGContextRef)context {
-	float yPos = [self yPosFromRefHour:refHour] + [_delegate getPixelsPerHour] / 2;
+- (void)drawHalfHourLine:(NSTimeInterval)time inContext:(CGContextRef)context {
+	float yPos = [self yPosFromTime:time] - [_delegate getPixelsPerHour] / 2;
 	
 	CGContextSetLineWidth(context, 1.0);
 	CGFloat lineDashPattern[] = {10, 10};
@@ -68,16 +64,11 @@
 	CGContextSetRGBStrokeColor(context, LINES_WHITE, LINES_WHITE, LINES_WHITE, 1.0);
 	[[UIColor colorWithRed:LINES_WHITE green:LINES_WHITE blue:LINES_WHITE alpha:1.0] setFill];
 	
-	int topHour = (int)(_startTime / SECONDS_PER_DAY) * HOURS_PER_DAY;
-	int bottomHour = topHour + 24;
-	for (int i = topHour; i < bottomHour; i++) {
-		if ([self isMidnight:i]) {
-			[self drawDayLine:i inContext:context];
-		} else {
-			[self drawHourLine:i inContext:context];
-		}
-		
-		[self drawHalfHourLine:i inContext:context];
+	[self drawDayLine:_startTime inContext:context];
+	
+	for (int time = _startTime + SECONDS_PER_HOUR; time < _startTime + SECONDS_PER_DAY; time += SECONDS_PER_HOUR) {
+		[self drawHalfHourLine:time inContext:context];
+		[self drawHourLine:time inContext:context];
 	}
 }
 
