@@ -16,6 +16,7 @@
 		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		28D7ACF80DDB3853001CB0EB /* CalendarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* CalendarViewController.m */; };
 		294DCC8C152C16BD00637E0A /* CalendarEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 294DCC8B152C16BD00637E0A /* CalendarEntity.m */; };
+		2968FE64158D61CD00CBB5BE /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2968FE63158D61CD00CBB5BE /* EventKit.framework */; };
 		2992F1C0152D409E0035E70B /* EntityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 2992F1BF152D409E0035E70B /* EntityManager.m */; };
 		299DF98715195A3700958CF4 /* CalendarDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 299DF98615195A3700958CF4 /* CalendarDay.m */; };
 		299DFA1D15197D2700958CF4 /* Images in Resources */ = {isa = PBXBuildFile; fileRef = 299DFA1A15197D2700958CF4 /* Images */; };
@@ -36,6 +37,7 @@
 		28D7ACF70DDB3853001CB0EB /* CalendarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarViewController.m; sourceTree = "<group>"; };
 		294DCC8A152C16BD00637E0A /* CalendarEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarEntity.h; sourceTree = "<group>"; };
 		294DCC8B152C16BD00637E0A /* CalendarEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarEntity.m; sourceTree = "<group>"; };
+		2968FE63158D61CD00CBB5BE /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		2992F1BE152D409E0035E70B /* EntityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EntityManager.h; sourceTree = "<group>"; };
 		2992F1BF152D409E0035E70B /* EntityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EntityManager.m; sourceTree = "<group>"; };
 		299DF98515195A3700958CF4 /* CalendarDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarDay.h; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
 				288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */,
+				2968FE64158D61CD00CBB5BE /* EventKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -68,18 +71,14 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				1D3623240D0F684500981E51 /* calendarAppDelegate.h */,
-				1D3623250D0F684500981E51 /* calendarAppDelegate.m */,
+				2968FE56158D610A00CBB5BE /* App Delegate */,
+				2968FE55158D60E100CBB5BE /* Calendar Entities */,
 				28D7ACF60DDB3853001CB0EB /* CalendarViewController.h */,
 				28D7ACF70DDB3853001CB0EB /* CalendarViewController.m */,
 				2992F1BE152D409E0035E70B /* EntityManager.h */,
 				2992F1BF152D409E0035E70B /* EntityManager.m */,
 				294DCC8A152C16BD00637E0A /* CalendarEntity.h */,
 				294DCC8B152C16BD00637E0A /* CalendarEntity.m */,
-				299DF98515195A3700958CF4 /* CalendarDay.h */,
-				299DF98615195A3700958CF4 /* CalendarDay.m */,
-				29D98123151C14BC00B1E158 /* EventBlock.h */,
-				29D98124151C14BC00B1E158 /* EventBlock.m */,
 				299DFC051519AC9000958CF4 /* CalendarViewDelegate.h */,
 				29E54FE0153CBCF800D1B82F /* EventManager.h */,
 				29E54FE1153CBCF800D1B82F /* EventManager.m */,
@@ -93,6 +92,26 @@
 				1D6058910D05DD3D006BFB54 /* calendar.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		2968FE55158D60E100CBB5BE /* Calendar Entities */ = {
+			isa = PBXGroup;
+			children = (
+				299DF98515195A3700958CF4 /* CalendarDay.h */,
+				299DF98615195A3700958CF4 /* CalendarDay.m */,
+				29D98123151C14BC00B1E158 /* EventBlock.h */,
+				29D98124151C14BC00B1E158 /* EventBlock.m */,
+			);
+			name = "Calendar Entities";
+			sourceTree = "<group>";
+		};
+		2968FE56158D610A00CBB5BE /* App Delegate */ = {
+			isa = PBXGroup;
+			children = (
+				1D3623240D0F684500981E51 /* calendarAppDelegate.h */,
+				1D3623250D0F684500981E51 /* calendarAppDelegate.m */,
+			);
+			name = "App Delegate";
 			sourceTree = "<group>";
 		};
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
@@ -133,6 +152,7 @@
 				1DF5F4DF0D08C38300B7A737 /* UIKit.framework */,
 				1D30AB110D05D00D00671497 /* Foundation.framework */,
 				288765A40DF7441C002DB57D /* CoreGraphics.framework */,
+				2968FE63158D61CD00CBB5BE /* EventKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

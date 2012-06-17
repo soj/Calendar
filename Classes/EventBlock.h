@@ -1,11 +1,3 @@
-//
-//  EventBlockDrawer.h
-//  calendar
-//
-//  Created by Fravic Fernando on 12-03-22.
-//  Copyright 2012 University of Waterloo. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 #import "CalendarEntity.h"
 

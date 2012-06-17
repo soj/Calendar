@@ -1,11 +1,3 @@
-//
-//  CalendarEntity.m
-//  calendar
-//
-//  Created by Fravic Fernando on 12-04-03.
-//  Copyright 2012 University of Waterloo. All rights reserved.
-//
-
 #import "CalendarEntity.h"
 
 

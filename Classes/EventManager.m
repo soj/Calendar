@@ -1,11 +1,3 @@
-//
-//  EventManager.m
-//  calendar
-//
-//  Created by Fravic Fernando on 12-04-16.
-//  Copyright 2012 University of Waterloo. All rights reserved.
-//
-
 #import "EventManager.h"
 
 

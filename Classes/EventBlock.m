@@ -1,11 +1,3 @@
-//
-//  EventBlockDrawer.m
-//  calendar
-//
-//  Created by Fravic Fernando on 12-03-22.
-//  Copyright 2012 University of Waterloo. All rights reserved.
-//
-
 #import "EventBlock.h"
 #import <QuartzCore/QuartzCore.h>
 

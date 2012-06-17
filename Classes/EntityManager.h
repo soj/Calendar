@@ -1,11 +1,3 @@
-//
-//  EntityManager.h
-//  calendar
-//
-//  Created by Fravic Fernando on 12-04-04.
-//  Copyright 2012 University of Waterloo. All rights reserved.
-//
-
 #import <Foundation/Foundation.h>
 #import "CalendarDay.h"
 #import "EventBlock.h"

@@ -1,11 +1,3 @@
-//
-//  CalendarEntity.h
-//  calendar
-//
-//  Created by Fravic Fernando on 12-04-03.
-//  Copyright 2012 University of Waterloo. All rights reserved.
-//
-
 #import <UIKit/UIKit.h>
 #import "CalendarViewDelegate.h"
 

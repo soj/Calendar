@@ -2,16 +2,16 @@
 {
 	1D3623240D0F684500981E51 /* calendarAppDelegate.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 385}}";
-			sepNavSelRange = "{448, 0}";
-			sepNavVisRange = "{0, 494}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 415}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 337}";
 		};
 	};
 	1D3623250D0F684500981E51 /* calendarAppDelegate.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1965, 1118}}";
-			sepNavSelRange = "{638, 0}";
-			sepNavVisRange = "{89, 988}";
+			sepNavIntBoundsRect = "{{0, 0}, {1965, 962}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1082}";
 			sepNavWindowFrame = "{{38, 162}, {750, 558}}";
 		};
 	};
@@ -23,33 +23,33 @@
 	};
 	28D7ACF60DDB3853001CB0EB /* CalendarViewController.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 585}}";
-			sepNavSelRange = "{266, 0}";
-			sepNavVisRange = "{243, 827}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 481}}";
+			sepNavSelRange = "{498, 0}";
+			sepNavVisRange = "{0, 876}";
 			sepNavWindowFrame = "{{61, 141}, {750, 558}}";
 		};
 	};
 	28D7ACF70DDB3853001CB0EB /* CalendarViewController.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1301, 2925}}";
-			sepNavSelRange = "{567, 0}";
-			sepNavVisRange = "{195, 614}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 2665}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1332}";
 			sepNavWindowFrame = "{{15, 183}, {750, 558}}";
 		};
 	};
 	294DCC8A152C16BD00637E0A /* CalendarEntity.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 416}}";
-			sepNavSelRange = "{769, 0}";
-			sepNavVisRange = "{3, 772}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 415}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 623}";
 			sepNavWindowFrame = "{{15, 183}, {750, 558}}";
 		};
 	};
 	294DCC8B152C16BD00637E0A /* CalendarEntity.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 754}}";
-			sepNavSelRange = "{1127, 0}";
-			sepNavVisRange = "{775, 532}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 611}}";
+			sepNavSelRange = "{1051, 0}";
+			sepNavVisRange = "{336, 770}";
 			sepNavWindowFrame = "{{61, 141}, {750, 558}}";
 		};
 	};
@@ -70,16 +70,16 @@
 	};
 	2992F1BE152D409E0035E70B /* EntityManager.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 442}}";
-			sepNavSelRange = "{619, 0}";
-			sepNavVisRange = "{3, 854}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 415}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 712}";
 		};
 	};
 	2992F1BF152D409E0035E70B /* EntityManager.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 936}}";
-			sepNavSelRange = "{805, 0}";
-			sepNavVisRange = "{920, 1378}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 832}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 915}";
 			sepNavWindowFrame = "{{38, 162}, {750, 558}}";
 		};
 	};
@@ -88,7 +88,7 @@
 		fRef = 1D3623240D0F684500981E51 /* calendarAppDelegate.h */;
 		name = "calendarAppDelegate.h: 19";
 		rLen = 0;
-		rLoc = 448;
+		rLoc = 291;
 		rType = 0;
 		vrLen = 494;
 		vrLoc = 0;
@@ -118,7 +118,7 @@
 		fRef = 299DFC051519AC9000958CF4 /* CalendarViewDelegate.h */;
 		name = "CalendarViewDelegate.h: 16";
 		rLen = 0;
-		rLoc = 423;
+		rLoc = 268;
 		rType = 0;
 		vrLen = 429;
 		vrLoc = 0;
@@ -128,7 +128,7 @@
 		fRef = 299DF98515195A3700958CF4 /* CalendarDay.h */;
 		name = "CalendarDay.h: 12";
 		rLen = 0;
-		rLoc = 224;
+		rLoc = 74;
 		rType = 0;
 		vrLen = 838;
 		vrLoc = 38;
@@ -138,7 +138,7 @@
 		fRef = 294DCC8A152C16BD00637E0A /* CalendarEntity.h */;
 		name = "CalendarEntity.h: 30";
 		rLen = 0;
-		rLoc = 769;
+		rLoc = 617;
 		rType = 0;
 		vrLen = 772;
 		vrLoc = 3;
@@ -148,7 +148,7 @@
 		fRef = 29D98123151C14BC00B1E158 /* EventBlock.h */;
 		name = "EventBlock.h: 15";
 		rLen = 0;
-		rLoc = 374;
+		rLoc = 220;
 		rType = 0;
 		vrLen = 475;
 		vrLoc = 0;
@@ -158,7 +158,7 @@
 		fRef = 1D3623250D0F684500981E51 /* calendarAppDelegate.m */;
 		name = "calendarAppDelegate.m: 26";
 		rLen = 0;
-		rLoc = 638;
+		rLoc = 481;
 		rType = 0;
 		vrLen = 988;
 		vrLoc = 89;
@@ -168,7 +168,7 @@
 		fRef = 2992F1BE152D409E0035E70B /* EntityManager.h */;
 		name = "EntityManager.h: 26";
 		rLen = 0;
-		rLoc = 619;
+		rLoc = 468;
 		rType = 0;
 		vrLen = 854;
 		vrLoc = 3;
@@ -178,7 +178,7 @@
 		fRef = 2992F1BF152D409E0035E70B /* EntityManager.m */;
 		name = "EntityManager.m: 34";
 		rLen = 0;
-		rLoc = 805;
+		rLoc = 654;
 		rType = 0;
 		vrLen = 1233;
 		vrLoc = 1071;
@@ -188,7 +188,7 @@
 		fRef = 294DCC8B152C16BD00637E0A /* CalendarEntity.m */;
 		name = "CalendarEntity.m: 42";
 		rLen = 0;
-		rLoc = 1127;
+		rLoc = 975;
 		rType = 0;
 		vrLen = 532;
 		vrLoc = 775;
@@ -198,7 +198,7 @@
 		fRef = 299DF98615195A3700958CF4 /* CalendarDay.m */;
 		name = "CalendarDay.m: 17";
 		rLen = 0;
-		rLoc = 432;
+		rLoc = 282;
 		rType = 0;
 		vrLen = 866;
 		vrLoc = 0;
@@ -208,7 +208,7 @@
 		fRef = 28D7ACF60DDB3853001CB0EB /* CalendarViewController.h */;
 		name = "CalendarViewController.h: 12";
 		rLen = 0;
-		rLoc = 266;
+		rLoc = 106;
 		rType = 0;
 		vrLen = 747;
 		vrLoc = 323;
@@ -218,7 +218,7 @@
 		fRef = 28D7ACF70DDB3853001CB0EB /* CalendarViewController.m */;
 		name = "CalendarViewController.m: 21";
 		rLen = 0;
-		rLoc = 567;
+		rLoc = 407;
 		rType = 0;
 		vrLen = 1133;
 		vrLoc = 45;
@@ -228,23 +228,23 @@
 		fRef = 29D98124151C14BC00B1E158 /* EventBlock.m */;
 		name = "EventBlock.m: 72";
 		rLen = 0;
-		rLoc = 2692;
+		rLoc = 2538;
 		rType = 0;
 		vrLen = 1372;
 		vrLoc = 1801;
 	};
 	299DF98515195A3700958CF4 /* CalendarDay.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 481}}";
-			sepNavSelRange = "{224, 0}";
-			sepNavVisRange = "{38, 838}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 415}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 732}";
 		};
 	};
 	299DF98615195A3700958CF4 /* CalendarDay.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 1326}}";
-			sepNavSelRange = "{535, 0}";
-			sepNavVisRange = "{0, 1009}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 1209}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1091}";
 			sepNavWindowFrame = "{{15, 183}, {750, 558}}";
 		};
 	};
@@ -261,9 +261,9 @@
 	};
 	299DFC051519AC9000958CF4 /* CalendarViewDelegate.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 385}}";
-			sepNavSelRange = "{423, 0}";
-			sepNavVisRange = "{0, 429}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 415}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 274}";
 		};
 	};
 	29A281E215192322008DB89F /* calendar */ = {
@@ -317,7 +317,7 @@
 		fRef = 29D98124151C14BC00B1E158 /* EventBlock.m */;
 		name = "EventBlock.m: 73";
 		rLen = 0;
-		rLoc = 2732;
+		rLoc = 2578;
 		rType = 0;
 		vrLen = 1462;
 		vrLoc = 1711;
@@ -433,8 +433,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 361585185;
-			PBXWorkspaceStateSaveDate = 361585185;
+			PBXPerProjectTemplateStateSaveDate = 361586323;
+			PBXWorkspaceStateSaveDate = 361586323;
 		};
 		perUserProjectItems = {
 			294DCCC3152C1DA000637E0A = 294DCCC3152C1DA000637E0A /* PBXTextBookmark */;
@@ -469,16 +469,30 @@
 	};
 	29D98123151C14BC00B1E158 /* EventBlock.h */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 385}}";
-			sepNavSelRange = "{374, 0}";
-			sepNavVisRange = "{0, 475}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 415}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 321}";
 		};
 	};
 	29D98124151C14BC00B1E158 /* EventBlock.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 1183}}";
-			sepNavSelRange = "{2732, 0}";
-			sepNavVisRange = "{0, 1148}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 1040}}";
+			sepNavSelRange = "{2399, 0}";
+			sepNavVisRange = "{1591, 1428}";
+		};
+	};
+	29E54FE0153CBCF800D1B82F /* EventManager.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 415}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 206}";
+		};
+	};
+	29E54FE1153CBCF800D1B82F /* EventManager.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 415}}";
+			sepNavSelRange = "{268, 0}";
+			sepNavVisRange = "{0, 407}";
 		};
 	};
 	32CA4F630368D1EE00C91783 /* calendar_Prefix.pch */ = {

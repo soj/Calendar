@@ -231,6 +231,8 @@
 			<key>Layout</key>
 			<array>
 				<dict>
+					<key>BecomeActive</key>
+					<true/>
 					<key>ContentConfiguration</key>
 					<dict>
 						<key>PBXBottomSmartGroupGIDs</key>
@@ -277,8 +279,9 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>13</integer>
-									<integer>1</integer>
+									<integer>22</integer>
+									<integer>21</integer>
+									<integer>20</integer>
 									<integer>0</integer>
 								</array>
 							</array>
@@ -311,14 +314,12 @@
 					<key>Dock</key>
 					<array>
 						<dict>
-							<key>BecomeActive</key>
-							<true/>
 							<key>ContentConfiguration</key>
 							<dict>
 								<key>PBXProjectModuleGUID</key>
 								<string>29A281ED15192326008DB89F</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>EventBlock.m</string>
+								<string>desk.jpg</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -326,11 +327,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>29A281EE15192326008DB89F</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>EventBlock.m</string>
+										<string>desk.jpg</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>29A3901C15421E5000E7838D</string>
+										<string>2968FE45158D5E9300CBB5BE</string>
 										<key>history</key>
 										<array>
 											<string>299DF99D15195DBB00958CF4</string>
@@ -344,12 +345,15 @@
 											<string>2992F775153160640035E70B</string>
 											<string>2992F77F153161510035E70B</string>
 											<string>2992F780153161510035E70B</string>
-											<string>2992F781153161510035E70B</string>
 											<string>2992F782153161510035E70B</string>
-											<string>2992F783153161510035E70B</string>
 											<string>2992F784153161510035E70B</string>
-											<string>2992F78D1533E5C90035E70B</string>
-											<string>2992F78F1533E5C90035E70B</string>
+											<string>2968FE3D158D5E9300CBB5BE</string>
+											<string>2968FE3E158D5E9300CBB5BE</string>
+											<string>2968FE3F158D5E9300CBB5BE</string>
+											<string>2968FE40158D5E9300CBB5BE</string>
+											<string>2968FE41158D5E9300CBB5BE</string>
+											<string>2968FE42158D5E9300CBB5BE</string>
+											<string>2968FE43158D5E9300CBB5BE</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -363,18 +367,18 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1075, 459}}</string>
+								<string>{{0, 0}, {1075, 453}}</string>
 								<key>RubberWindowFrame</key>
 								<string>0 55 1362 691 0 0 1366 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>459pt</string>
+							<string>453pt</string>
 						</dict>
 						<dict>
 							<key>Proportion</key>
-							<string>186pt</string>
+							<string>192pt</string>
 							<key>Tabs</key>
 							<array>
 								<dict>
@@ -388,9 +392,7 @@
 									<key>GeometryConfiguration</key>
 									<dict>
 										<key>Frame</key>
-										<string>{{10, 27}, {1075, 159}}</string>
-										<key>RubberWindowFrame</key>
-										<string>0 55 1362 691 0 0 1366 746 </string>
+										<string>{{10, 27}, {1075, 165}}</string>
 									</dict>
 									<key>Module</key>
 									<string>XCDetailModule</string>
@@ -444,7 +446,9 @@
 									<key>GeometryConfiguration</key>
 									<dict>
 										<key>Frame</key>
-										<string>{{10, 27}, {1075, 153}}</string>
+										<string>{{10, 27}, {1075, 165}}</string>
+										<key>RubberWindowFrame</key>
+										<string>0 55 1362 691 0 0 1366 746 </string>
 									</dict>
 									<key>Module</key>
 									<string>PBXBuildResultsModule</string>
@@ -472,11 +476,11 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>29A390191541442800E7838D</string>
+				<string>2968FE47158D5E9300CBB5BE</string>
 				<string>1CA23ED40692098700951B8B</string>
-				<string>29A3901A1541442800E7838D</string>
+				<string>2968FE48158D5E9300CBB5BE</string>
 				<string>29A281ED15192326008DB89F</string>
-				<string>29A3901B1541442800E7838D</string>
+				<string>2968FE49158D5E9300CBB5BE</string>
 				<string>1CA23EDF0692099D00951B8B</string>
 				<string>1CA23EE00692099D00951B8B</string>
 				<string>1CA23EE10692099D00951B8B</string>

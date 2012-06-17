@@ -1,11 +1,3 @@
-//
-//  CalendarView.m
-//  calendar
-//
-//  Created by Fravic Fernando on 12-03-20.
-//  Copyright 2012 University of Waterloo. All rights reserved.
-//
-
 #import "CalendarDay.h"
 
 
