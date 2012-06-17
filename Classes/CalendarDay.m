@@ -1,6 +1,5 @@
 #import "CalendarDay.h"
 
-
 @implementation CalendarDay
 
 - (id)initWithSize:(CGSize)size startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
@@ -21,7 +20,7 @@
 }
 
 - (float)yPosFromRefHour:(int)refHour {
-	return [_delegate timeOffsetToPixel:(refHour * SECONDS_PER_HOUR)] - [self frame].origin.y + OVERFLOW_TOP;
+	return [_delegate timeOffsetToPixel:(refHour * SECONDS_PER_HOUR - _startTime)] - [self frame].origin.y + OVERFLOW_TOP;
 }
 
 - (void)drawLineAtY:(int)yPos inContext:(CGContextRef)context {
@@ -69,8 +68,8 @@
 	CGContextSetRGBStrokeColor(context, LINES_WHITE, LINES_WHITE, LINES_WHITE, 1.0);
 	[[UIColor colorWithRed:LINES_WHITE green:LINES_WHITE blue:LINES_WHITE alpha:1.0] setFill];
 	
-	int topHour = _startTime / SECONDS_PER_HOUR;
-	int bottomHour = _endTime / SECONDS_PER_HOUR;
+	int topHour = (int)(_startTime / SECONDS_PER_DAY) * HOURS_PER_DAY;
+	int bottomHour = topHour + 24;
 	for (int i = topHour; i < bottomHour; i++) {
 		if ([self isMidnight:i]) {
 			[self drawDayLine:i inContext:context];

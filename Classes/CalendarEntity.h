@@ -3,7 +3,7 @@
 
 #define MIN_TIME_INTERVAL	3600/2
 
-@interface CalendarEventBase : UIView {
+@interface CalendarEntity : UIView {
 	id<CalendarDayDelegate> _delegate;
 	
 	NSObject *_entKey;

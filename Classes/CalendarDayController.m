@@ -5,20 +5,33 @@
 #pragma mark -
 #pragma mark ViewController Methods
 
-// Implement viewDidLoad to do additional setup after loading the view, typically from a nib.
-- (void)viewDidLoad {
-    [super viewDidLoad];
+- (id)initWithDelegate:(id<CalendarDayDelegate>)delegate {
+	self = [super initWithNibName:@"CalendarDayController" bundle:nil];
+
+	if (self) {
+		_delegate = delegate;
+		_baseTime = _topTime = [[NSDate date] timeIntervalSinceReferenceDate];
+		_eventBlocks = [[NSMutableSet alloc] init];
 		
-	_baseTime = _topTime = [[NSDate date] timeIntervalSinceReferenceDate];
-	_eventBlocks = [[NSMutableSet alloc] init];
-		
-	[self createGestureRecognizers];
+		[self createGestureRecognizers];
+		[self.view addSubview:[self createCalendarDayWithStartTime:_baseTime]];
+	}
 	
-	// Create calendar day view
+	return self;
 }
 
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+- (CalendarDay*)createCalendarDayWithStartTime:(NSTimeInterval)startTime {
+	CGSize size = CGSizeMake([self.view frame].size.width, [_delegate getPixelsPerHour] * HOURS_PER_DAY);
+	int endTime = startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
+	CalendarDay *newDay = [[CalendarDay alloc] initWithSize:size startTime:startTime endTime:endTime andDelegate:_delegate];
+	return newDay;
+}
+
+- (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)startTime {
+	CGSize size = CGSizeMake([self.view frame].size.width, [_delegate getPixelsPerHour] * HOURS_PER_DAY);
+	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithSize:size startTime:startTime endTime:startTime andDelegate:_delegate];
+	[_eventBlocks addObject:newBlock];
+	return newBlock;
 }
 
 #pragma mark -
@@ -73,6 +86,10 @@
 	_topTime = (NSTimeInterval)[scrollView contentOffset].y / [_delegate getPixelsPerHour] * SECONDS_PER_HOUR + _baseTime;
 }
 
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
 #pragma mark -
 #pragma mark Memory Management
 
@@ -88,23 +105,8 @@
 	// e.g. self.myOutlet = nil;
 }
 
-
 - (void)dealloc {
     [super dealloc];
-}
-
-- (CalendarDay*)createCalendarDayWithStartTime:(NSTimeInterval)startTime {
-	CGSize size = CGSizeMake([self.view frame].size.width, [_delegate getPixelsPerHour] * HOURS_PER_DAY);
-	int endTime = startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
-	CalendarDay *newDay = [[CalendarDay alloc] initWithSize:size startTime:startTime endTime:endTime andDelegate:_delegate];
-	return newDay;
-}
-
-- (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)startTime {
-	CGSize size = CGSizeMake([self.view frame].size.width, [_delegate getPixelsPerHour] * HOURS_PER_DAY);
-	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithSize:size startTime:startTime endTime:startTime andDelegate:_delegate];
-	[_eventBlocks addObject:newBlock];
-	return newBlock;
 }
 
 @end

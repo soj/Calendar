@@ -282,14 +282,14 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>14</integer>
-									<integer>8</integer>
+									<integer>18</integer>
+									<integer>16</integer>
 									<integer>1</integer>
 									<integer>0</integer>
 								</array>
 							</array>
 							<key>PBXSmartGroupTreeModuleOutlineStateVisibleRectKey</key>
-							<string>{{0, 0}, {265, 632}}</string>
+							<string>{{0, 20}, {265, 632}}</string>
 						</dict>
 						<key>PBXTopSmartGroupGIDs</key>
 						<array/>
@@ -324,7 +324,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>29A281ED15192326008DB89F</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>CalendarDayController.m</string>
+								<string>CalendarDay.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -332,33 +332,33 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>29A281EE15192326008DB89F</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>CalendarDayController.m</string>
+										<string>CalendarDay.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>29F50A44158DC17200C5571D</string>
+										<string>29F50BB8158DD8B500C5571D</string>
 										<key>history</key>
 										<array>
 											<string>299DF99D15195DBB00958CF4</string>
 											<string>2992F6E31530AD990035E70B</string>
-											<string>2992F6E41530AD990035E70B</string>
-											<string>2968FE98158D72DE00CBB5BE</string>
-											<string>2968FE9D158D72DE00CBB5BE</string>
-											<string>2968FEAA158D764D00CBB5BE</string>
-											<string>2968FEAB158D764D00CBB5BE</string>
-											<string>2968FEB2158D764D00CBB5BE</string>
-											<string>29F50A0A158DBB3D00C5571D</string>
-											<string>29F50A0F158DBB3D00C5571D</string>
-											<string>29F50A3A158DC17200C5571D</string>
-											<string>29F50A3B158DC17200C5571D</string>
-											<string>29F50A3C158DC17200C5571D</string>
-											<string>29F50A3D158DC17200C5571D</string>
-											<string>29F50A3E158DC17200C5571D</string>
-											<string>29F50A3F158DC17200C5571D</string>
-											<string>29F50A40158DC17200C5571D</string>
-											<string>29F50A41158DC17200C5571D</string>
-											<string>29F50A42158DC17200C5571D</string>
-											<string>29F50A43158DC17200C5571D</string>
+											<string>29F50A51158DCB4B00C5571D</string>
+											<string>29F50A52158DCB4B00C5571D</string>
+											<string>29F50A53158DCB4B00C5571D</string>
+											<string>29F50A76158DCD1800C5571D</string>
+											<string>29F50A77158DCD1800C5571D</string>
+											<string>29F50B1A158DD49100C5571D</string>
+											<string>29F50B2C158DD53300C5571D</string>
+											<string>29F50B2E158DD53300C5571D</string>
+											<string>29F50B32158DD53300C5571D</string>
+											<string>29F50B63158DD60600C5571D</string>
+											<string>29F50B7C158DD69500C5571D</string>
+											<string>29F50B7D158DD69500C5571D</string>
+											<string>29F50B7F158DD69500C5571D</string>
+											<string>29F50B80158DD69500C5571D</string>
+											<string>29F50B81158DD69500C5571D</string>
+											<string>29F50B89158DD6A500C5571D</string>
+											<string>29F50B91158DD6C400C5571D</string>
+											<string>29F50BA9158DD74F00C5571D</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -675,7 +675,8 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>29F50A4B158DC17200C5571D</string>
+		<string>29F50BB7158DD8A700C5571D</string>
+		<string>29F50A65158DCB4B00C5571D</string>
 		<string>29F50A4C158DC17200C5571D</string>
 		<string>/Users/fravic/Dropbox/Projects/calendar/calendar.xcodeproj</string>
 	</array>

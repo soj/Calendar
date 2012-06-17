@@ -15,7 +15,9 @@
 	NSTimeInterval _topTime;
 }
 
+- (id)initWithDelegate:(id <CalendarDayDelegate>)delegate;
 - (void)createGestureRecognizers;
+- (CalendarDay*)createCalendarDayWithStartTime:(NSTimeInterval)startTime;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 

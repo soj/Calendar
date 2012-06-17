@@ -1,5 +1,5 @@
 #import <UIKit/UIKit.h>
-#import "CalendarEventBase.h"
+#import "CalendarEntity.h"
 
 #define TIME_LINES_X		50.0
 #define LINE_TEXT_X			5.0
@@ -14,7 +14,7 @@
 
 #define OVERFLOW_TOP		20.0
 
-@interface CalendarDay : CalendarEventBase {	
+@interface CalendarDay : CalendarEntity {	
 }
 
 - (BOOL)isMidnight:(int)refHour;

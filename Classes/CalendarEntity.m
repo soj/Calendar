@@ -1,7 +1,6 @@
-#import "CalendarEvent.h"
+#import "CalendarEntity.h"
 
-
-@implementation CalendarEventBase
+@implementation CalendarEntity
 
 @synthesize delegate=_delegate, startTime=_startTime, endTime=_endTime, entKey=_entKey;
 
@@ -12,7 +11,7 @@
 	[self setEndTime:endTime];
 	[self setDelegate:delegate];
 	
-	[self setFrame:CGRectMake(0, [_delegate timeOffsetToPixel:_startTime], size.width, size.height)];
+	[self setFrame:CGRectMake(0, 0, size.width, size.height)];
 	[self setBackgroundColor:[UIColor clearColor]];
 		
 	return self;
