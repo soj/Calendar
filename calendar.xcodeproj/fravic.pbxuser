@@ -79,7 +79,7 @@
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1014, 936}}";
 			sepNavSelRange = "{805, 0}";
-			sepNavVisRange = "{1071, 1233}";
+			sepNavVisRange = "{920, 1378}";
 			sepNavWindowFrame = "{{38, 162}, {750, 558}}";
 		};
 	};
@@ -223,16 +223,6 @@
 		vrLen = 1133;
 		vrLoc = 45;
 	};
-	2992F78E1533E5C90035E70B /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 29D98124151C14BC00B1E158 /* EventBlock.m */;
-		name = "EventBlock.m: 8";
-		rLen = 0;
-		rLoc = 153;
-		rType = 0;
-		vrLen = 1090;
-		vrLoc = 212;
-	};
 	2992F78F1533E5C90035E70B /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 29D98124151C14BC00B1E158 /* EventBlock.m */;
@@ -252,9 +242,9 @@
 	};
 	299DF98615195A3700958CF4 /* CalendarDay.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 1287}}";
-			sepNavSelRange = "{432, 0}";
-			sepNavVisRange = "{0, 866}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 1326}}";
+			sepNavSelRange = "{535, 0}";
+			sepNavVisRange = "{0, 1009}";
 			sepNavWindowFrame = "{{15, 183}, {750, 558}}";
 		};
 	};
@@ -321,6 +311,16 @@
 	29A281F415192326008DB89F /* Code sense */ = {
 		isa = PBXCodeSenseManager;
 		indexTemplatePath = "";
+	};
+	29A3901C15421E5000E7838D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 29D98124151C14BC00B1E158 /* EventBlock.m */;
+		name = "EventBlock.m: 73";
+		rLen = 0;
+		rLoc = 2732;
+		rType = 0;
+		vrLen = 1462;
+		vrLoc = 1711;
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
 		activeBuildConfigurationName = Debug;
@@ -433,8 +433,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 356302051;
-			PBXWorkspaceStateSaveDate = 356302051;
+			PBXPerProjectTemplateStateSaveDate = 361585185;
+			PBXWorkspaceStateSaveDate = 361585185;
 		};
 		perUserProjectItems = {
 			294DCCC3152C1DA000637E0A = 294DCCC3152C1DA000637E0A /* PBXTextBookmark */;
@@ -452,9 +452,9 @@
 			2992F783153161510035E70B = 2992F783153161510035E70B /* PBXTextBookmark */;
 			2992F784153161510035E70B = 2992F784153161510035E70B /* PBXTextBookmark */;
 			2992F78D1533E5C90035E70B = 2992F78D1533E5C90035E70B /* PBXTextBookmark */;
-			2992F78E1533E5C90035E70B = 2992F78E1533E5C90035E70B /* PBXTextBookmark */;
 			2992F78F1533E5C90035E70B = 2992F78F1533E5C90035E70B /* PBXTextBookmark */;
 			299DF99D15195DBB00958CF4 = 299DF99D15195DBB00958CF4 /* PlistBookmark */;
+			29A3901C15421E5000E7838D = 29A3901C15421E5000E7838D /* PBXTextBookmark */;
 		};
 		sourceControlManager = 29A281F315192326008DB89F /* Source Control */;
 		userBuildSettings = {
@@ -476,9 +476,9 @@
 	};
 	29D98124151C14BC00B1E158 /* EventBlock.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1014, 1144}}";
-			sepNavSelRange = "{2692, 0}";
-			sepNavVisRange = "{1745, 1428}";
+			sepNavIntBoundsRect = "{{0, 0}, {1014, 1183}}";
+			sepNavSelRange = "{2732, 0}";
+			sepNavVisRange = "{0, 1148}";
 		};
 	};
 	32CA4F630368D1EE00C91783 /* calendar_Prefix.pch */ = {

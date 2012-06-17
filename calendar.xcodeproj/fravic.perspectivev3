@@ -330,7 +330,7 @@
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>2992F78F1533E5C90035E70B</string>
+										<string>29A3901C15421E5000E7838D</string>
 										<key>history</key>
 										<array>
 											<string>299DF99D15195DBB00958CF4</string>
@@ -349,7 +349,7 @@
 											<string>2992F783153161510035E70B</string>
 											<string>2992F784153161510035E70B</string>
 											<string>2992F78D1533E5C90035E70B</string>
-											<string>2992F78E1533E5C90035E70B</string>
+											<string>2992F78F1533E5C90035E70B</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -363,18 +363,18 @@
 							<key>GeometryConfiguration</key>
 							<dict>
 								<key>Frame</key>
-								<string>{{0, 0}, {1075, 465}}</string>
+								<string>{{0, 0}, {1075, 459}}</string>
 								<key>RubberWindowFrame</key>
 								<string>0 55 1362 691 0 0 1366 746 </string>
 							</dict>
 							<key>Module</key>
 							<string>PBXNavigatorGroup</string>
 							<key>Proportion</key>
-							<string>465pt</string>
+							<string>459pt</string>
 						</dict>
 						<dict>
 							<key>Proportion</key>
-							<string>180pt</string>
+							<string>186pt</string>
 							<key>Tabs</key>
 							<array>
 								<dict>
@@ -388,7 +388,9 @@
 									<key>GeometryConfiguration</key>
 									<dict>
 										<key>Frame</key>
-										<string>{{10, 27}, {1075, 153}}</string>
+										<string>{{10, 27}, {1075, 159}}</string>
+										<key>RubberWindowFrame</key>
+										<string>0 55 1362 691 0 0 1366 746 </string>
 									</dict>
 									<key>Module</key>
 									<string>XCDetailModule</string>
@@ -443,8 +445,6 @@
 									<dict>
 										<key>Frame</key>
 										<string>{{10, 27}, {1075, 153}}</string>
-										<key>RubberWindowFrame</key>
-										<string>0 55 1362 691 0 0 1366 746 </string>
 									</dict>
 									<key>Module</key>
 									<string>PBXBuildResultsModule</string>
@@ -472,11 +472,11 @@
 			</array>
 			<key>TableOfContents</key>
 			<array>
-				<string>2992EFBE152CE9A00035E70B</string>
+				<string>29A390191541442800E7838D</string>
 				<string>1CA23ED40692098700951B8B</string>
-				<string>2992EFBF152CE9A00035E70B</string>
+				<string>29A3901A1541442800E7838D</string>
 				<string>29A281ED15192326008DB89F</string>
-				<string>2992EFC0152CE9A00035E70B</string>
+				<string>29A3901B1541442800E7838D</string>
 				<string>1CA23EDF0692099D00951B8B</string>
 				<string>1CA23EE00692099D00951B8B</string>
 				<string>1CA23EE10692099D00951B8B</string>
@@ -666,8 +666,6 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>2992EFC7152CE9A00035E70B</string>
-		<string>2992EFC9152CE9A00035E70B</string>
 		<string>/Users/fravic/Dropbox/Projects/calendar/calendar.xcodeproj</string>
 	</array>
 	<key>WindowString</key>

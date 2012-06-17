@@ -18,7 +18,6 @@
     [super viewDidLoad];
 	
 	[(UIScrollView*)self.view setContentSize:CGSizeMake(0, [self getScreenHeight] + 400)];
-	NSLog(@"Wut %d", [self getScreenHeight] + 400);
 	
 	_entityManager = [[EntityManager alloc] initWithView:self.view andDelegate:self];
 	_baseTime = _topTime = [[NSDate date] timeIntervalSinceReferenceDate];
@@ -161,9 +160,7 @@
     [pinchGesture release];
 }
 
-- (void)handleLongPress:(UILongPressGestureRecognizer*)recognizer {
-	NSLog(@"Long press");
-	
+- (void)handleLongPress:(UILongPressGestureRecognizer*)recognizer {	
 	float yLoc = [recognizer locationInView:self.view].y;
 	
 	if (_activeEventBlock == NULL) {
