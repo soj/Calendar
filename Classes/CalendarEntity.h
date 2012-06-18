@@ -16,7 +16,7 @@
 @property (setter=setStartTime) NSTimeInterval startTime;
 @property (setter=setEndTime) NSTimeInterval endTime;
 
-- (id)initWithSize:(CGSize)size startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime andDelegate:(id)delegate;
+- (id)initWithFrame:(CGRect)frame startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime andDelegate:(id)delegate;
 - (void)drawInContext:(CGContextRef)context;
 
 @end

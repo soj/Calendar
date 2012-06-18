@@ -1,7 +1,22 @@
 #import "Calendar.h"
-
+#import "Category.h"
 
 @implementation Calendar
+
+@synthesize categories=_categories;
+
+- (id)init {
+	self = [super init];
+	
+	if (self != nil) {
+		_categories = [[NSMutableArray alloc] init];
+		[_categories addObject:[[Category alloc] initWithName:@"Social" andColor:[UIColor orangeColor]]];
+		[_categories addObject:[[Category alloc] initWithName:@"Health" andColor:[UIColor purpleColor]]];
+		[_categories addObject:[[Category alloc] initWithName:@"Waste of Time" andColor:[UIColor greenColor]]];
+	}
+	
+	return self;
+}
 
 - (NSArray*)getEventsForRefDate:(int)refDate {
 	NSDate *startDate;

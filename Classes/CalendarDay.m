@@ -2,12 +2,6 @@
 
 @implementation CalendarDay
 
-- (id)initWithSize:(CGSize)size startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
-	[super initWithSize:size startTime:startTime endTime:endTime andDelegate:delegate];
-	
-	return self;
-}
-
 - (NSString*)dateStringFromTime:(NSTimeInterval)time withFormat:(NSString*)format {
 	NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:time];
 	NSDateFormatter *dateFrmt = [[NSDateFormatter alloc] init];

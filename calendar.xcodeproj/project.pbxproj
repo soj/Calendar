@@ -12,9 +12,11 @@
 		1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
-		2899E5220DE3E06400AC0155 /* CalendarDayController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2899E5210DE3E06400AC0155 /* CalendarDayController.xib */; };
-		28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 28AD733E0D9D9553002E5188 /* MainWindow.xib */; };
 		28D7ACF80DDB3853001CB0EB /* CalendarDayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* CalendarDayController.m */; };
+		292CB6F3158F081C006367C4 /* ShadowedTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 292CB6F2158F081C006367C4 /* ShadowedTextField.m */; };
+		292CB7B9158F1328006367C4 /* CalendarDayController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 292CB7B6158F1328006367C4 /* CalendarDayController.xib */; };
+		292CB7BA158F1328006367C4 /* CategoryChooserCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 292CB7B7158F1328006367C4 /* CategoryChooserCell.xib */; };
+		292CB7BB158F1328006367C4 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 292CB7B8158F1328006367C4 /* MainWindow.xib */; };
 		294DCC8C152C16BD00637E0A /* CalendarEntity.m in Sources */ = {isa = PBXBuildFile; fileRef = 294DCC8B152C16BD00637E0A /* CalendarEntity.m */; };
 		2968FE64158D61CD00CBB5BE /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2968FE63158D61CD00CBB5BE /* EventKit.framework */; };
 		2968FE70158D700E00CBB5BE /* CalendarController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2968FE6E158D700E00CBB5BE /* CalendarController.m */; };
@@ -23,6 +25,10 @@
 		2968FE97158D72BA00CBB5BE /* BreakdownController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2968FE95158D72BA00CBB5BE /* BreakdownController.xib */; };
 		299DF98715195A3700958CF4 /* CalendarDay.m in Sources */ = {isa = PBXBuildFile; fileRef = 299DF98615195A3700958CF4 /* CalendarDay.m */; };
 		299DFA1D15197D2700958CF4 /* Images in Resources */ = {isa = PBXBuildFile; fileRef = 299DFA1A15197D2700958CF4 /* Images */; };
+		29C1CF63158EAE7E00842914 /* CategoryChooserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C1CF61158EAE7E00842914 /* CategoryChooserController.m */; };
+		29C1CF64158EAE7E00842914 /* CategoryChooserController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 29C1CF62158EAE7E00842914 /* CategoryChooserController.xib */; };
+		29C1CF7D158EBEBF00842914 /* CategoryChooserCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C1CF7C158EBEBF00842914 /* CategoryChooserCell.m */; };
+		29C1CFD1158ED93600842914 /* Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C1CFD0158ED93600842914 /* Category.m */; };
 		29D98125151C14BC00B1E158 /* CalendarEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 29D98124151C14BC00B1E158 /* CalendarEvent.m */; };
 		29E54FE2153CBCF800D1B82F /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E54FE1153CBCF800D1B82F /* Calendar.m */; };
 /* End PBXBuildFile section */
@@ -34,10 +40,13 @@
 		1D6058910D05DD3D006BFB54 /* calendar.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = calendar.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
-		2899E5210DE3E06400AC0155 /* CalendarDayController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CalendarDayController.xib; sourceTree = "<group>"; };
-		28AD733E0D9D9553002E5188 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainWindow.xib; sourceTree = "<group>"; };
 		28D7ACF60DDB3853001CB0EB /* CalendarDayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarDayController.h; sourceTree = "<group>"; };
 		28D7ACF70DDB3853001CB0EB /* CalendarDayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarDayController.m; sourceTree = "<group>"; };
+		292CB6F1158F081C006367C4 /* ShadowedTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShadowedTextField.h; sourceTree = "<group>"; };
+		292CB6F2158F081C006367C4 /* ShadowedTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShadowedTextField.m; sourceTree = "<group>"; };
+		292CB7B6158F1328006367C4 /* CalendarDayController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CalendarDayController.xib; path = Classes/CalendarDayController.xib; sourceTree = "<group>"; };
+		292CB7B7158F1328006367C4 /* CategoryChooserCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CategoryChooserCell.xib; path = Classes/CategoryChooserCell.xib; sourceTree = "<group>"; };
+		292CB7B8158F1328006367C4 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = Classes/MainWindow.xib; sourceTree = "<group>"; };
 		294DCC8A152C16BD00637E0A /* CalendarEntity.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarEntity.h; sourceTree = "<group>"; };
 		294DCC8B152C16BD00637E0A /* CalendarEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarEntity.m; sourceTree = "<group>"; };
 		2968FE63158D61CD00CBB5BE /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
@@ -52,6 +61,13 @@
 		299DFA1A15197D2700958CF4 /* Images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Images; sourceTree = SOURCE_ROOT; };
 		299DFC051519AC9000958CF4 /* CalendarDayDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarDayDelegate.h; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		29C1CF60158EAE7E00842914 /* CategoryChooserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryChooserController.h; sourceTree = "<group>"; };
+		29C1CF61158EAE7E00842914 /* CategoryChooserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryChooserController.m; sourceTree = "<group>"; };
+		29C1CF62158EAE7E00842914 /* CategoryChooserController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CategoryChooserController.xib; path = Classes/CategoryChooserController.xib; sourceTree = "<group>"; };
+		29C1CF7B158EBEBF00842914 /* CategoryChooserCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryChooserCell.h; sourceTree = "<group>"; };
+		29C1CF7C158EBEBF00842914 /* CategoryChooserCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryChooserCell.m; sourceTree = "<group>"; };
+		29C1CFCF158ED93600842914 /* Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Category.h; sourceTree = "<group>"; };
+		29C1CFD0158ED93600842914 /* Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Category.m; sourceTree = "<group>"; };
 		29D98123151C14BC00B1E158 /* CalendarEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarEvent.h; sourceTree = "<group>"; };
 		29D98124151C14BC00B1E158 /* CalendarEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarEvent.m; sourceTree = "<group>"; };
 		29E54FE0153CBCF800D1B82F /* Calendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Calendar.h; sourceTree = "<group>"; };
@@ -103,6 +119,10 @@
 				294DCC8B152C16BD00637E0A /* CalendarEntity.m */,
 				29D98123151C14BC00B1E158 /* CalendarEvent.h */,
 				29D98124151C14BC00B1E158 /* CalendarEvent.m */,
+				29C1CF7B158EBEBF00842914 /* CategoryChooserCell.h */,
+				29C1CF7C158EBEBF00842914 /* CategoryChooserCell.m */,
+				292CB6F1158F081C006367C4 /* ShadowedTextField.h */,
+				292CB6F2158F081C006367C4 /* ShadowedTextField.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -121,6 +141,8 @@
 			children = (
 				29E54FE0153CBCF800D1B82F /* Calendar.h */,
 				29E54FE1153CBCF800D1B82F /* Calendar.m */,
+				29C1CFCF158ED93600842914 /* Category.h */,
+				29C1CFD0158ED93600842914 /* Category.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -134,6 +156,8 @@
 				2968FE6E158D700E00CBB5BE /* CalendarController.m */,
 				28D7ACF60DDB3853001CB0EB /* CalendarDayController.h */,
 				28D7ACF70DDB3853001CB0EB /* CalendarDayController.m */,
+				29C1CF60158EAE7E00842914 /* CategoryChooserController.h */,
+				29C1CF61158EAE7E00842914 /* CategoryChooserController.m */,
 				299DFC051519AC9000958CF4 /* CalendarDayDelegate.h */,
 			);
 			name = Controllers;
@@ -163,12 +187,14 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				292CB7B6158F1328006367C4 /* CalendarDayController.xib */,
+				292CB7B7158F1328006367C4 /* CategoryChooserCell.xib */,
+				292CB7B8158F1328006367C4 /* MainWindow.xib */,
+				29C1CF62158EAE7E00842914 /* CategoryChooserController.xib */,
 				2968FE95158D72BA00CBB5BE /* BreakdownController.xib */,
 				2968FE6F158D700E00CBB5BE /* CalendarController.xib */,
-				2899E5210DE3E06400AC0155 /* CalendarDayController.xib */,
-				28AD733E0D9D9553002E5188 /* MainWindow.xib */,
-				299DFA1A15197D2700958CF4 /* Images */,
 				8D1107310486CEB800E47090 /* calendar-Info.plist */,
+				299DFA1A15197D2700958CF4 /* Images */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -233,11 +259,13 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				28AD733F0D9D9553002E5188 /* MainWindow.xib in Resources */,
-				2899E5220DE3E06400AC0155 /* CalendarDayController.xib in Resources */,
 				299DFA1D15197D2700958CF4 /* Images in Resources */,
 				2968FE71158D700E00CBB5BE /* CalendarController.xib in Resources */,
 				2968FE97158D72BA00CBB5BE /* BreakdownController.xib in Resources */,
+				29C1CF64158EAE7E00842914 /* CategoryChooserController.xib in Resources */,
+				292CB7B9158F1328006367C4 /* CalendarDayController.xib in Resources */,
+				292CB7BA158F1328006367C4 /* CategoryChooserCell.xib in Resources */,
+				292CB7BB158F1328006367C4 /* MainWindow.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -257,6 +285,10 @@
 				29E54FE2153CBCF800D1B82F /* Calendar.m in Sources */,
 				2968FE70158D700E00CBB5BE /* CalendarController.m in Sources */,
 				2968FE96158D72BA00CBB5BE /* BreakdownController.m in Sources */,
+				29C1CF63158EAE7E00842914 /* CategoryChooserController.m in Sources */,
+				29C1CF7D158EBEBF00842914 /* CategoryChooserCell.m in Sources */,
+				29C1CFD1158ED93600842914 /* Category.m in Sources */,
+				292CB6F3158F081C006367C4 /* ShadowedTextField.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

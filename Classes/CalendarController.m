@@ -2,17 +2,19 @@
 
 @implementation CalendarController
 
+@synthesize scrollView=_scrollView;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
+	_calendar = [[Calendar alloc] init];
 	_pixelsPerHour = PIXELS_PER_HOUR;
 	_calendarDays = [[NSMutableDictionary alloc] init];
-
 	
 	[self setToday:[self floorTimeToStartOfDay:[[NSDate date] timeIntervalSinceReferenceDate]]];
 	
 	CGSize totalSize = CGSizeMake(PIXELS_PER_DAY * 3, 480.0);
-	[(UIScrollView*)self.view setContentSize:totalSize];
+	[_scrollView setContentSize:totalSize];
 }
 
 #pragma mark -
@@ -29,7 +31,7 @@
 	}
 
 	if (![dayController.view superview]) {
-		[self.view addSubview:dayController.view];
+		[_scrollView addSubview:dayController.view];
 	}
 	
 	CGRect frame = dayController.view.frame;
@@ -54,7 +56,7 @@
 	[self createDayControllerForStartTime:_yesterday];
 	[self createDayControllerForStartTime:_tomorrow];
 	
-	[(UIScrollView*)self.view setContentOffset:CGPointMake(PIXELS_PER_DAY, 0) animated:NO];
+	[_scrollView setContentOffset:CGPointMake(PIXELS_PER_DAY, 0) animated:NO];
 }
 
 #pragma mark -
@@ -88,6 +90,25 @@
 	int modTime = [components hour] * SECONDS_PER_HOUR + [components minute] * SECONDS_PER_MINUTE + [components second];
 	if (modTime == SECONDS_PER_DAY) return time;
 	return time - modTime;
+}
+
+- (int)dayWidth {
+	// TODO: This is hardcoded for now, but will be dynamic later
+	return PIXELS_PER_DAY;
+}
+
+- (void)showCategoryChooser {
+	CategoryChooserController *catController = [[CategoryChooserController alloc] initWithCalendar:_calendar andDelegate:self];
+	[self.view addSubview:catController.view];
+}
+
+#pragma mark -
+#pragma mark CategoryChooserDelegate Methods
+
+- (void)categoryChooser:(CategoryChooserController*)chooser didSelectCategory:(Category*)cat {
+	[[_calendarDays objectForKey:[NSNumber numberWithInt:_today]] chooseCategory:cat];
+	[chooser.view removeFromSuperview];
+	[chooser release];
 }
 
 #pragma mark -

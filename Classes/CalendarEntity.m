@@ -4,16 +4,16 @@
 
 @synthesize delegate=_delegate, startTime=_startTime, endTime=_endTime, entKey=_entKey;
 
-- (id)initWithSize:(CGSize)size startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
+- (id)initWithFrame:(CGRect)frame startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
 	[super init];
+
+	[self setFrame:frame];
+	[self setBackgroundColor:[UIColor clearColor]];
 	
 	[self setStartTime:startTime];
 	[self setEndTime:endTime];
 	[self setDelegate:delegate];
-	
-	[self setFrame:CGRectMake(0, 0, size.width, size.height)];
-	[self setBackgroundColor:[UIColor clearColor]];
-		
+
 	return self;
 }
 

@@ -3,8 +3,8 @@
 #import "CalendarDay.h"
 #import "CalendarEvent.h"
 
-#define TIME_INTERVAL_BUFFER	SECONDS_PER_HOUR * 24
-#define SCROLL_BUFFER			TIME_INTERVAL_BUFFER / SECONDS_PER_HOUR * PIXELS_PER_HOUR
+#define EVENT_DX			65.0
+#define RIGHT_RAIL_WIDTH	45.0
 
 @interface CalendarDayController : UIViewController <UIScrollViewDelegate> {
 	id<CalendarDayDelegate> _delegate;
@@ -20,6 +20,7 @@
 - (id)initWithStartTime:(NSTimeInterval)startTime andDelegate:(id <CalendarDayDelegate>)delegate;
 - (void)createGestureRecognizers;
 - (void)createCalendarDay;
+- (void)chooseCategory:(Category*)cat;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 

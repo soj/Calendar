@@ -4,9 +4,6 @@
 
 @synthesize startTime=_startTime;
 
-#pragma mark -
-#pragma mark ViewController Methods
-
 - (id)initWithStartTime:(NSTimeInterval)startTime andDelegate:(id<CalendarDayDelegate>)delegate {
 	self = [super initWithNibName:@"CalendarDayController" bundle:nil];
 
@@ -14,7 +11,7 @@
 		_delegate = delegate;
 		_startTime = startTime;		// TODO: Assert that this is midnight of some day
 		_eventBlocks = [[NSMutableSet alloc] init];
-		NSLog(@"%d %d", (int)_startTime, (int)[_delegate floorTimeToStartOfDay:_startTime]);
+		
 		NSAssert((int)_startTime == (int)[_delegate floorTimeToStartOfDay:_startTime],
 				 @"The start time provided must be the first second of a given day");
 		
@@ -26,19 +23,31 @@
 }
 
 - (void)createCalendarDay {
-	CGSize size = CGSizeMake([self.view frame].size.width, [_delegate getPixelsPerHour] * HOURS_PER_DAY);
+	CGRect frame = CGRectMake(0, 0, [self.view frame].size.width, [_delegate getPixelsPerHour] * HOURS_PER_DAY);
 	NSTimeInterval endTime = _startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
-	CalendarDay *newDay = [[CalendarDay alloc] initWithSize:size startTime:_startTime endTime:endTime andDelegate:_delegate];
+	CalendarDay *newDay = [[CalendarDay alloc] initWithFrame:frame startTime:_startTime endTime:endTime andDelegate:_delegate];
 	
-	[self.view setContentSize:size];
+	[(UIScrollView*)self.view setContentSize:frame.size];
 	[self.view addSubview:newDay];
 }
 
-- (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)startTime {
-	CGSize size = CGSizeMake([self.view frame].size.width, [_delegate getPixelsPerHour] * HOURS_PER_DAY);
-	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithSize:size startTime:startTime endTime:startTime andDelegate:_delegate];
+- (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)time {
+	CGRect frame = CGRectMake(EVENT_DX, [_delegate timeOffsetToPixel:(time - _startTime)],
+							  [_delegate dayWidth] - EVENT_DX - RIGHT_RAIL_WIDTH,
+							  [_delegate getPixelsPerHour] * HOURS_PER_DAY);
+	
+	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithFrame:frame startTime:time endTime:time andDelegate:_delegate];
 	[_eventBlocks addObject:newBlock];
+	
+	[newBlock setFrame:frame];
+	
+	[self.view addSubview:newBlock];
 	return newBlock;
+}
+
+- (void)chooseCategory:(Category*)cat {
+	[_activeEventBlock setCategory:cat];
+	_activeEventBlock = NULL;
 }
 
 #pragma mark -
@@ -66,16 +75,13 @@
 	float yLoc = [recognizer locationInView:self.view].y;
 	
 	if (_activeEventBlock == NULL) {
-		// TODO: Create new event block
+		_activeEventBlock = [self createEventBlockWithStartTime:([_delegate pixelToTimeOffset:yLoc] + _startTime)];
 	}
 	
 	_activeEventBlock.endTime = _startTime + [_delegate pixelToTimeOffset:yLoc];
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
 		[_activeEventBlock setFocus];
-		
-		[_activeEventBlock release];
-		_activeEventBlock = NULL;
 	}
 }
 
@@ -87,14 +93,17 @@
 }
 
 #pragma mark -
+#pragma mark UIViewController Methods
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+    return (interfaceOrientation == UIInterfaceOrientationPortrait);
+}
+
+#pragma mark -
 #pragma mark UIScrollViewDelegate Methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
 	_topTime = (NSTimeInterval)[scrollView contentOffset].y / [_delegate getPixelsPerHour] * SECONDS_PER_HOUR + _startTime;
-}
-
-- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
-    return (interfaceOrientation == UIInterfaceOrientationPortrait);
 }
 
 #pragma mark -
