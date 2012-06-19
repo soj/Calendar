@@ -12,9 +12,13 @@
 @interface CategoryChooserCell : UITableViewCell {
 	UILabel *_categoryName;
 	UIView *_colorView;
+	UIColor *_color;
 }
 
 @property (nonatomic, retain) IBOutlet UILabel *categoryName;
 @property (nonatomic, retain) IBOutlet UIView *colorView;
+
+- (void)setColor:(UIColor*)color;
+- (void)setName:(NSString*)name;
 
 @end

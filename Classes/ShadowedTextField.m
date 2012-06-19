@@ -3,9 +3,9 @@
 
 @implementation ShadowedTextField
 
-- (id)initWithFrame:(CGRect)frame {
+- (id)init {
+    self = [super init];
     
-    self = [super initWithFrame:frame];
     if (self) {
 		[self layer].shadowColor = [[UIColor blackColor] CGColor];
 		[self layer].shadowOffset = CGSizeMake(0, -1);
@@ -19,6 +19,7 @@
 		[self setFont:[UIFont systemFontOfSize:25.0]];
 		[self setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
     }
+    
     return self;
 }
 

@@ -3,9 +3,6 @@
 #import "CalendarDay.h"
 #import "CalendarEvent.h"
 
-#define EVENT_DX			65.0
-#define RIGHT_RAIL_WIDTH	45.0
-
 @interface CalendarDayController : UIViewController <UIScrollViewDelegate> {
 	id<CalendarDayDelegate> _delegate;
 	CalendarEvent *_activeEventBlock;
@@ -21,6 +18,7 @@
 - (void)createGestureRecognizers;
 - (void)createCalendarDay;
 - (void)chooseCategory:(Category*)cat;
+- (void)checkForEventBlocksParallelTo:(CalendarEvent*)event;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 

@@ -7,6 +7,7 @@
 	id<CalendarDayDelegate> _delegate;
 	
 	NSObject *_entKey;
+    NSTimeInterval _baseTime;
 	NSTimeInterval _startTime;
 	NSTimeInterval _endTime;
 }
@@ -16,7 +17,10 @@
 @property (setter=setStartTime) NSTimeInterval startTime;
 @property (setter=setEndTime) NSTimeInterval endTime;
 
-- (id)initWithFrame:(CGRect)frame startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime andDelegate:(id)delegate;
+- (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
+               endTime:(NSTimeInterval)endTime andDelegate:(id)delegate;
 - (void)drawInContext:(CGContextRef)context;
+
+- (CGRect)reframe;
 
 @end

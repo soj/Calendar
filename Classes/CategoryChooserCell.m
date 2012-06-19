@@ -18,6 +18,21 @@
     return self;
 }
 
+- (void)setColor:(UIColor*)color {
+	_colorView.backgroundColor = color;
+	_color = color;
+}
+
+- (void)setName:(NSString*)name {
+	_categoryName.text = name;
+}
+
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated {
+    [super setSelected:selected animated:animated];
+	
+    _colorView.backgroundColor = _color;
+}
+
 - (void)dealloc {
     [super dealloc];
 }

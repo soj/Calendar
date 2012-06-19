@@ -4,18 +4,20 @@
 
 @implementation CalendarEvent
 
-- (id)initWithFrame:(CGRect)frame startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
-	[super initWithFrame:frame startTime:startTime endTime:endTime andDelegate:delegate];
-	
-	_nameField = [[ShadowedTextField alloc] initWithFrame:CGRectMake(BORDER_PADDING_X, BORDER_PADDING_Y,
-																	[self frame].size.width - BORDER_PADDING_X * 2,
-																	100)];
+- (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
+               endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
+    _multitaskIndex = 0;
+    _numMultitasks = 1;
+    
+    [super initWithBaseTime:baseTime startTime:startTime endTime:endTime andDelegate:delegate];
+    
+    _nameField = [[ShadowedTextField alloc] init];
+    _catField = [[ShadowedTextField alloc] init];
+
 	[_nameField setDelegate:self];
-	
-	_catField = [[ShadowedTextField alloc] initWithFrame:CGRectMake(BORDER_PADDING_X, BORDER_PADDING_Y + 30,
-																	 [self frame].size.width - BORDER_PADDING_X * 2,
-																	 100)];
-	[_catField setDelegate:self];
+    [_catField setDelegate:self];
+    
+    [self resizeTextFields];
 	
 	[self addSubview:_nameField];
 	[self addSubview:_catField];
@@ -29,6 +31,34 @@
 
 - (void)setFocus {
 	[_nameField becomeFirstResponder];
+}
+
+- (void)resizeTextFields {
+    [_nameField setFrame:CGRectMake(BORDER_PADDING_X, BORDER_PADDING_Y,
+                                    [self frame].size.width - BORDER_PADDING_X * 2,
+                                    100)];
+    [_catField setFrame:CGRectMake(BORDER_PADDING_X, BORDER_PADDING_Y + 30,
+                                   [self frame].size.width - BORDER_PADDING_X * 2,
+                                   100)];
+}
+
+- (CGRect)reframe {
+    int width = ([_delegate dayWidth] - EVENT_DX - RIGHT_RAIL_WIDTH) / _numMultitasks;
+    int multitaskDX = width * _multitaskIndex;
+    
+    return CGRectMake(EVENT_DX + multitaskDX, [_delegate timeOffsetToPixel:(_startTime - _baseTime)],
+                      width,
+                      [_delegate getPixelsPerHour] * (_endTime - _startTime) / SECONDS_PER_HOUR);
+}
+
+- (void)setMultitaskIndex:(int)index outOf:(int)numMultitasks { 
+    NSAssert(numMultitasks >= 1, @"numMultitasks must be at least 1");
+    NSAssert(index < numMultitasks, @"index cannot be greater than number of multitasks");
+    
+    _multitaskIndex = index;
+    _numMultitasks = numMultitasks;
+    [self setFrame:[self reframe]];
+    [self resizeTextFields];
 }
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {

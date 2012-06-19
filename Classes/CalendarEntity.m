@@ -4,16 +4,18 @@
 
 @synthesize delegate=_delegate, startTime=_startTime, endTime=_endTime, entKey=_entKey;
 
-- (id)initWithFrame:(CGRect)frame startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
+- (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
+               endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
 	[super init];
-
-	[self setFrame:frame];
-	[self setBackgroundColor:[UIColor clearColor]];
 	
+    _baseTime = baseTime;
 	[self setStartTime:startTime];
 	[self setEndTime:endTime];
 	[self setDelegate:delegate];
-
+    
+    [self setFrame:[self reframe]];
+	[self setBackgroundColor:[UIColor clearColor]];
+    
 	return self;
 }
 
@@ -33,6 +35,11 @@
 	}
 	
 	[self setNeedsDisplay];
+}
+     
+- (CGRect)reframe {
+    [NSException raise:NSInternalInconsistencyException 
+                format:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)];
 }
 
 - (void)drawRect:(CGRect)rect {

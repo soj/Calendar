@@ -33,8 +33,9 @@
 	}
 	
 	Category *cat = (Category*)[[_calendar categories] objectAtIndex:indexPath.row];
-	cell.categoryName.text = [cat name];
-	cell.colorView.backgroundColor = [cat color];
+	[cell setName:[cat name]];
+	[cell setColor:[cat color]];
+	
 	
 	return cell;
 }

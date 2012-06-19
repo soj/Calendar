@@ -23,23 +23,16 @@
 }
 
 - (void)createCalendarDay {
-	CGRect frame = CGRectMake(0, 0, [self.view frame].size.width, [_delegate getPixelsPerHour] * HOURS_PER_DAY);
 	NSTimeInterval endTime = _startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
-	CalendarDay *newDay = [[CalendarDay alloc] initWithFrame:frame startTime:_startTime endTime:endTime andDelegate:_delegate];
+	CalendarDay *newDay = [[CalendarDay alloc] initWithBaseTime:_startTime startTime:_startTime endTime:endTime andDelegate:_delegate];
 	
-	[(UIScrollView*)self.view setContentSize:frame.size];
+	[(UIScrollView*)self.view setContentSize:newDay.frame.size];
 	[self.view addSubview:newDay];
 }
 
 - (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)time {
-	CGRect frame = CGRectMake(EVENT_DX, [_delegate timeOffsetToPixel:(time - _startTime)],
-							  [_delegate dayWidth] - EVENT_DX - RIGHT_RAIL_WIDTH,
-							  [_delegate getPixelsPerHour] * HOURS_PER_DAY);
-	
-	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithFrame:frame startTime:time endTime:time andDelegate:_delegate];
+	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithBaseTime:_startTime startTime:time endTime:time andDelegate:_delegate];
 	[_eventBlocks addObject:newBlock];
-	
-	[newBlock setFrame:frame];
 	
 	[self.view addSubview:newBlock];
 	return newBlock;
@@ -48,6 +41,35 @@
 - (void)chooseCategory:(Category*)cat {
 	[_activeEventBlock setCategory:cat];
 	_activeEventBlock = NULL;
+}
+
+BOOL timesIntersect(NSTimeInterval s1, NSTimeInterval e1, NSTimeInterval s2, NSTimeInterval e2) {
+	return (s1 > s2 && s1 < e2) || (e1 > s2 && e1 < e2) || (s1 < s2 && e1 > e2);
+}
+
+- (void)checkForEventBlocksParallelTo:(CalendarEvent*)thisEvent {
+	NSEnumerator *e = [_eventBlocks objectEnumerator];
+	CalendarEvent *thatEvent;
+    NSMutableSet *parallelBlocks = [[NSMutableSet alloc] initWithCapacity:[_eventBlocks count]];
+    
+	while (thatEvent = [e nextObject]) {
+		if (timesIntersect(thatEvent.startTime, thatEvent.endTime, thisEvent.startTime, thisEvent.endTime)) {
+			[parallelBlocks addObject:thatEvent];
+		}
+    }
+    
+    [parallelBlocks addObject:thisEvent];
+    NSArray *descriptors = [[NSArray alloc] initWithObjects:
+                           [NSSortDescriptor sortDescriptorWithKey:@"startTime" ascending:YES],
+                           [NSSortDescriptor sortDescriptorWithKey:@"eventId" ascending:YES],
+                           nil];
+    NSArray *sorted = [parallelBlocks sortedArrayUsingDescriptors:descriptors];
+    
+    for (int i = 0; i < [sorted count]; i++) {
+        [(CalendarEvent*)[sorted objectAtIndex:i] setMultitaskIndex:i outOf:[sorted count]];
+    }
+    
+    [parallelBlocks release];
 }
 
 #pragma mark -
@@ -79,6 +101,8 @@
 	}
 	
 	_activeEventBlock.endTime = _startTime + [_delegate pixelToTimeOffset:yLoc];
+    [_activeEventBlock setFrame:[_activeEventBlock reframe]];
+	[self checkForEventBlocksParallelTo:_activeEventBlock];
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
 		[_activeEventBlock setFocus];

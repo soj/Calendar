@@ -2,6 +2,12 @@
 
 @implementation CalendarDay
 
+- (CGRect)reframe {
+    return CGRectMake(0, [_delegate timeOffsetToPixel:(_startTime - _baseTime)],
+                      [_delegate dayWidth],
+                      [_delegate getPixelsPerHour] * HOURS_PER_DAY);
+}
+
 - (NSString*)dateStringFromTime:(NSTimeInterval)time withFormat:(NSString*)format {
 	NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:time];
 	NSDateFormatter *dateFrmt = [[NSDateFormatter alloc] init];
