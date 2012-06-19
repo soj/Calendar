@@ -4,6 +4,7 @@
 @interface Calendar : NSObject {
 	EKEventStore *_eventStore;
 	
+	NSMutableArray *_events;
 	NSMutableArray *_categories;
 }
 

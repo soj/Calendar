@@ -13,6 +13,7 @@
 		1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		28D7ACF80DDB3853001CB0EB /* CalendarDayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* CalendarDayController.m */; };
+		29247E6915905B8000B12926 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 29247E6815905B8000B12926 /* Event.m */; };
 		292CB6F3158F081C006367C4 /* ShadowedTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 292CB6F2158F081C006367C4 /* ShadowedTextField.m */; };
 		292CB7B9158F1328006367C4 /* CalendarDayController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 292CB7B6158F1328006367C4 /* CalendarDayController.xib */; };
 		292CB7BA158F1328006367C4 /* CategoryChooserCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 292CB7B7158F1328006367C4 /* CategoryChooserCell.xib */; };
@@ -42,6 +43,8 @@
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28D7ACF60DDB3853001CB0EB /* CalendarDayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarDayController.h; sourceTree = "<group>"; };
 		28D7ACF70DDB3853001CB0EB /* CalendarDayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarDayController.m; sourceTree = "<group>"; };
+		29247E6715905B8000B12926 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
+		29247E6815905B8000B12926 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		292CB6F1158F081C006367C4 /* ShadowedTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShadowedTextField.h; sourceTree = "<group>"; };
 		292CB6F2158F081C006367C4 /* ShadowedTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShadowedTextField.m; sourceTree = "<group>"; };
 		292CB7B6158F1328006367C4 /* CalendarDayController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CalendarDayController.xib; path = Classes/CalendarDayController.xib; sourceTree = "<group>"; };
@@ -143,6 +146,8 @@
 				29E54FE1153CBCF800D1B82F /* Calendar.m */,
 				29C1CFCF158ED93600842914 /* Category.h */,
 				29C1CFD0158ED93600842914 /* Category.m */,
+				29247E6715905B8000B12926 /* Event.h */,
+				29247E6815905B8000B12926 /* Event.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -289,6 +294,7 @@
 				29C1CF7D158EBEBF00842914 /* CategoryChooserCell.m in Sources */,
 				29C1CFD1158ED93600842914 /* Category.m in Sources */,
 				292CB6F3158F081C006367C4 /* ShadowedTextField.m in Sources */,
+				29247E6915905B8000B12926 /* Event.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
