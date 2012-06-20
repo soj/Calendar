@@ -14,3 +14,7 @@ int main(int argc, char *argv[]) {
     [pool release];
     return retVal;
 }
+
+BOOL timesIntersect(NSTimeInterval s1, NSTimeInterval e1, NSTimeInterval s2, NSTimeInterval e2) {
+	return (s1 > s2 && s1 < e2) || (e1 > s2 && e1 < e2) || (s1 < s2 && e1 > e2);
+}

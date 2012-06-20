@@ -14,8 +14,8 @@
 
 @property (retain) id delegate;
 @property (retain) NSObject *entKey;
-@property (setter=setStartTime) NSTimeInterval startTime;
-@property (setter=setEndTime) NSTimeInterval endTime;
+@property (nonatomic, setter=setStartTime:) NSTimeInterval startTime;
+@property (nonatomic, setter=setEndTime:) NSTimeInterval endTime;
 
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
                endTime:(NSTimeInterval)endTime andDelegate:(id)delegate;

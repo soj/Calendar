@@ -40,6 +40,7 @@
 - (CGRect)reframe {
     [NSException raise:NSInternalInconsistencyException 
                 format:@"You must override %@ in a subclass", NSStringFromSelector(_cmd)];
+    return CGRectZero;
 }
 
 - (void)drawRect:(CGRect)rect {

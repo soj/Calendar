@@ -16,4 +16,17 @@
 	return self;
 }
 
+- (id)initWithCoder:(NSCoder *)aDecoder {
+    if (self = [super init]) {
+        _name = [aDecoder decodeObjectForKey:@"name"];
+        _color = [aDecoder decodeObjectForKey:@"color"];
+    }
+    return self;
+}
+
+- (void)encodeWithCoder:(NSCoder *)aCoder {
+    [aCoder encodeObject:_name forKey:@"name"];
+    [aCoder encodeObject:_color forKey:@"color"];
+}
+
 @end

@@ -22,6 +22,16 @@
 	return self;
 }
 
+- (void)setEvents:(NSArray*)events {
+    NSEnumerator *e = [events objectEnumerator];
+    Event *event;
+    while (event = [e nextObject]) {
+        CalendarEvent *newEvent = [self createEventBlockWithStartTime:[event startTime]];
+        [newEvent setEndTime:[event endTime]];
+        
+    }
+}
+
 - (void)createCalendarDay {
 	NSTimeInterval endTime = _startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
 	CalendarDay *newDay = [[CalendarDay alloc] initWithBaseTime:_startTime startTime:_startTime endTime:endTime andDelegate:_delegate];
@@ -41,10 +51,6 @@
 - (void)chooseCategory:(Category*)cat {
 	[_activeEventBlock setCategory:cat];
 	_activeEventBlock = NULL;
-}
-
-BOOL timesIntersect(NSTimeInterval s1, NSTimeInterval e1, NSTimeInterval s2, NSTimeInterval e2) {
-	return (s1 > s2 && s1 < e2) || (e1 > s2 && e1 < e2) || (s1 < s2 && e1 > e2);
 }
 
 - (void)checkForEventBlocksParallelTo:(CalendarEvent*)thisEvent {

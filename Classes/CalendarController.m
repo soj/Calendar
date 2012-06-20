@@ -22,12 +22,14 @@
 
 - (void)createDayControllerForStartTime:(NSTimeInterval)startTime {
 	CalendarDayController *dayController;
-	
+    NSTimeInterval endTime = startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
+    
 	if ([_calendarDays objectForKey:[NSNumber numberWithInt:startTime]] != nil) {
 		dayController = [_calendarDays objectForKey:[NSNumber numberWithInt:startTime]];
 	} else {
 		dayController = [[CalendarDayController alloc] initWithStartTime:startTime andDelegate:self];
 		[_calendarDays setObject:dayController forKey:[NSNumber numberWithInt:startTime]];
+        [dayController setEvents:[_calendar getEventsBetweenStartTime:[dayController startTime] andEndTime:endTime]];
 	}
 
 	if (![dayController.view superview]) {

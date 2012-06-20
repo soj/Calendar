@@ -1,16 +1,22 @@
 #import <Foundation/Foundation.h>
 #import <EventKit/EventKit.h>
+#import "Event.h"
+
+#define EVENTS_SAVE_KEY  @"events"
 
 @interface Calendar : NSObject {
 	EKEventStore *_eventStore;
-	
-	NSMutableArray *_events;
-	NSMutableArray *_categories;
+	NSMutableDictionary *_events;
+    
+    NSTimeInterval _startTime;
+    NSTimeInterval _endTime;
 }
 
-@property (retain) NSMutableArray *categories;
-
+- (void)loadEKEventsBetweenStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime;
+- (NSArray*)getEventsBetweenStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime;
 - (NSArray*)getEventsForRefDate:(int)refDate;
 - (void)createEvent;
+- (NSArray*)categories;
+- (void)save;
 
 @end
