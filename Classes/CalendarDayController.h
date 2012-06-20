@@ -21,6 +21,7 @@
 - (void)createGestureRecognizers;
 - (void)createCalendarDay;
 - (void)chooseCategory:(Category*)cat;
+- (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)time;
 - (void)checkForEventBlocksParallelTo:(CalendarEvent*)event;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;

@@ -103,7 +103,8 @@
 	float yLoc = [recognizer locationInView:self.view].y;
 	
 	if (_activeEventBlock == NULL) {
-		_activeEventBlock = [self createEventBlockWithStartTime:([_delegate pixelToTimeOffset:yLoc] + _startTime)];
+		NSTimeInterval startTime = [_delegate floorTimeToMinInterval:([_delegate pixelToTimeOffset:yLoc] + _startTime)];
+		_activeEventBlock = [self createEventBlockWithStartTime:startTime];
 	}
 	
 	_activeEventBlock.endTime = _startTime + [_delegate pixelToTimeOffset:yLoc];
@@ -111,6 +112,8 @@
 	[self checkForEventBlocksParallelTo:_activeEventBlock];
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
+		_activeEventBlock.endTime = [_delegate floorTimeToMinInterval:(_startTime + [_delegate pixelToTimeOffset:yLoc])];
+
 		[_activeEventBlock setFocus];
 	}
 }

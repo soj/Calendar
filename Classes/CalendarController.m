@@ -84,14 +84,22 @@
 	return calHour;
 }
 
-- (NSTimeInterval)floorTimeToStartOfDay:(NSTimeInterval)time {
+- (NSTimeInterval)floorTime:(NSTimeInterval)time toHour:(int)hour andMinutes:(int)minutes {
 	NSDate *date = [NSDate dateWithTimeIntervalSinceReferenceDate:time];
 	NSCalendar *calendar = [NSCalendar currentCalendar];
 	NSDateComponents *components = [calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:date];
-
-	int modTime = [components hour] * SECONDS_PER_HOUR + [components minute] * SECONDS_PER_MINUTE + [components second];
+	
+	int modTime = ([components hour] % hour) * SECONDS_PER_HOUR + ([components minute] % minutes) * SECONDS_PER_MINUTE + [components second];
 	if (modTime == SECONDS_PER_DAY) return time;
 	return time - modTime;
+}
+
+- (NSTimeInterval)floorTimeToStartOfDay:(NSTimeInterval)time {
+	return [self floorTime:time toHour:(HOURS_PER_DAY + 1) andMinutes:(MINUTES_PER_HOUR + 1)];
+}
+
+- (NSTimeInterval)floorTimeToMinInterval:(NSTimeInterval)time {
+	return [self floorTime:time toHour:1 andMinutes:(EVENT_TIME_GRANULARITY / SECONDS_PER_MINUTE)];
 }
 
 - (int)dayWidth {
