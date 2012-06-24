@@ -48,11 +48,6 @@
 	return newBlock;
 }
 
-- (void)chooseCategory:(Category*)cat {
-	[_activeEventBlock setCategory:cat];
-	_activeEventBlock = NULL;
-}
-
 - (void)checkForEventBlocksParallelTo:(CalendarEvent*)thisEvent {
 	NSEnumerator *e = [_eventBlocks objectEnumerator];
 	CalendarEvent *thatEvent;
@@ -113,8 +108,9 @@
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
 		_activeEventBlock.endTime = [_delegate floorTimeToMinInterval:(_startTime + [_delegate pixelToTimeOffset:yLoc])];
-
+	
 		[_activeEventBlock setFocus];
+		_activeEventBlock = NULL;
 	}
 }
 

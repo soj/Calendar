@@ -63,9 +63,36 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	[_nameField resignFirstResponder];
-	[_delegate showCategoryChooser];
+	if (!_catField.text.length) {
+		[self showCategoryChooser];
+	}
 	return YES;
 }
+
+- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
+	if (textField == _catField) {
+		[self showCategoryChooser];
+		return NO;
+	}
+	return YES;
+}
+
+- (void)showCategoryChooser {
+	CategoryChooserController *catController = [[CategoryChooserController alloc] initWithCalendar:[_delegate getCalendar] andDelegate:self];
+	[[_delegate calendarView] addSubview:catController.view];
+}
+
+#pragma mark -
+#pragma mark CategoryChooserDelegate Methods
+
+- (void)categoryChooser:(CategoryChooserController*)chooser didSelectCategory:(Category*)cat {
+	[_catField setText:[cat name]];
+	[chooser.view removeFromSuperview];
+	[chooser release];
+}
+
+#pragma mark -
+#pragma mark Drawing
 
 - (void)drawInContext:(CGContextRef)context {
 	// Set the rectangle area

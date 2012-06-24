@@ -9,7 +9,7 @@
 
 #define EVENT_TIME_GRANULARITY	15 * SECONDS_PER_MINUTE
 
-@interface CalendarController : UIViewController <CalendarDayDelegate, CategoryChooserDelegate, UIScrollViewDelegate> {
+@interface CalendarController : UIViewController <CalendarDayDelegate, UIScrollViewDelegate> {
 	Calendar *_calendar;
 	UIScrollView *_scrollView;
 	

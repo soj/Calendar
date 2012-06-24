@@ -107,18 +107,12 @@
 	return PIXELS_PER_DAY;
 }
 
-- (void)showCategoryChooser {
-	CategoryChooserController *catController = [[CategoryChooserController alloc] initWithCalendar:_calendar andDelegate:self];
-	[self.view addSubview:catController.view];
+- (Calendar*)getCalendar {
+	return _calendar;
 }
 
-#pragma mark -
-#pragma mark CategoryChooserDelegate Methods
-
-- (void)categoryChooser:(CategoryChooserController*)chooser didSelectCategory:(Category*)cat {
-	[[_calendarDays objectForKey:[NSNumber numberWithInt:_today]] chooseCategory:cat];
-	[chooser.view removeFromSuperview];
-	[chooser release];
+- (UIView*)calendarView {
+	return self.view;
 }
 
 #pragma mark -
