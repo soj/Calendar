@@ -34,15 +34,32 @@
 
 - (void)createCalendarDay {
 	NSTimeInterval endTime = _startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
-	CalendarDay *newDay = [[CalendarDay alloc] initWithBaseTime:_startTime startTime:_startTime endTime:endTime andDelegate:_delegate];
+	_calendarDay = [[CalendarDay alloc] initWithBaseTime:_startTime startTime:_startTime endTime:endTime andDelegate:_delegate];
 	
-	[(UIScrollView*)self.view setContentSize:newDay.frame.size];
-	[self.view addSubview:newDay];
+	[_calendarDay setCurrentTime:[NSDate timeIntervalSinceReferenceDate]];
+	NSMethodSignature *sig = [[self class] instanceMethodSignatureForSelector:@selector(updateCurrentTime)];
+	NSInvocation *invoc = [NSInvocation invocationWithMethodSignature:sig];
+	[invoc setSelector:@selector(updateCurrentTime)];
+	[invoc setTarget:self];
+	[NSTimer scheduledTimerWithTimeInterval:SECONDS_PER_MINUTE invocation:invoc repeats:YES];
+	
+	[(UIScrollView*)self.view setContentSize:_calendarDay.frame.size];
+	[self.view addSubview:_calendarDay];
+}
+
+- (void)updateCurrentTime {
+	[_calendarDay setCurrentTime:[NSDate timeIntervalSinceReferenceDate]];
+	[_calendarDay setNeedsDisplay];
 }
 
 - (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)time {
 	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithBaseTime:_startTime startTime:time endTime:time andDelegate:_delegate];
 	[_eventBlocks addObject:newBlock];
+	
+	UIPanGestureRecognizer *pan =
+		[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGestureOnEventBlock:)];
+    [newBlock addGestureRecognizer:pan];
+    [pan release];
 	
 	[self.view addSubview:newBlock];
 	return newBlock;
@@ -107,7 +124,7 @@
 	[self checkForEventBlocksParallelTo:_activeEventBlock];
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
-		_activeEventBlock.endTime = [_delegate floorTimeToMinInterval:(_startTime + [_delegate pixelToTimeOffset:yLoc])];
+		_activeEventBlock.endTime = [_delegate floorTimeToMinInterval:[_activeEventBlock endTime]];
 	
 		[_activeEventBlock setFocus];
 		_activeEventBlock = NULL;
@@ -119,6 +136,40 @@
 
 - (void)handlePinchGesture:(UIPinchGestureRecognizer*)recognize {
 	[recognize scale];
+}
+
+- (void)handlePanGestureOnEventBlock:(UIPanGestureRecognizer*)recognizer {
+	if (_activeEventBlock == NULL) {
+		if ([recognizer locationInView:[recognizer view]].y < EDGE_DRAG_PIXELS) {
+			_activeEventBlock = (CalendarEvent*)[recognizer view];
+			_initDragTime = [_activeEventBlock startTime];
+			_dragStartTime = YES;
+			_initDragPos = [recognizer translationInView:_activeEventBlock].y;
+		} else if ([recognizer locationInView:[recognizer view]].y > [recognizer view].frame.size.height - EDGE_DRAG_PIXELS) {
+			_activeEventBlock = (CalendarEvent*)[recognizer view];
+			_initDragTime = [_activeEventBlock endTime];
+			_dragStartTime = NO;
+			_initDragPos = [recognizer translationInView:_activeEventBlock].y;
+		} else {
+			return;
+		}
+	}
+
+	NSTimeInterval timeDiff = _initDragTime + [_delegate pixelToTimeOffset:([recognizer translationInView:_activeEventBlock].y - _initDragPos)];
+	if (_dragStartTime) {
+		[_activeEventBlock setStartTime:timeDiff];
+	} else {
+		[_activeEventBlock setEndTime:timeDiff];
+	}
+	[_activeEventBlock setFrame:[_activeEventBlock reframe]];
+	
+	if ([recognizer state] == UIGestureRecognizerStateEnded) {
+		_activeEventBlock.startTime = [_delegate floorTimeToMinInterval:_activeEventBlock.startTime];
+		_activeEventBlock.endTime = [_delegate floorTimeToMinInterval:_activeEventBlock.endTime];
+		[_activeEventBlock setFrame:[_activeEventBlock reframe]];
+		
+		_activeEventBlock = NULL;
+	}
 }
 
 #pragma mark -

@@ -2,6 +2,8 @@
 
 @implementation CalendarDay
 
+@synthesize currentTime=_currentTime;
+
 - (CGRect)reframe {
     return CGRectMake(0, [_delegate timeOffsetToPixel:(_startTime - _baseTime)],
                       [_delegate dayWidth],
@@ -22,6 +24,12 @@
 - (void)drawLineAtY:(int)yPos inContext:(CGContextRef)context {
 	CGContextMoveToPoint(context, TIME_LINES_X, yPos);
 	CGContextAddLineToPoint(context, TIME_LINES_X + [self frame].size.width, yPos);
+	CGContextStrokePath(context);
+}
+
+- (void)drawFullBleedLineAtY:(int)yPos inContext:(CGContextRef)context {
+	CGContextMoveToPoint(context, 0, yPos);
+	CGContextAddLineToPoint(context, 0 + [self frame].size.width, yPos);
 	CGContextStrokePath(context);
 }
 
@@ -60,9 +68,18 @@
 	CGContextSetLineDash(context, 0, NULL, 0);	
 }
 
+- (void)drawCurrentTimeLine:(NSTimeInterval)time inContext:(CGContextRef)context {
+	float yPos = [self yPosFromTime:time];
+
+	CGContextSetLineWidth(context, 1.0);
+	CGContextSetRGBStrokeColor(context, LINES_RED);
+	[self drawFullBleedLineAtY:yPos inContext:context];
+	CGContextSetRGBStrokeColor(context, LINES_WHITE);
+}
+
 - (void)drawInContext:(CGContextRef)context {	
-	CGContextSetRGBStrokeColor(context, LINES_WHITE, LINES_WHITE, LINES_WHITE, 1.0);
-	[[UIColor colorWithRed:LINES_WHITE green:LINES_WHITE blue:LINES_WHITE alpha:1.0] setFill];
+	CGContextSetRGBStrokeColor(context, LINES_WHITE);
+	CGContextSetRGBFillColor(context, LINES_WHITE);
 	
 	[self drawDayLine:_startTime inContext:context];
 	
@@ -70,6 +87,8 @@
 		[self drawHalfHourLine:time inContext:context];
 		[self drawHourLine:time inContext:context];
 	}
+	
+	[self drawCurrentTimeLine:_currentTime inContext:context];
 }
 
 - (void)dealloc {

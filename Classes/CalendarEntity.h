@@ -1,7 +1,7 @@
 #import <UIKit/UIKit.h>
 #import "CalendarDayDelegate.h"
 
-#define MIN_TIME_INTERVAL	3600/2
+#define MIN_TIME_INTERVAL	SECONDS_PER_HOUR / 2
 
 @interface CalendarEntity : UIView {
 	id<CalendarDayDelegate> _delegate;

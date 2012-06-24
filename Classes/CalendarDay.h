@@ -10,18 +10,24 @@
 #define LINE_BIG_FONT_SIZE	20.0
 
 #define BG_BLACK			0.05
-#define LINES_WHITE			0.9
+#define LINES_WHITE			0.9, 0.9, 0.9, 1.0
+#define LINES_RED			0.9, 0.0, 0.0, 0.6
 
 #define OVERFLOW_TOP		20.0
 
-@interface CalendarDay : CalendarEntity {	
+@interface CalendarDay : CalendarEntity {
+	NSTimeInterval _currentTime;
 }
+
+@property (nonatomic) NSTimeInterval currentTime;
 
 - (float)yPosFromTime:(NSTimeInterval)time;
 - (NSString*)dateStringFromTime:(NSTimeInterval)time withFormat:(NSString*)format;
 
 - (void)drawHourLine:(NSTimeInterval)time inContext:(CGContextRef)context;
 - (void)drawDayLine:(NSTimeInterval)time inContext:(CGContextRef)context;
+- (void)drawCurrentTimeLine:(NSTimeInterval)time inContext:(CGContextRef)context;
 - (void)drawLineAtY:(int)yPos inContext:(CGContextRef)context;
+- (void)drawFullBleedLineAtY:(int)yPos inContext:(CGContextRef)context;
 
 @end

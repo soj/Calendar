@@ -12,6 +12,10 @@
 	_calendarDays = [[NSMutableDictionary alloc] init];
 	
 	[self setToday:[self floorTimeToStartOfDay:[[NSDate date] timeIntervalSinceReferenceDate]]];
+/*
+	[(UIScrollView*)[[_calendarDays objectForKey:[NSNumber numberWithInt:_today]] view]
+		setContentOffset:CGPointMake(0, [self timeOffsetToPixel:([NSDate timeIntervalSinceReferenceDate] - _today)])];
+ */
 	
 	CGSize totalSize = CGSizeMake(PIXELS_PER_DAY * 3, 480.0);
 	[_scrollView setContentSize:totalSize];
@@ -90,12 +94,13 @@
 	NSDateComponents *components = [calendar components:(NSHourCalendarUnit | NSMinuteCalendarUnit | NSSecondCalendarUnit) fromDate:date];
 	
 	int modTime = ([components hour] % hour) * SECONDS_PER_HOUR + ([components minute] % minutes) * SECONDS_PER_MINUTE + [components second];
-	if (modTime == SECONDS_PER_DAY) return time;
+	int floorStep = hour * SECONDS_PER_HOUR + minutes * SECONDS_PER_MINUTE;
+	if (modTime == floorStep) return time;
 	return time - modTime;
 }
 
 - (NSTimeInterval)floorTimeToStartOfDay:(NSTimeInterval)time {
-	return [self floorTime:time toHour:(HOURS_PER_DAY + 1) andMinutes:(MINUTES_PER_HOUR + 1)];
+	return [self floorTime:time toHour:HOURS_PER_DAY andMinutes:MINUTES_PER_HOUR];
 }
 
 - (NSTimeInterval)floorTimeToMinInterval:(NSTimeInterval)time {
