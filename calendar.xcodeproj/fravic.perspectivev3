@@ -282,7 +282,7 @@
 							<key>PBXSmartGroupTreeModuleOutlineStateSelectionKey</key>
 							<array>
 								<array>
-									<integer>18</integer>
+									<integer>16</integer>
 									<integer>12</integer>
 									<integer>1</integer>
 									<integer>0</integer>
@@ -324,7 +324,7 @@
 								<key>PBXProjectModuleGUID</key>
 								<string>29A281ED15192326008DB89F</string>
 								<key>PBXProjectModuleLabel</key>
-								<string>CalendarDayController.m</string>
+								<string>CalendarController.m</string>
 								<key>PBXSplitModuleInNavigatorKey</key>
 								<dict>
 									<key>Split0</key>
@@ -332,11 +332,11 @@
 										<key>PBXProjectModuleGUID</key>
 										<string>29A281EE15192326008DB89F</string>
 										<key>PBXProjectModuleLabel</key>
-										<string>CalendarDayController.m</string>
+										<string>CalendarController.m</string>
 										<key>_historyCapacity</key>
 										<integer>0</integer>
 										<key>bookmark</key>
-										<string>2948E5FE15970A6E0016F64F</string>
+										<string>2948E63C159711EE0016F64F</string>
 										<key>history</key>
 										<array>
 											<string>299DF99D15195DBB00958CF4</string>
@@ -349,7 +349,6 @@
 											<string>29EC0C261591A7FD0007F5F7</string>
 											<string>29EC0C381591AAAC0007F5F7</string>
 											<string>29EC0C411591AAED0007F5F7</string>
-											<string>29EC0C431591AAED0007F5F7</string>
 											<string>29EC0C451591AAED0007F5F7</string>
 											<string>29A522C21596A75100BBCE52</string>
 											<string>29A522C31596A75100BBCE52</string>
@@ -357,18 +356,19 @@
 											<string>29A522E41596A7DA00BBCE52</string>
 											<string>29A522EC1596A80600BBCE52</string>
 											<string>29A523371596C1A900BBCE52</string>
-											<string>29A5236F1596C59800BBCE52</string>
-											<string>29A5239A1596CF8500BBCE52</string>
-											<string>2948E5801596EBAF0016F64F</string>
-											<string>2948E58C1596ECDF0016F64F</string>
-											<string>2948E58D1596ECDF0016F64F</string>
-											<string>2948E58E1596ECDF0016F64F</string>
-											<string>2948E59F1596FE220016F64F</string>
-											<string>2948E5A9159700070016F64F</string>
 											<string>2948E5AA159700070016F64F</string>
-											<string>2948E5BF1597050B0016F64F</string>
-											<string>2948E5F21597099D0016F64F</string>
-											<string>2948E5F31597099D0016F64F</string>
+											<string>2948E60415970DA50016F64F</string>
+											<string>2948E60515970DA50016F64F</string>
+											<string>2948E60615970DA50016F64F</string>
+											<string>2948E60815970DA50016F64F</string>
+											<string>2948E60915970DA50016F64F</string>
+											<string>2948E60A15970DA50016F64F</string>
+											<string>2948E60C15970DA50016F64F</string>
+											<string>2948E637159711EE0016F64F</string>
+											<string>2948E638159711EE0016F64F</string>
+											<string>2948E639159711EE0016F64F</string>
+											<string>2948E63A159711EE0016F64F</string>
+											<string>2948E63B159711EE0016F64F</string>
 										</array>
 									</dict>
 									<key>SplitCount</key>
@@ -685,7 +685,7 @@
 	<integer>5</integer>
 	<key>WindowOrderList</key>
 	<array>
-		<string>2948E5FF15970A6E0016F64F</string>
+		<string>1C530D5B069F1CE1000CFCEE</string>
 		<string>2948E5651596E9E20016F64F</string>
 		<string>2948E55D1596E9B00016F64F</string>
 		<string>/Users/fravic/Dropbox/Projects/calendar/calendar.xcodeproj</string>
@@ -1064,7 +1064,7 @@
 			<key>TableOfContents</key>
 			<array>
 				<string>1C530D5B069F1CE1000CFCEE</string>
-				<string>29A523B61596E94C00BBCE52</string>
+				<string>2948E63D159711EE0016F64F</string>
 				<string>1C78EAAC065D492600B07095</string>
 			</array>
 			<key>ToolbarConfiguration</key>
