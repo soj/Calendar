@@ -4,8 +4,23 @@
 
 @synthesize currentTime=_currentTime;
 
+- (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
+				 endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
+	self = [super initWithBaseTime:baseTime startTime:startTime
+						   endTime:endTime andDelegate:delegate];
+	
+	if (self) {
+		CGRect bounds = self.bounds;
+		bounds.origin.y = -20;
+		bounds.size.height = bounds.size.height + 20;
+		[self setBounds:bounds];
+	}
+	
+	return self;
+}
+
 - (CGRect)reframe {
-    return CGRectMake(0, [_delegate timeOffsetToPixel:(_startTime - _baseTime)],
+    return CGRectMake(0, [_delegate timeOffsetToPixel:(_startTime - _baseTime)] + TOP_OFFSET,
                       [_delegate dayWidth],
                       [_delegate getPixelsPerHour] * HOURS_PER_DAY);
 }
@@ -18,7 +33,7 @@
 }
 
 - (float)yPosFromTime:(NSTimeInterval)time {
-	return [_delegate timeOffsetToPixel:(time - _startTime)] - [self frame].origin.y + OVERFLOW_TOP;
+	return [_delegate timeOffsetToPixel:(time - _startTime)];
 }
 
 - (void)drawLineAtY:(int)yPos inContext:(CGContextRef)context {

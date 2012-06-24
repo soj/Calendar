@@ -12,12 +12,15 @@
 #define BORDER_PADDING_Y	5.0
 
 @interface CalendarEvent : CalendarEntity <UITextFieldDelegate, CategoryChooserDelegate> {
+	NSString *_eventId;
 	ShadowedTextField *_nameField;
 	ShadowedTextField *_catField;
     
     int _multitaskIndex;
     int _numMultitasks;
 }
+
+@property (nonatomic, retain) NSString *eventId;
 
 - (void)setFocus;
 - (void)drawInContext:(CGContextRef)context;

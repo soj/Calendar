@@ -36,7 +36,6 @@
 	[cell setName:[cat name]];
 	[cell setColor:[cat color]];
 	
-	
 	return cell;
 }
 

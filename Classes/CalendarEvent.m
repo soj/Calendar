@@ -4,6 +4,8 @@
 
 @implementation CalendarEvent
 
+@synthesize eventId=_eventId;
+
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
                endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
     _multitaskIndex = 0;

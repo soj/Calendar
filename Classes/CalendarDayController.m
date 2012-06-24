@@ -61,7 +61,7 @@
     [newBlock addGestureRecognizer:pan];
     [pan release];
 	
-	[self.view addSubview:newBlock];
+	[_calendarDay addSubview:newBlock];
 	return newBlock;
 }
 
@@ -94,25 +94,14 @@
 #pragma mark Gesture Recognizers
 
 - (void)createGestureRecognizers {
-    UITapGestureRecognizer *singleFingerDTap =
-		[[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleDoubleTap:)];
-    singleFingerDTap.numberOfTapsRequired = 1;
-    [self.view addGestureRecognizer:singleFingerDTap];
-    [singleFingerDTap release];
-	
 	UILongPressGestureRecognizer *longPress =
 	[[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
     [self.view addGestureRecognizer:longPress];
     [longPress release];
-	
-    UIPinchGestureRecognizer *pinchGesture =
-		[[UIPinchGestureRecognizer alloc] initWithTarget:self action:@selector(handlePinchGesture:)];
-    [self.view addGestureRecognizer:pinchGesture];
-    [pinchGesture release];
 }
 
 - (void)handleLongPress:(UILongPressGestureRecognizer*)recognizer {	
-	float yLoc = [recognizer locationInView:self.view].y;
+	float yLoc = [recognizer locationInView:_calendarDay].y;
 	
 	if (_activeEventBlock == NULL) {
 		NSTimeInterval startTime = [_delegate floorTimeToMinInterval:([_delegate pixelToTimeOffset:yLoc] + _startTime)];
@@ -129,13 +118,6 @@
 		[_activeEventBlock setFocus];
 		_activeEventBlock = NULL;
 	}
-}
-
-- (void)handleDoubleTap:(UITapGestureRecognizer*)recognizer {
-}
-
-- (void)handlePinchGesture:(UIPinchGestureRecognizer*)recognize {
-	[recognize scale];
 }
 
 - (void)handlePanGestureOnEventBlock:(UIPanGestureRecognizer*)recognizer {
