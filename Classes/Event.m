@@ -7,7 +7,7 @@
 
 - (id)initWithEKEvent:(EKEvent*)ekEvent {
     if (self = [super init]) {
-        _ekEvent = ekEvent;
+        _ekEvent = [ekEvent retain];
     }
     
     return self;
