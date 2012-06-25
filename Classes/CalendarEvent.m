@@ -33,7 +33,7 @@
 }
 
 - (void)setEndTime:(NSTimeInterval)endTime {
-	[self setEndTime:endTime];
+	[super setEndTime:endTime];
     [self setFrame:[self reframe]];
 }
 
@@ -80,7 +80,7 @@
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	[_nameField resignFirstResponder];
 	if (!_catField.text.length) {
-		[self showCategoryChooser];
+		[_delegate showCategoryChooserWithDelegate:self];
 	}
 	return YES;
 }

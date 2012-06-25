@@ -30,7 +30,7 @@
 
 - (void)setEndTime:(NSTimeInterval)endTime {
 	_endTime = endTime;
-	if (endTime - _startTime < MIN_TIME_INTERVAL) {
+	if (_endTime - _startTime < MIN_TIME_INTERVAL) {
 		_endTime = _startTime + MIN_TIME_INTERVAL;
 	}
 	

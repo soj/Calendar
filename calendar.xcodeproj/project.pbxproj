@@ -116,8 +116,8 @@
 		2968FE55158D60E100CBB5BE /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				299DF98515195A3700958CF4 /* CalendarDay.h */,
 				299DF98615195A3700958CF4 /* CalendarDay.m */,
+				299DF98515195A3700958CF4 /* CalendarDay.h */,
 				294DCC8A152C16BD00637E0A /* CalendarEntity.h */,
 				294DCC8B152C16BD00637E0A /* CalendarEntity.m */,
 				29D98123151C14BC00B1E158 /* CalendarEvent.h */,

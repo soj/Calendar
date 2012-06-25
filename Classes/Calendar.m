@@ -32,6 +32,11 @@
     NSEnumerator *e = [ekEvents objectEnumerator];
     EKEvent *ekEvent;
     while (ekEvent = [e nextObject]) {
+        // Ignore all-day events because they're impossible to represent
+        if ([ekEvent isAllDay]) {
+            continue;
+        }
+        
         if (![_events objectForKey:[ekEvent eventIdentifier]]) {
             Event *newEvent = [[Event alloc] initWithEKEvent:ekEvent];
             [_events setObject:newEvent forKey:[ekEvent eventIdentifier]];
