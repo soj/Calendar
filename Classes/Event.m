@@ -3,6 +3,8 @@
 
 @implementation Event
 
+@synthesize ekEvent=_ekEvent;
+
 - (id)initWithEKEvent:(EKEvent*)ekEvent {
     if (self = [super init]) {
         _ekEvent = ekEvent;

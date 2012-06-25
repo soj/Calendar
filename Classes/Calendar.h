@@ -14,7 +14,6 @@
 
 - (void)loadEKEventsBetweenStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime;
 - (NSArray*)getEventsBetweenStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime;
-- (NSArray*)getEventsForRefDate:(int)refDate;
 - (void)createEvent;
 - (NSArray*)categories;
 - (void)save;

@@ -27,8 +27,22 @@
 	return self;
 }
 
+- (void)setStartTime:(NSTimeInterval)startTime {
+	[super setStartTime:startTime];
+    [self setFrame:[self reframe]];
+}
+
+- (void)setEndTime:(NSTimeInterval)endTime {
+	[self setEndTime:endTime];
+    [self setFrame:[self reframe]];
+}
+
 - (void)setCategory:(Category*)cat {
 	[_catField setText:cat.name];
+}
+
+- (void)setTitle:(NSString*)title {
+    [_nameField setText:title];
 }
 
 - (void)setFocus {
@@ -73,15 +87,10 @@
 
 - (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
 	if (textField == _catField) {
-		[self showCategoryChooser];
+		[_delegate showCategoryChooserWithDelegate:self];
 		return NO;
 	}
 	return YES;
-}
-
-- (void)showCategoryChooser {
-	CategoryChooserController *catController = [[CategoryChooserController alloc] initWithCalendar:[_delegate getCalendar] andDelegate:self];
-	[[_delegate calendarView] addSubview:catController.view];
 }
 
 #pragma mark -

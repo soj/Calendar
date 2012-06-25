@@ -112,12 +112,9 @@
 	return PIXELS_PER_DAY;
 }
 
-- (Calendar*)getCalendar {
-	return _calendar;
-}
-
-- (UIView*)calendarView {
-	return self.view;
+- (void)showCategoryChooserWithDelegate:(id)delegate {
+    CategoryChooserController *catController = [[CategoryChooserController alloc] initWithCalendar:_calendar andDelegate:delegate];
+	[self.view addSubview:catController.view];
 }
 
 #pragma mark -

@@ -28,7 +28,8 @@
     while (event = [e nextObject]) {
         CalendarEvent *newEvent = [self createEventBlockWithStartTime:[event startTime]];
         [newEvent setEndTime:[event endTime]];
-        
+
+        [newEvent setTitle:[[event ekEvent] title]];
     }
 }
 
@@ -109,7 +110,6 @@
 	}
 	
 	_activeEventBlock.endTime = _startTime + [_delegate pixelToTimeOffset:yLoc];
-    [_activeEventBlock setFrame:[_activeEventBlock reframe]];
 	[self checkForEventBlocksParallelTo:_activeEventBlock];
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
@@ -143,12 +143,10 @@
 	} else {
 		[_activeEventBlock setEndTime:timeDiff];
 	}
-	[_activeEventBlock setFrame:[_activeEventBlock reframe]];
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
 		_activeEventBlock.startTime = [_delegate floorTimeToMinInterval:_activeEventBlock.startTime];
 		_activeEventBlock.endTime = [_delegate floorTimeToMinInterval:_activeEventBlock.endTime];
-		[_activeEventBlock setFrame:[_activeEventBlock reframe]];
 		
 		_activeEventBlock = NULL;
 	}

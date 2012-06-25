@@ -10,7 +10,11 @@
 	if (self != nil) {
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSData *serializedEvents = [defaults dataForKey:EVENTS_SAVE_KEY];
-        _events = [NSKeyedUnarchiver unarchiveObjectWithData:serializedEvents];
+        _events = (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:serializedEvents];
+        
+        if (_events == NULL) {
+            _events = [[NSMutableDictionary alloc] init];
+        }
         
         _eventStore = [[EKEventStore alloc] init];
 	}
@@ -31,6 +35,7 @@
         if (![_events objectForKey:[ekEvent eventIdentifier]]) {
             Event *newEvent = [[Event alloc] initWithEKEvent:ekEvent];
             [_events setObject:newEvent forKey:[ekEvent eventIdentifier]];
+            NSLog(@"%@", [ekEvent title]);
         }
     }
 }
@@ -56,13 +61,6 @@
     [categories addObject:[[Category alloc] initWithName:@"Health" andColor:[UIColor purpleColor]]];
     [categories addObject:[[Category alloc] initWithName:@"Waste of Time" andColor:[UIColor greenColor]]];
     return categories;
-}
-
-- (NSArray*)getEventsForRefDate:(int)refDate {
-	NSDate *startDate;
-	NSDate *endDate;
-	NSPredicate *datePred = [_eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:nil];
-	return [_eventStore eventsMatchingPredicate:datePred];
 }
 
 - (void)createEvent {

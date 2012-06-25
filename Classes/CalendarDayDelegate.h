@@ -1,4 +1,5 @@
 #import "Calendar.h"
+#import "CategoryChooserController.h"
 
 @protocol CalendarDayDelegate
 - (NSInteger)calendarHourFromTime:(NSTimeInterval)time;
@@ -11,6 +12,5 @@
 - (float)getPixelsPerHour;
 - (int)dayWidth;
 
-- (Calendar*)getCalendar;
-- (UIView*)calendarView;
+- (void)showCategoryChooserWithDelegate:(id<CategoryChooserDelegate>)delegate;
 @end

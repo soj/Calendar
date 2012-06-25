@@ -7,6 +7,8 @@
 	Category *_category;
 }
 
+@property (nonatomic, retain) EKEvent *ekEvent;
+
 - (id)initWithEKEvent:(EKEvent*)ekEvent;
 - (NSTimeInterval)startTime;
 - (NSTimeInterval)endTime;
