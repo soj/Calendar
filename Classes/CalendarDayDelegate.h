@@ -13,4 +13,5 @@
 - (int)dayWidth;
 
 - (void)showCategoryChooserWithDelegate:(id<CategoryChooserDelegate>)delegate;
+- (void)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime;
 @end

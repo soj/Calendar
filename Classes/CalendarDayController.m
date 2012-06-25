@@ -56,7 +56,7 @@
 - (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)time {
 	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithBaseTime:_startTime startTime:time endTime:time andDelegate:_delegate];
 	[_eventBlocks addObject:newBlock];
-	
+    	
 	UIPanGestureRecognizer *pan =
 		[[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanGestureOnEventBlock:)];
     [newBlock addGestureRecognizer:pan];
@@ -107,6 +107,7 @@
 	if (_activeEventBlock == NULL) {
 		NSTimeInterval startTime = [_delegate floorTimeToMinInterval:([_delegate pixelToTimeOffset:yLoc] + _startTime)];
 		_activeEventBlock = [self createEventBlockWithStartTime:startTime];
+        [_delegate createEventWithStartTime:startTime endTime:(startTime + SECONDS_PER_HOUR)];
 	}
 	
 	_activeEventBlock.endTime = _startTime + [_delegate pixelToTimeOffset:yLoc];

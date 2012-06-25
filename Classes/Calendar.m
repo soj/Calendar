@@ -17,9 +17,41 @@
         }
         
         _eventStore = [[EKEventStore alloc] init];
+        
+        //[self createNewCalendar];
 	}
 	
 	return self;
+}
+
+- (void)createNewCalendar {
+    // Get the calendar source
+    EKSource* localSource;
+    for (EKSource* source in _eventStore.sources) {
+        if (source.sourceType == EKSourceTypeLocal) {
+            localSource = source;
+            break;
+        }
+    }
+    
+    if (!localSource) {
+        return;
+    }
+    
+    EKCalendar *calendar = [EKCalendar calendarWithEventStore:_eventStore];
+    calendar.source = localSource;
+    calendar.title = @"Focus Calendar";
+    
+    NSError* error;
+    bool success= [_eventStore saveCalendar:calendar commit:YES error:&error];
+    
+    // TODO: Save this to make sure duplicate calendars aren't created
+    NSString *calendarIdentifier = [calendar calendarIdentifier];
+    
+    if (error != nil) {
+        NSLog(error.description);
+        // TODO: error handling here
+    }
 }
 
 - (void)loadEKEventsBetweenStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime {
@@ -68,8 +100,23 @@
     return categories;
 }
 
-- (void)createEvent {
-	EKEvent *newEvent = [EKEvent eventWithEventStore:_eventStore];
+- (Event*)createEventWithStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime {
+    EKEvent *newEKEvent = [EKEvent eventWithEventStore:_eventStore];
+    [newEKEvent setStartDate:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
+    [newEKEvent setEndDate:[NSDate dateWithTimeIntervalSinceReferenceDate:endTime]];
+    [newEKEvent setCalendar:_eventStore.defaultCalendarForNewEvents];
+    [newEKEvent setTitle:@"Test Event"];
+    Event *newEvent = [[Event alloc] initWithEKEvent:newEKEvent];
+    [_events setObject:newEvent forKey:@"TODO_IDENTIFIER"];
+    NSError *saveError;
+    [_eventStore saveEvent:newEKEvent span:EKSpanThisEvent error:&saveError];
+    
+    if (saveError != nil) {
+        NSLog(saveError.description);
+        // TODO: error handling here
+    }
+    
+    return newEvent;
 }
 
 - (void)save {

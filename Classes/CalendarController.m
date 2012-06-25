@@ -117,6 +117,10 @@
 	[self.view addSubview:catController.view];
 }
 
+- (void)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {
+    [_calendar createEventWithStartTime:startTime andEndTime:endTime];
+}
+
 #pragma mark -
 #pragma mark UIScrollViewDelegate Methods
 
