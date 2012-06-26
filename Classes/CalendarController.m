@@ -65,6 +65,10 @@
 	[_scrollView setContentOffset:CGPointMake(PIXELS_PER_DAY, 0) animated:NO];
 }
 
+- (void)prepareToExit {
+    [_calendar save];
+}
+
 #pragma mark -
 #pragma mark CalendarDayDelegate Methods
 

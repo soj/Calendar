@@ -22,6 +22,7 @@
 
 - (void)createDayControllerForStartTime:(NSTimeInterval)time;
 - (void)setToday:(NSTimeInterval)today;
+- (void)prepareToExit;
 
 - (NSTimeInterval)floorTime:(NSTimeInterval)time toHour:(int)hour andMinutes:(int)minutes;
 

@@ -15,7 +15,7 @@
     
     _nameField = [[ShadowedTextField alloc] init];
     _catField = [[ShadowedTextField alloc] init];
-
+    
 	[_nameField setDelegate:self];
     [_catField setDelegate:self];
     
@@ -52,10 +52,10 @@
 - (void)resizeTextFields {
     [_nameField setFrame:CGRectMake(BORDER_PADDING_X, BORDER_PADDING_Y,
                                     [self frame].size.width - BORDER_PADDING_X * 2,
-                                    100)];
-    [_catField setFrame:CGRectMake(BORDER_PADDING_X, BORDER_PADDING_Y + 30,
+                                    TEXT_FIELD_HEIGHT)];
+    [_catField setFrame:CGRectMake(BORDER_PADDING_X, BORDER_PADDING_Y + TEXT_FIELD_HEIGHT,
                                    [self frame].size.width - BORDER_PADDING_X * 2,
-                                   100)];
+                                   TEXT_FIELD_HEIGHT)];
 }
 
 - (CGRect)reframe {

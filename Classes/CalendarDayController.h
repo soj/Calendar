@@ -6,18 +6,25 @@
 
 #define EDGE_DRAG_PIXELS		40.0f
 
+typedef enum {
+    kDragStartTime,
+    kDragEndTime,
+    kDragBoth
+} DragType;
+
 @interface CalendarDayController : UIViewController <UIScrollViewDelegate> {
 	id<CalendarDayDelegate> _delegate;
 	CalendarDay *_calendarDay;
 	CalendarEvent *_activeEventBlock;
 	NSMutableSet *_eventBlocks;
+    
+    UIPanGestureRecognizer *_eventBlockPan;
 	
 	NSTimeInterval _startTime;
 	NSTimeInterval _topTime;
-	NSTimeInterval _initDragTime;
 	
-	BOOL _dragStartTime;
-	float _initDragPos;
+	DragType _dragType;
+    NSTimeInterval _prevDragTime;
 }
 
 @property (readonly) NSTimeInterval startTime;
@@ -29,6 +36,8 @@
 - (void)createCalendarDay;
 - (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)time;
 - (void)checkForEventBlocksParallelTo:(CalendarEvent*)event;
+- (void)setActiveEventBlock:(CalendarEvent*)event;
+- (void)unsetActiveEventBlock;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 
