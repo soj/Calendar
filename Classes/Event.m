@@ -15,8 +15,6 @@
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super init]) {
-        // TODO: Get the EKEvent with this identifier
-        NSString *eventIdentifier = [aDecoder decodeObjectForKey:@"eventIdentifier"];
         _category = [aDecoder decodeObjectForKey:@"category"];
     }
     return self;
@@ -28,10 +26,12 @@
 }
 
 - (NSTimeInterval)startTime {
+    NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
     return [[_ekEvent startDate] timeIntervalSinceReferenceDate];
 }
 
 - (NSTimeInterval)endTime {
+    NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
     return [[_ekEvent endDate] timeIntervalSinceReferenceDate];
 }
 

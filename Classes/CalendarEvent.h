@@ -7,7 +7,7 @@
 #define EVENT_DX			65.0
 #define RIGHT_RAIL_WIDTH	45.0
 
-#define BORDER_COLOR		[UIColor colorWithRed:0 green:0 blue:0 alpha:0.4]
+#define BORDER_COLOR		0, 0, 0, 0.4
 #define BORDER_PADDING_X	10.0
 #define BORDER_PADDING_Y	5.0
 

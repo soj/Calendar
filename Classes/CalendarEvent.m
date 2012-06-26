@@ -129,8 +129,7 @@
 
 	// Draw the border
 	CGRect borderRect = CGRectInset(eventRect, 1, 1);
-	CGFloat *comps = CGColorGetComponents([BORDER_COLOR CGColor]);
-	CGContextSetRGBStrokeColor(context, comps[0], comps[1], comps[2], comps[3]);
+	CGContextSetRGBStrokeColor(context, BORDER_COLOR);
 	CGContextSetLineWidth(context, 2.0);
 	CGContextStrokeRect(context, borderRect);
 	

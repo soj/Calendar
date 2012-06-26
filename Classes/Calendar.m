@@ -8,24 +8,43 @@
 	self = [super init];
 	
 	if (self != nil) {
+        _eventStore = [[EKEventStore alloc] init];
+        
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
         NSData *serializedEvents = [defaults dataForKey:EVENTS_SAVE_KEY];
         _events = (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:serializedEvents];
         
-        if (_events == NULL) {
+        if (_events != NULL) {
+            NSEnumerator *e = [_events keyEnumerator];
+            NSString *eventIdentifier;
+            while (eventIdentifier = [e nextObject]) {
+                Event *event = [_events objectForKey:eventIdentifier];
+                EKEvent *ekEvent = [_eventStore eventWithIdentifier:eventIdentifier];
+                [event setEkEvent:ekEvent];
+            }
+        } else {
             _events = [[NSMutableDictionary alloc] init];
         }
-        
-        _eventStore = [[EKEventStore alloc] init];
-        
-        //[self createNewCalendar];
+                
+        if (!(_ekCalendar = [self fetchExistingCalendar])) {
+            _ekCalendar = [self createNewCalendar];
+        }
 	}
 	
-	return self;
+    return self;
 }
 
-- (void)createNewCalendar {
-    // Get the calendar source
+- (EKCalendar*)fetchExistingCalendar {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *calendarIdentifier = [defaults stringForKey:CALENDAR_IDENTIFIER_SAVE_KEY];
+    
+    if (calendarIdentifier != NULL) {
+        return [_eventStore calendarWithIdentifier:calendarIdentifier];
+    }
+    return NULL;
+}
+
+- (EKCalendar*)createNewCalendar {
     EKSource* localSource;
     for (EKSource* source in _eventStore.sources) {
         if (source.sourceType == EKSourceTypeLocal) {
@@ -35,23 +54,26 @@
     }
     
     if (!localSource) {
-        return;
+        return NULL;
     }
     
     EKCalendar *calendar = [EKCalendar calendarWithEventStore:_eventStore];
     calendar.source = localSource;
-    calendar.title = @"Focus Calendar";
+    calendar.title = CALENDAR_TITLE;
     
     NSError* error;
-    bool success= [_eventStore saveCalendar:calendar commit:YES error:&error];
+    [_eventStore saveCalendar:calendar commit:YES error:&error];
     
-    // TODO: Save this to make sure duplicate calendars aren't created
     NSString *calendarIdentifier = [calendar calendarIdentifier];
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:calendarIdentifier forKey:CALENDAR_IDENTIFIER_SAVE_KEY];
+    [defaults synchronize];
     
     if (error != nil) {
-        NSLog(error.description);
-        // TODO: error handling here
+        NSLog(@"%@", error.description);
     }
+    
+    return calendar;
 }
 
 - (void)loadEKEventsBetweenStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime {
@@ -106,16 +128,16 @@
     [newEKEvent setEndDate:[NSDate dateWithTimeIntervalSinceReferenceDate:endTime]];
     [newEKEvent setCalendar:_eventStore.defaultCalendarForNewEvents];
     [newEKEvent setTitle:@"Test Event"];
+    
     Event *newEvent = [[Event alloc] initWithEKEvent:newEKEvent];
-    [_events setObject:newEvent forKey:@"TODO_IDENTIFIER"];
     NSError *saveError;
     [_eventStore saveEvent:newEKEvent span:EKSpanThisEvent error:&saveError];
     
     if (saveError != nil) {
-        NSLog(saveError.description);
-        // TODO: error handling here
+        NSLog(@"%@", saveError.description);
     }
     
+    [_events setObject:newEvent forKey:[newEKEvent eventIdentifier]];
     return newEvent;
 }
 

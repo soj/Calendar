@@ -33,7 +33,8 @@
 	} else {
 		dayController = [[CalendarDayController alloc] initWithStartTime:startTime andDelegate:self];
 		[_calendarDays setObject:dayController forKey:[NSNumber numberWithInt:startTime]];
-        [dayController setEvents:[_calendar getEventsBetweenStartTime:[dayController startTime] andEndTime:endTime]];
+        NSArray *events = [_calendar getEventsBetweenStartTime:[dayController startTime] andEndTime:endTime];
+        [dayController setEvents:events];
 	}
 
 	if (![dayController.view superview]) {
