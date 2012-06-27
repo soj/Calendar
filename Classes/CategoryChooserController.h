@@ -13,10 +13,10 @@
 	Calendar *_calendar;
 	id<CategoryChooserDelegate> _delegate;
 	
-	UITableView *_categories;
+	UITableView *_categoryTableView;
 }
 
-@property (nonatomic, retain) IBOutlet UITableView *categories;
+@property (nonatomic, strong) IBOutlet UITableView *categoryTableView;
 
 - (id)initWithCalendar:(Calendar*)cal andDelegate:(id<CategoryChooserDelegate>)delegate;
 

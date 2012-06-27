@@ -20,7 +20,7 @@
     int _numMultitasks;
 }
 
-@property (nonatomic, retain) NSString *eventId;
+@property (nonatomic, strong) NSString *eventId;
 
 - (void)setFocus;
 - (void)drawInContext:(CGContextRef)context;

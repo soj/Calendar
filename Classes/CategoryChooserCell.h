@@ -15,8 +15,8 @@
 	UIColor *_color;
 }
 
-@property (nonatomic, retain) IBOutlet UILabel *categoryName;
-@property (nonatomic, retain) IBOutlet UIView *colorView;
+@property (nonatomic, strong) IBOutlet UILabel *categoryName;
+@property (nonatomic, strong) IBOutlet UIView *colorView;
 
 - (void)setColor:(UIColor*)color;
 - (void)setName:(NSString*)name;

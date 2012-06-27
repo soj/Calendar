@@ -18,7 +18,7 @@
 	float _pixelsPerHour;
 }
 
-@property (nonatomic, retain) IBOutlet UIScrollView *scrollView;
+@property (nonatomic, strong) IBOutlet UIScrollView *scrollView;
 
 - (void)createDayControllerForStartTime:(NSTimeInterval)time;
 - (void)setToday:(NSTimeInterval)today;

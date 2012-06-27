@@ -7,7 +7,7 @@
 	Category *_category;
 }
 
-@property (nonatomic, retain) EKEvent *ekEvent;
+@property (nonatomic, strong) EKEvent *ekEvent;
 
 - (id)initWithEKEvent:(EKEvent*)ekEvent;
 - (NSTimeInterval)startTime;

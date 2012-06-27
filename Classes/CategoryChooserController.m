@@ -3,7 +3,7 @@
 
 @implementation CategoryChooserController
 
-@synthesize categories=_categories;
+@synthesize categoryTableView=_categoryTableView;
 
 - (id)initWithCalendar:(Calendar*)cal andDelegate:(id<CategoryChooserDelegate>)delegate {
 	self = [super initWithNibName:@"CategoryChooserController" bundle:nil];
@@ -12,7 +12,7 @@
 		_calendar = cal;
 		_delegate = delegate;
 	}
-	
+    
 	return self;
 }
 

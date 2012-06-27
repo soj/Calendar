@@ -11,7 +11,7 @@
 	NSTimeInterval _endTime;
 }
 
-@property (retain) id delegate;
+@property (strong) id delegate;
 @property (nonatomic, setter=setStartTime:) NSTimeInterval startTime;
 @property (nonatomic, setter=setEndTime:) NSTimeInterval endTime;
 
