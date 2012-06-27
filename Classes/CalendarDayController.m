@@ -125,7 +125,7 @@
 	float yLoc = [recognizer locationInView:_calendarDay].y;
     
     if ([recognizer state] ==  UIGestureRecognizerStateBegan) {
-		NSTimeInterval startTime = [_delegate floorTimeToMinInterval:([_delegate pixelToTimeOffset:yLoc] + _startTime)];
+		NSTimeInterval startTime = [_delegate roundTimeToGranularity:([_delegate pixelToTimeOffset:yLoc] + _startTime)];
 		[self setActiveEventBlock:[self createEventBlockWithStartTime:startTime]];
         [_delegate createEventWithStartTime:startTime endTime:(startTime + SECONDS_PER_HOUR)];
     }
@@ -134,7 +134,7 @@
 	[self checkForEventBlocksParallelTo:_activeEventBlock];
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
-		_activeEventBlock.endTime = [_delegate floorTimeToMinInterval:[_activeEventBlock endTime]];
+		_activeEventBlock.endTime = [_delegate roundTimeToGranularity:[_activeEventBlock endTime]];
 	
 		[_activeEventBlock setFocus];
 	}
@@ -172,8 +172,8 @@
     _prevDragTime = [_delegate pixelToTimeOffset:([recognizer translationInView:_activeEventBlock].y)];
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
-		_activeEventBlock.startTime = [_delegate floorTimeToMinInterval:_activeEventBlock.startTime];
-		_activeEventBlock.endTime = [_delegate floorTimeToMinInterval:_activeEventBlock.endTime];
+		_activeEventBlock.startTime = [_delegate roundTimeToGranularity:_activeEventBlock.startTime];
+		_activeEventBlock.endTime = [_delegate roundTimeToGranularity:_activeEventBlock.endTime];
 	}
 }
 

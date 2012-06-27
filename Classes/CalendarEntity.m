@@ -9,9 +9,9 @@
 	[super init];
 	
     _baseTime = baseTime;
+    [self setDelegate:delegate];
 	[self setStartTime:startTime];
 	[self setEndTime:endTime];
-	[self setDelegate:delegate];
     
     [self setFrame:[self reframe]];
 	[self setBackgroundColor:[UIColor clearColor]];

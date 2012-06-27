@@ -18,9 +18,6 @@
 		[self setMinimumFontSize:16.0];
 		[self setFont:[UIFont systemFontOfSize:25.0]];
 		[self setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
-        
-        self.layer.borderColor = [[UIColor whiteColor] CGColor];
-        self.layer.borderWidth = 2.0f;
     }
     
     return self;

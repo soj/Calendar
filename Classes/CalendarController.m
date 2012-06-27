@@ -108,8 +108,11 @@
 	return [self floorTime:time toHour:HOURS_PER_DAY andMinutes:MINUTES_PER_HOUR];
 }
 
-- (NSTimeInterval)floorTimeToMinInterval:(NSTimeInterval)time {
-	return [self floorTime:time toHour:1 andMinutes:(EVENT_TIME_GRANULARITY / SECONDS_PER_MINUTE)];
+- (NSTimeInterval)roundTimeToGranularity:(NSTimeInterval)time {
+    NSTimeInterval lower = [self floorTime:time toHour:1 andMinutes:(EVENT_TIME_GRANULARITY / SECONDS_PER_MINUTE)];
+    NSTimeInterval upper = [self floorTime:(time + EVENT_TIME_GRANULARITY) toHour:1 andMinutes:(EVENT_TIME_GRANULARITY / SECONDS_PER_MINUTE)];
+    if (time - lower < upper - time) return lower;
+    else return upper;
 }
 
 - (int)dayWidth {
