@@ -11,7 +11,7 @@
     _multitaskIndex = 0;
     _numMultitasks = 1;
     
-    [super initWithBaseTime:baseTime startTime:startTime endTime:endTime andDelegate:delegate];
+    self = [super initWithBaseTime:baseTime startTime:startTime endTime:endTime andDelegate:delegate];
     
     _nameField = [[ShadowedTextField alloc] init];
     _catField = [[ShadowedTextField alloc] init];
@@ -98,8 +98,6 @@
 
 - (void)categoryChooser:(CategoryChooserController*)chooser didSelectCategory:(Category*)cat {
 	[_catField setText:[cat name]];
-	[chooser.view removeFromSuperview];
-	[chooser release];
 }
 
 #pragma mark -
@@ -119,9 +117,9 @@
 	float endComps[4] = {1, 0.176, 0, 1};
 	CGColorRef startColor = CGColorCreate(space, startComps);
 	CGColorRef endColor = CGColorCreate(space, endComps);
-	NSArray *colors = [NSArray arrayWithObjects:(id)startColor, (id)endColor, nil];
+	NSArray *colors = [NSArray arrayWithObjects:(__bridge_transfer id)startColor, (__bridge_transfer id)endColor, nil];
 	CGFloat locations[] = {0, 1};
-	CGGradientRef gradient = CGGradientCreateWithColors(space, (CFArrayRef)colors, locations);
+	CGGradientRef gradient = CGGradientCreateWithColors(space, (__bridge_retained CFArrayRef)colors, locations);
 	CGPoint startPoint = CGPointMake([UIScreen mainScreen].bounds.size.width, 0);
 	CGPoint endPoint = CGPointMake([UIScreen mainScreen].bounds.size.width, height);
 	CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);

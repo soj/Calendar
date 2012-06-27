@@ -106,9 +106,4 @@
 	[self drawCurrentTimeLine:_currentTime inContext:context];
 }
 
-- (void)dealloc {
-    [super dealloc];
-}
-
-
 @end

@@ -27,7 +27,6 @@
 - (void)setCategory:(Category*)cat;
 - (void)setMultitaskIndex:(int)index outOf:(int)numMultitasks;
 - (void)resizeTextFields;
-- (void)showCategoryChooser;
 - (void)setTitle:(NSString*)title;
 
 @end

@@ -73,7 +73,6 @@
     
     UITapGestureRecognizer *eventBlockTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnEventBlock:)];
     [newBlock addGestureRecognizer:eventBlockTap];
-    [eventBlockTap release];
 	
 	[_calendarDay addSubview:newBlock];
 	return newBlock;
@@ -100,8 +99,6 @@
     for (int i = 0; i < [sorted count]; i++) {
         [(CalendarEvent*)[sorted objectAtIndex:i] setMultitaskIndex:i outOf:[sorted count]];
     }
-    
-    [parallelBlocks release];
 }
 
 #pragma mark -
@@ -111,12 +108,10 @@
     UITapGestureRecognizer *tap =
         [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.view addGestureRecognizer:tap];
-    [tap release];
     
 	UILongPressGestureRecognizer *longPress =
         [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
     [self.view addGestureRecognizer:longPress];
-    [longPress release];
     
     _eventBlockPan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanOnEventBlock:)];
 }
@@ -204,10 +199,6 @@
 - (void)viewDidUnload {
 	// Release any retained subviews of the main view.
 	// e.g. self.myOutlet = nil;
-}
-
-- (void)dealloc {
-    [super dealloc];
 }
 
 @end

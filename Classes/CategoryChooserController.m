@@ -44,6 +44,7 @@
 	
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
 	[_delegate categoryChooser:self didSelectCategory:[[_calendar categories] objectAtIndex:indexPath.row]];
+    [self.view removeFromSuperview];
 }
 
 #pragma mark -
@@ -59,11 +60,6 @@
 
 - (void)viewDidUnload {
     [super viewDidUnload];
-}
-
-
-- (void)dealloc {
-    [super dealloc];
 }
 
 @end

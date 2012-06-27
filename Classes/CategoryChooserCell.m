@@ -33,8 +33,4 @@
     _colorView.backgroundColor = _color;
 }
 
-- (void)dealloc {
-    [super dealloc];
-}
-
 @end

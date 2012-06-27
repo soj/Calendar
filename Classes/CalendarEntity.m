@@ -2,11 +2,11 @@
 
 @implementation CalendarEntity
 
-@synthesize delegate=_delegate, startTime=_startTime, endTime=_endTime, entKey=_entKey;
+@synthesize delegate=_delegate, startTime=_startTime, endTime=_endTime;
 
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
                endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
-	[super init];
+	self = [super init];
 	
     _baseTime = baseTime;
     [self setDelegate:delegate];
@@ -49,10 +49,5 @@
 
 - (void)drawInContext:(CGContextRef)context {
 }
-
-- (void)dealloc {
-    [super dealloc];
-}
-
 
 @end

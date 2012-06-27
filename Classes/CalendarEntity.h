@@ -6,14 +6,12 @@
 @interface CalendarEntity : UIView {
 	id<CalendarDayDelegate> _delegate;
 	
-	NSObject *_entKey;
     NSTimeInterval _baseTime;
 	NSTimeInterval _startTime;
 	NSTimeInterval _endTime;
 }
 
 @property (retain) id delegate;
-@property (retain) NSObject *entKey;
 @property (nonatomic, setter=setStartTime:) NSTimeInterval startTime;
 @property (nonatomic, setter=setEndTime:) NSTimeInterval endTime;
 

@@ -12,10 +12,6 @@
 	_calendarDays = [[NSMutableDictionary alloc] init];
 	
 	[self setToday:[self floorTimeToStartOfDay:[[NSDate date] timeIntervalSinceReferenceDate]]];
-/*
-	[(UIScrollView*)[[_calendarDays objectForKey:[NSNumber numberWithInt:_today]] view]
-		setContentOffset:CGPointMake(0, [self timeOffsetToPixel:([NSDate timeIntervalSinceReferenceDate] - _today)])];
- */
 	
 	CGSize totalSize = CGSizeMake(PIXELS_PER_DAY * 3, 480.0);
 	[_scrollView setContentSize:totalSize];
@@ -150,22 +146,11 @@
 }
 
 - (void)didReceiveMemoryWarning {
-    // Releases the view if it doesn't have a superview.
     [super didReceiveMemoryWarning];
-    
-    // Release any cached data, images, etc. that aren't in use.
 }
 
 - (void)viewDidUnload {
     [super viewDidUnload];
-    // Release any retained subviews of the main view.
-    // e.g. self.myOutlet = nil;
 }
-
-
-- (void)dealloc {
-    [super dealloc];
-}
-
 
 @end

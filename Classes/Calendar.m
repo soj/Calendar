@@ -94,7 +94,6 @@
         if (![_events objectForKey:[ekEvent eventIdentifier]]) {
             Event *newEvent = [[Event alloc] initWithEKEvent:ekEvent];
             [_events setObject:newEvent forKey:[ekEvent eventIdentifier]];
-            NSLog(@"%@", [ekEvent title]);
         }
     }
 }
