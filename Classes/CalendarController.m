@@ -75,8 +75,8 @@
     _catController = catController;
 }
 
-- (void)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {
-    [_calendar createEventWithStartTime:startTime andEndTime:endTime];
+- (Event*)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {
+    return [_calendar createEventWithStartTime:startTime andEndTime:endTime];
 }
 
 - (void)updateEvent:(NSString*)eventId title:(NSString*)title {

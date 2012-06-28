@@ -69,8 +69,12 @@
 }
 
 - (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)time {
-	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithBaseTime:_startTime startTime:time endTime:time andDelegate:self];
+	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithBaseTime:_startTime startTime:time
+                                                              endTime:(time + MIN_TIME_INTERVAL) andDelegate:self];
 	[_eventBlocks addObject:newBlock];
+    
+    Event* e = [_delegate createEventWithStartTime:time endTime:(time + MIN_TIME_INTERVAL)];
+    [newBlock setEventId:[e identifier]];
     
     UITapGestureRecognizer *eventBlockTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnEventBlock:)];
     [newBlock addGestureRecognizer:eventBlockTap];
@@ -123,7 +127,6 @@
     if ([recognizer state] ==  UIGestureRecognizerStateBegan) {
 		NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
 		[self setActiveEventBlock:[self createEventBlockWithStartTime:startTime]];
-        [_delegate createEventWithStartTime:startTime endTime:(startTime + SECONDS_PER_HOUR)];
     }
 	
 	_activeEventBlock.endTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];

@@ -13,7 +13,7 @@ typedef enum {
 
 @protocol CalendarDayDelegate
 - (void)showCategoryChooserWithDelegate:(id<CategoryChooserDelegate>)delegate;
-- (void)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime;
+- (Event*)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime;
 - (void)updateEvent:(NSString*)eventId title:(NSString*)title;
 @end
 
