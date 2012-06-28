@@ -11,7 +11,13 @@
 #define BORDER_PADDING_X	10.0
 #define BORDER_PADDING_Y	5.0
 
+@protocol CalendarEventDelegate
+- (void)showCategoryChooserWithDelegate:(id<CategoryChooserDelegate>)delegate;
+@end
+
 @interface CalendarEvent : CalendarEntity <UITextFieldDelegate, CategoryChooserDelegate> {
+    id<CalendarEventDelegate> _delegate;
+    
 	NSString *_eventId;
 	ShadowedTextField *_nameField;
 	ShadowedTextField *_catField;
@@ -20,7 +26,11 @@
     int _numMultitasks;
 }
 
+@property (strong) id delegate;
 @property (nonatomic, strong) NSString *eventId;
+
+- (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
+               endTime:(NSTimeInterval)endTime andDelegate:(id<CalendarEventDelegate>)delegate;
 
 - (void)setFocus;
 - (void)drawInContext:(CGContextRef)context;

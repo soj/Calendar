@@ -32,6 +32,7 @@
 		29C1CFD1158ED93600842914 /* Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C1CFD0158ED93600842914 /* Category.m */; };
 		29D98125151C14BC00B1E158 /* CalendarEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 29D98124151C14BC00B1E158 /* CalendarEvent.m */; };
 		29E54FE2153CBCF800D1B82F /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E54FE1153CBCF800D1B82F /* Calendar.m */; };
+		5232E36D159BE4CE000AE3BC /* CalendarMath.m in Sources */ = {isa = PBXBuildFile; fileRef = 5232E36C159BE4CE000AE3BC /* CalendarMath.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,7 +43,7 @@
 		1DF5F4DF0D08C38300B7A737 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		28D7ACF60DDB3853001CB0EB /* CalendarDayController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarDayController.h; sourceTree = "<group>"; };
-		28D7ACF70DDB3853001CB0EB /* CalendarDayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarDayController.m; sourceTree = "<group>"; };
+		28D7ACF70DDB3853001CB0EB /* CalendarDayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CalendarDayController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		29247E6715905B8000B12926 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		29247E6815905B8000B12926 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
 		292CB6F1158F081C006367C4 /* ShadowedTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShadowedTextField.h; sourceTree = "<group>"; };
@@ -54,15 +55,14 @@
 		294DCC8B152C16BD00637E0A /* CalendarEntity.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarEntity.m; sourceTree = "<group>"; };
 		2968FE63158D61CD00CBB5BE /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		2968FE6D158D700E00CBB5BE /* CalendarController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarController.h; sourceTree = "<group>"; };
-		2968FE6E158D700E00CBB5BE /* CalendarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarController.m; sourceTree = "<group>"; };
+		2968FE6E158D700E00CBB5BE /* CalendarController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CalendarController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		2968FE6F158D700E00CBB5BE /* CalendarController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CalendarController.xib; path = Classes/CalendarController.xib; sourceTree = "<group>"; };
 		2968FE93158D72BA00CBB5BE /* BreakdownController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BreakdownController.h; sourceTree = "<group>"; };
 		2968FE94158D72BA00CBB5BE /* BreakdownController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BreakdownController.m; sourceTree = "<group>"; };
 		2968FE95158D72BA00CBB5BE /* BreakdownController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = BreakdownController.xib; path = Classes/BreakdownController.xib; sourceTree = "<group>"; };
 		299DF98515195A3700958CF4 /* CalendarDay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarDay.h; sourceTree = "<group>"; };
-		299DF98615195A3700958CF4 /* CalendarDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarDay.m; sourceTree = "<group>"; };
+		299DF98615195A3700958CF4 /* CalendarDay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CalendarDay.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		299DFA1A15197D2700958CF4 /* Images */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Images; sourceTree = SOURCE_ROOT; };
-		299DFC051519AC9000958CF4 /* CalendarDayDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarDayDelegate.h; sourceTree = "<group>"; };
 		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		29C1CF60158EAE7E00842914 /* CategoryChooserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryChooserController.h; sourceTree = "<group>"; };
 		29C1CF61158EAE7E00842914 /* CategoryChooserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryChooserController.m; sourceTree = "<group>"; };
@@ -72,10 +72,12 @@
 		29C1CFCF158ED93600842914 /* Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Category.h; sourceTree = "<group>"; };
 		29C1CFD0158ED93600842914 /* Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Category.m; sourceTree = "<group>"; };
 		29D98123151C14BC00B1E158 /* CalendarEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarEvent.h; sourceTree = "<group>"; };
-		29D98124151C14BC00B1E158 /* CalendarEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarEvent.m; sourceTree = "<group>"; };
+		29D98124151C14BC00B1E158 /* CalendarEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CalendarEvent.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		29E54FE0153CBCF800D1B82F /* Calendar.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Calendar.h; sourceTree = "<group>"; };
 		29E54FE1153CBCF800D1B82F /* Calendar.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Calendar.m; sourceTree = "<group>"; };
 		32CA4F630368D1EE00C91783 /* calendar_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = calendar_Prefix.pch; sourceTree = "<group>"; };
+		5232E36B159BE4CE000AE3BC /* CalendarMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = CalendarMath.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
+		5232E36C159BE4CE000AE3BC /* CalendarMath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CalendarMath.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		8D1107310486CEB800E47090 /* calendar-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "calendar-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -155,6 +157,8 @@
 		2968FE73158D703000CBB5BE /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				5232E36B159BE4CE000AE3BC /* CalendarMath.h */,
+				5232E36C159BE4CE000AE3BC /* CalendarMath.m */,
 				2968FE93158D72BA00CBB5BE /* BreakdownController.h */,
 				2968FE94158D72BA00CBB5BE /* BreakdownController.m */,
 				2968FE6D158D700E00CBB5BE /* CalendarController.h */,
@@ -163,7 +167,6 @@
 				28D7ACF70DDB3853001CB0EB /* CalendarDayController.m */,
 				29C1CF60158EAE7E00842914 /* CategoryChooserController.h */,
 				29C1CF61158EAE7E00842914 /* CategoryChooserController.m */,
-				299DFC051519AC9000958CF4 /* CalendarDayDelegate.h */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -295,6 +298,7 @@
 				29C1CFD1158ED93600842914 /* Category.m in Sources */,
 				292CB6F3158F081C006367C4 /* ShadowedTextField.m in Sources */,
 				29247E6915905B8000B12926 /* Event.m in Sources */,
+				5232E36D159BE4CE000AE3BC /* CalendarMath.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

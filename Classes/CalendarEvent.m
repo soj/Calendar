@@ -1,17 +1,20 @@
-#import "CalendarEvent.h"
 #import <QuartzCore/QuartzCore.h>
+
+#import "CalendarEvent.h"
 #import "Category.h"
+#import "CalendarMath.h"
 
 @implementation CalendarEvent
 
-@synthesize eventId=_eventId;
+@synthesize eventId=_eventId, delegate=_delegate;
 
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
                endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
     _multitaskIndex = 0;
     _numMultitasks = 1;
+    _delegate = delegate;
     
-    self = [super initWithBaseTime:baseTime startTime:startTime endTime:endTime andDelegate:delegate];
+    self = [super initWithBaseTime:baseTime startTime:startTime endTime:endTime];
     
     _nameField = [[ShadowedTextField alloc] init];
     _catField = [[ShadowedTextField alloc] init];
@@ -59,12 +62,12 @@
 }
 
 - (CGRect)reframe {
-    int width = ([_delegate dayWidth] - EVENT_DX - RIGHT_RAIL_WIDTH) / _numMultitasks;
+    int width = ([[CalendarMath getInstance] dayWidth] - EVENT_DX - RIGHT_RAIL_WIDTH) / _numMultitasks;
     int multitaskDX = width * _multitaskIndex;
     
-    return CGRectMake(EVENT_DX + multitaskDX, [_delegate timeOffsetToPixel:(_startTime - _baseTime)],
+    return CGRectMake(EVENT_DX + multitaskDX, [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)],
                       width,
-                      [_delegate getPixelsPerHour] * (_endTime - _startTime) / SECONDS_PER_HOUR);
+                      [[CalendarMath getInstance] pixelsPerHour] * (_endTime - _startTime) / SECONDS_PER_HOUR);
 }
 
 - (void)setMultitaskIndex:(int)index outOf:(int)numMultitasks { 
@@ -105,7 +108,7 @@
 
 - (void)drawInContext:(CGContextRef)context {
 	// Set the rectangle area
-	float height = [_delegate timeOffsetToPixel:(_endTime - _startTime)];
+	float height = [[CalendarMath getInstance] timeOffsetToPixel:(_endTime - _startTime)];
 	float width = [self frame].size.width;
 	CGRect eventRect = CGRectMake(0, 0, width, height);
 	CGContextSaveGState(context);

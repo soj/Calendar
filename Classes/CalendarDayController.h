@@ -1,5 +1,4 @@
 #import <UIKit/UIKit.h>
-#import "CalendarDayDelegate.h"
 #import "CalendarDay.h"
 #import "CalendarEvent.h"
 #import "Event.h"
@@ -12,7 +11,12 @@ typedef enum {
     kDragBoth
 } DragType;
 
-@interface CalendarDayController : UIViewController <UIScrollViewDelegate> {
+@protocol CalendarDayDelegate
+- (void)showCategoryChooserWithDelegate:(id<CategoryChooserDelegate>)delegate;
+- (void)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime;
+@end
+
+@interface CalendarDayController : UIViewController <UIScrollViewDelegate, CalendarEventDelegate> {
 	id<CalendarDayDelegate> _delegate;
 	CalendarDay *_calendarDay;
 	CalendarEvent *_activeEventBlock;

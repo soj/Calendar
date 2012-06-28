@@ -1,4 +1,5 @@
 #import "CalendarDayController.h"
+#import "CalendarMath.h"
 
 @implementation CalendarDayController
 
@@ -12,7 +13,7 @@
 		_startTime = startTime;		// TODO: Assert that this is midnight of some day
 		_eventBlocks = [[NSMutableSet alloc] init];
 		
-		NSAssert((int)_startTime == (int)[_delegate floorTimeToStartOfDay:_startTime],
+		NSAssert((int)_startTime == (int)[CalendarMath floorTimeToStartOfDay:_startTime],
 				 @"The start time provided must be the first second of a given day");
 		
 		[self createGestureRecognizers];
@@ -49,7 +50,7 @@
 
 - (void)createCalendarDay {
 	NSTimeInterval endTime = _startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
-	_calendarDay = [[CalendarDay alloc] initWithBaseTime:_startTime startTime:_startTime endTime:endTime andDelegate:_delegate];
+	_calendarDay = [[CalendarDay alloc] initWithBaseTime:_startTime startTime:_startTime endTime:endTime];
 	
 	[_calendarDay setCurrentTime:[NSDate timeIntervalSinceReferenceDate]];
 	NSMethodSignature *sig = [[self class] instanceMethodSignatureForSelector:@selector(updateCurrentTime)];
@@ -68,7 +69,7 @@
 }
 
 - (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)time {
-	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithBaseTime:_startTime startTime:time endTime:time andDelegate:_delegate];
+	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithBaseTime:_startTime startTime:time endTime:time andDelegate:self];
 	[_eventBlocks addObject:newBlock];
     
     UITapGestureRecognizer *eventBlockTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnEventBlock:)];
@@ -84,7 +85,7 @@
     NSMutableSet *parallelBlocks = [[NSMutableSet alloc] initWithCapacity:[_eventBlocks count]];
     
 	while (thatEvent = [e nextObject]) {
-		if (timesIntersect(thatEvent.startTime, thatEvent.endTime, thisEvent.startTime, thisEvent.endTime)) {
+		if ([CalendarMath timesIntersectS1:thatEvent.startTime e1:thatEvent.endTime s2:thisEvent.startTime e2:thisEvent.endTime]) {
 			[parallelBlocks addObject:thatEvent];
 		}
     }
@@ -120,16 +121,16 @@
 	float yLoc = [recognizer locationInView:_calendarDay].y;
     
     if ([recognizer state] ==  UIGestureRecognizerStateBegan) {
-		NSTimeInterval startTime = [_delegate roundTimeToGranularity:([_delegate pixelToTimeOffset:yLoc] + _startTime)];
+		NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
 		[self setActiveEventBlock:[self createEventBlockWithStartTime:startTime]];
         [_delegate createEventWithStartTime:startTime endTime:(startTime + SECONDS_PER_HOUR)];
     }
 	
-	_activeEventBlock.endTime = _startTime + [_delegate pixelToTimeOffset:yLoc];
+	_activeEventBlock.endTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
 	[self checkForEventBlocksParallelTo:_activeEventBlock];
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
-		_activeEventBlock.endTime = [_delegate roundTimeToGranularity:[_activeEventBlock endTime]];
+		_activeEventBlock.endTime = [CalendarMath roundTimeToGranularity:[_activeEventBlock endTime]];
 	
 		[_activeEventBlock setFocus];
 	}
@@ -157,18 +158,19 @@
         _prevDragTime = 0;
     }
 
-	NSTimeInterval timeDiff = [_delegate pixelToTimeOffset:([recognizer translationInView:_activeEventBlock].y)] - _prevDragTime;
+    float translation = [recognizer translationInView:_activeEventBlock].y;
+	NSTimeInterval timeDiff = [[CalendarMath getInstance] pixelToTimeOffset:translation] - _prevDragTime;
 	if (_dragType == kDragStartTime || _dragType == kDragBoth) {
 		[_activeEventBlock setStartTime:(_activeEventBlock.startTime + timeDiff)];
 	}
     if (_dragType == kDragEndTime || _dragType == kDragBoth) {
 		[_activeEventBlock setEndTime:(_activeEventBlock.endTime + timeDiff)];
 	}
-    _prevDragTime = [_delegate pixelToTimeOffset:([recognizer translationInView:_activeEventBlock].y)];
+    _prevDragTime = [[CalendarMath getInstance] pixelToTimeOffset:([recognizer translationInView:_activeEventBlock].y)];
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
-		_activeEventBlock.startTime = [_delegate roundTimeToGranularity:_activeEventBlock.startTime];
-		_activeEventBlock.endTime = [_delegate roundTimeToGranularity:_activeEventBlock.endTime];
+		_activeEventBlock.startTime = [CalendarMath roundTimeToGranularity:_activeEventBlock.startTime];
+		_activeEventBlock.endTime = [CalendarMath roundTimeToGranularity:_activeEventBlock.endTime];
 	}
 }
 
@@ -180,10 +182,17 @@
 }
 
 #pragma mark -
+#pragma mark CalendarEventDelegate Methods
+
+- (void)showCategoryChooserWithDelegate:(id<CategoryChooserDelegate>)delegate {
+    [_delegate showCategoryChooserWithDelegate:delegate];
+}
+
+#pragma mark -
 #pragma mark UIScrollViewDelegate Methods
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-	_topTime = (NSTimeInterval)[scrollView contentOffset].y / [_delegate getPixelsPerHour] * SECONDS_PER_HOUR + _startTime;
+	_topTime = (NSTimeInterval)[scrollView contentOffset].y / [[CalendarMath getInstance] pixelsPerHour] * SECONDS_PER_HOUR + _startTime;
 }
 
 #pragma mark -

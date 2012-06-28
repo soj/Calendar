@@ -1,13 +1,12 @@
 #import "CalendarDay.h"
+#import "CalendarMath.h"
 
 @implementation CalendarDay
 
 @synthesize currentTime=_currentTime;
 
-- (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
-				 endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
-	self = [super initWithBaseTime:baseTime startTime:startTime
-						   endTime:endTime andDelegate:delegate];
+- (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime{
+	self = [super initWithBaseTime:baseTime startTime:startTime endTime:endTime];
 	
 	if (self) {
 		CGRect bounds = self.bounds;
@@ -20,9 +19,9 @@
 }
 
 - (CGRect)reframe {
-    return CGRectMake(0, [_delegate timeOffsetToPixel:(_startTime - _baseTime)] + TOP_OFFSET,
-                      [_delegate dayWidth],
-                      [_delegate getPixelsPerHour] * HOURS_PER_DAY);
+    return CGRectMake(0, [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + TOP_OFFSET,
+                      [[CalendarMath getInstance] dayWidth],
+                      [[CalendarMath getInstance] pixelsPerHour] * HOURS_PER_DAY);
 }
 
 - (NSString*)dateStringFromTime:(NSTimeInterval)time withFormat:(NSString*)format {
@@ -33,7 +32,7 @@
 }
 
 - (float)yPosFromTime:(NSTimeInterval)time {
-	return [_delegate timeOffsetToPixel:(time - _startTime)];
+	return [[CalendarMath getInstance] timeOffsetToPixel:(time - _startTime)];
 }
 
 - (void)drawLineAtY:(int)yPos inContext:(CGContextRef)context {
@@ -72,7 +71,7 @@
 }
 
 - (void)drawHalfHourLine:(NSTimeInterval)time inContext:(CGContextRef)context {
-	float yPos = [self yPosFromTime:time] - [_delegate getPixelsPerHour] / 2;
+	float yPos = [self yPosFromTime:time] - [[CalendarMath getInstance] pixelsPerHour] / 2;
 	
 	CGContextSetLineWidth(context, 1.0);
 	CGFloat lineDashPattern[] = {10, 10};

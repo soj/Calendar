@@ -1,5 +1,6 @@
 #import "Calendar.h"
 #import "Category.h"
+#import "CalendarMath.h"
 
 @implementation Calendar
 
@@ -105,7 +106,7 @@
     NSEnumerator *e = [_events objectEnumerator];
     Event *event;
     while (event = [e nextObject]) {
-        if (timesIntersect([event startTime], [event endTime], startTime, endTime)) {
+        if ([CalendarMath timesIntersectS1:[event startTime] e1:[event endTime] s2:startTime e2:endTime]) {
             [retEvents addObject:event];
         }
     }

@@ -2,14 +2,12 @@
 
 @implementation CalendarEntity
 
-@synthesize delegate=_delegate, startTime=_startTime, endTime=_endTime;
+@synthesize startTime=_startTime, endTime=_endTime;
 
-- (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
-               endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
+- (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {
 	self = [super init];
 	
     _baseTime = baseTime;
-    [self setDelegate:delegate];
 	[self setStartTime:startTime];
 	[self setEndTime:endTime];
     
