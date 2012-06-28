@@ -110,14 +110,14 @@
         [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.view addGestureRecognizer:tap];
     
-	UILongPressGestureRecognizer *longPress =
-        [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
-    [self.view addGestureRecognizer:longPress];
+	UIPanGestureRecognizer *pan =
+        [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
+    [self.view addGestureRecognizer:pan];
     
     _eventBlockPan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanOnEventBlock:)];
 }
 
-- (void)handleLongPress:(UILongPressGestureRecognizer*)recognizer {	
+- (void)handlePan:(UILongPressGestureRecognizer*)recognizer {	
 	float yLoc = [recognizer locationInView:_calendarDay].y;
     
     if ([recognizer state] ==  UIGestureRecognizerStateBegan) {
