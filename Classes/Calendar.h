@@ -18,9 +18,12 @@
 - (void)loadEKEventsBetweenStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime;
 - (NSArray*)getEventsBetweenStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime;
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime;
+
 - (NSArray*)categories;
+- (Event*)eventWithId:(NSString*)identifier;
 - (EKCalendar*)createNewCalendar;
 - (EKCalendar*)fetchExistingCalendar;
+
 - (void)save;
 
 @end

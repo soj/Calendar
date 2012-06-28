@@ -8,6 +8,8 @@
 }
 
 @property (nonatomic, strong) EKEvent *ekEvent;
+@property (nonatomic) NSString *title;
+@property (readonly) NSString* identifier;
 
 - (id)initWithEKEvent:(EKEvent*)ekEvent;
 - (NSTimeInterval)startTime;

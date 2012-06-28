@@ -114,6 +114,10 @@
     return retEvents;
 }
 
+- (Event*)eventWithId:(NSString*)identifier {
+    return [_events objectForKey:identifier];
+}
+
 - (NSArray*)categories {
     NSMutableArray *categories = [[NSMutableArray alloc] init];
     [categories addObject:[[Category alloc] initWithName:@"Social" andColor:[UIColor orangeColor]]];

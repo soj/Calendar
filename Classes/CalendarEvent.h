@@ -11,8 +11,11 @@
 #define BORDER_PADDING_X	10.0
 #define BORDER_PADDING_Y	5.0
 
+@class CalendarEvent;
+
 @protocol CalendarEventDelegate
 - (void)showCategoryChooserWithDelegate:(id<CategoryChooserDelegate>)delegate;
+- (void)calendarEvent:(CalendarEvent*)event didChangeTitle:(NSString*)title;
 @end
 
 @interface CalendarEvent : CalendarEntity <UITextFieldDelegate, CategoryChooserDelegate> {

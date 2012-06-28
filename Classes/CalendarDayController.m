@@ -28,9 +28,9 @@
     Event *event;
     while (event = [e nextObject]) {
         CalendarEvent *newEvent = [self createEventBlockWithStartTime:[event startTime]];
+        [newEvent setEventId:[event identifier]];
         [newEvent setEndTime:[event endTime]];
-
-        [newEvent setTitle:[[event ekEvent] title]];
+        [newEvent setTitle:[event title]];
     }
 }
 
@@ -186,6 +186,11 @@
 
 - (void)showCategoryChooserWithDelegate:(id<CategoryChooserDelegate>)delegate {
     [_delegate showCategoryChooserWithDelegate:delegate];
+}
+
+- (void)calendarEvent:(CalendarEvent*)event didChangeTitle:(NSString*)title {
+    NSAssert([event eventId] != NULL, @"CalendarEvent does not have an identifier");
+    [_delegate updateEvent:[event eventId] title:title];
 }
 
 #pragma mark -

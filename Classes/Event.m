@@ -25,6 +25,18 @@
     [aCoder encodeObject:_category forKey:@"category"];
 }
 
+- (NSString*)identifier {
+    return [_ekEvent eventIdentifier];
+}
+
+- (void)setTitle:(NSString*)title {
+    [_ekEvent setTitle:title];
+}
+
+- (NSString*)title {
+    return [_ekEvent title];
+}
+
 - (NSTimeInterval)startTime {
     NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
     return [[_ekEvent startDate] timeIntervalSinceReferenceDate];

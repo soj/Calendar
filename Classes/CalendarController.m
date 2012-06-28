@@ -66,6 +66,9 @@
     [_calendar save];
 }
 
+#pragma mark -
+#pragma mark CalendarDayDelegate Methods
+
 - (void)showCategoryChooserWithDelegate:(id)delegate {
     CategoryChooserController *catController = [[CategoryChooserController alloc] initWithCalendar:_calendar andDelegate:delegate];
 	[self.view addSubview:catController.view];
@@ -74,6 +77,11 @@
 
 - (void)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {
     [_calendar createEventWithStartTime:startTime andEndTime:endTime];
+}
+
+- (void)updateEvent:(NSString*)eventId title:(NSString*)title {
+    Event* e = [_calendar eventWithId:eventId];
+    [e setTitle:title];
 }
 
 #pragma mark -

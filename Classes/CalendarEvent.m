@@ -80,6 +80,9 @@
     [self resizeTextFields];
 }
 
+#pragma mark -
+#pragma mark UITextFieldDelegate Methods
+
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	[_nameField resignFirstResponder];
 	if (!_catField.text.length) {
@@ -94,6 +97,12 @@
 		return NO;
 	}
 	return YES;
+}
+
+- (void)textFieldDidEndEditing:(UITextField *)textField {
+    if (textField == _nameField) {
+        [_delegate calendarEvent:self didChangeTitle:[textField text]];   
+    }
 }
 
 #pragma mark -
