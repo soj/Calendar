@@ -119,6 +119,7 @@
 - (void)showCategoryChooserWithDelegate:(id)delegate {
     CategoryChooserController *catController = [[CategoryChooserController alloc] initWithCalendar:_calendar andDelegate:delegate];
 	[self.view addSubview:catController.view];
+    _catController = catController;
 }
 
 - (void)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {

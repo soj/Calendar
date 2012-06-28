@@ -16,6 +16,10 @@
 	return self;
 }
 
+- (void)viewDidLoad {
+    _categoryTableView.delegate = self;
+}
+
 #pragma mark -
 #pragma mark UITableViewDataSource Methods
 

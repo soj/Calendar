@@ -12,6 +12,7 @@
 @interface CalendarController : UIViewController <CalendarDayDelegate, UIScrollViewDelegate> {
 	Calendar *_calendar;
 	UIScrollView *_scrollView;
+    CategoryChooserController *_catController;
 	
 	NSMutableDictionary *_calendarDays;
 	NSTimeInterval _today, _yesterday, _tomorrow;
