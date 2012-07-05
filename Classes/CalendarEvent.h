@@ -12,19 +12,22 @@
 #define BORDER_PADDING_X	10.0
 #define BORDER_PADDING_Y	5.0
 
+#define BG_GRADIENT_DARKEN  0.85
+
 @class CalendarEvent;
 
 @protocol CalendarEventDelegate
-- (void)showCategoryChooserWithDelegate:(id<CategoryChooserDelegate>)delegate;
+- (void)showCategoryChooser;
 - (void)calendarEvent:(CalendarEvent*)event didChangeTitle:(NSString*)title;
 @end
 
-@interface CalendarEvent : CalendarEntity <UITextFieldDelegate, CategoryChooserDelegate> {
+@interface CalendarEvent : CalendarEntity <UITextFieldDelegate> {
     id<CalendarEventDelegate> _delegate;
     
 	NSString *_eventId;
 	ShadowedTextField *_nameField;
-	ShadowedTextField *_catField;
+
+    UIColor *_baseColor;
     
     int _multitaskIndex;
     int _numMultitasks;
@@ -38,7 +41,7 @@
 
 - (void)setFocus;
 - (void)drawInContext:(CGContextRef)context;
-- (void)setCategory:(Category*)cat;
+- (void)setColor:(UIColor*)color;
 - (void)setMultitaskIndex:(int)index outOf:(int)numMultitasks;
 - (void)resizeTextFields;
 - (void)setTitle:(NSString*)title;

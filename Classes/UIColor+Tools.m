@@ -2,7 +2,7 @@
 
 @implementation UIColor (Tools)
 
-- (UIColor*)colorByDarkeningColor {
+- (UIColor*)colorByDarkeningColor:(CGFloat)colorMultiplier {
 	// oldComponents is the array INSIDE the original color
 	// changing these changes the original, so we copy it
 	CGFloat *oldComponents = (CGFloat *)CGColorGetComponents([self CGColor]);
@@ -13,17 +13,17 @@
 	switch (numComponents) {
 		case 2: {
 			//grayscale
-			newComponents[0] = oldComponents[0]*0.7;
-			newComponents[1] = oldComponents[0]*0.7;
-			newComponents[2] = oldComponents[0]*0.7;
+			newComponents[0] = oldComponents[0] * colorMultiplier;
+			newComponents[1] = oldComponents[0] * colorMultiplier;
+			newComponents[2] = oldComponents[0] * colorMultiplier;
 			newComponents[3] = oldComponents[1];
 			break;
 		}
 		case 4: {
 			//RGBA
-			newComponents[0] = oldComponents[0]*0.7;
-			newComponents[1] = oldComponents[1]*0.7;
-			newComponents[2] = oldComponents[2]*0.7;
+			newComponents[0] = oldComponents[0] * colorMultiplier;
+			newComponents[1] = oldComponents[1] * colorMultiplier;
+			newComponents[2] = oldComponents[2] * colorMultiplier;
 			newComponents[3] = oldComponents[3];
 			break;
 		}

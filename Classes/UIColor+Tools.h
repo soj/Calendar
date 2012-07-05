@@ -3,6 +3,6 @@
 #import <Foundation/Foundation.h>
 
 @interface UIColor (Tools)
-- (UIColor*)colorByDarkeningColor;
+- (UIColor*)colorByDarkeningColor:(CGFloat)colorMultiplier;
 + (UIColor*)colorForIndex:(NSInteger)idx;
 @end

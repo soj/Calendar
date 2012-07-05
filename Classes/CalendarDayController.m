@@ -23,6 +23,29 @@
 	return self;
 }
 
+- (void)createCalendarDay {
+	NSTimeInterval endTime = _startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
+	_calendarDay = [[CalendarDay alloc] initWithBaseTime:_startTime startTime:_startTime endTime:endTime];
+	
+	[_calendarDay setCurrentTime:[NSDate timeIntervalSinceReferenceDate]];
+	NSMethodSignature *sig = [[self class] instanceMethodSignatureForSelector:@selector(updateCurrentTime)];
+	NSInvocation *invoc = [NSInvocation invocationWithMethodSignature:sig];
+	[invoc setSelector:@selector(updateCurrentTime)];
+	[invoc setTarget:self];
+	[NSTimer scheduledTimerWithTimeInterval:SECONDS_PER_MINUTE invocation:invoc repeats:YES];
+	
+	[(UIScrollView*)self.view setContentSize:_calendarDay.frame.size];
+	[self.view addSubview:_calendarDay];
+}
+
+- (void)updateCurrentTime {
+	[_calendarDay setCurrentTime:[NSDate timeIntervalSinceReferenceDate]];
+	[_calendarDay setNeedsDisplay];
+}
+
+#pragma mark -
+#pragma mark Event Block Management
+
 - (void)setEvents:(NSArray*)events {
     NSEnumerator *e = [events objectEnumerator];
     Event *event;
@@ -45,26 +68,6 @@
     }
 }
 
-- (void)createCalendarDay {
-	NSTimeInterval endTime = _startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
-	_calendarDay = [[CalendarDay alloc] initWithBaseTime:_startTime startTime:_startTime endTime:endTime];
-	
-	[_calendarDay setCurrentTime:[NSDate timeIntervalSinceReferenceDate]];
-	NSMethodSignature *sig = [[self class] instanceMethodSignatureForSelector:@selector(updateCurrentTime)];
-	NSInvocation *invoc = [NSInvocation invocationWithMethodSignature:sig];
-	[invoc setSelector:@selector(updateCurrentTime)];
-	[invoc setTarget:self];
-	[NSTimer scheduledTimerWithTimeInterval:SECONDS_PER_MINUTE invocation:invoc repeats:YES];
-	
-	[(UIScrollView*)self.view setContentSize:_calendarDay.frame.size];
-	[self.view addSubview:_calendarDay];
-}
-
-- (void)updateCurrentTime {
-	[_calendarDay setCurrentTime:[NSDate timeIntervalSinceReferenceDate]];
-	[_calendarDay setNeedsDisplay];
-}
-
 - (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {
     CalendarEvent *newBlock = [[CalendarEvent alloc] initWithBaseTime:_startTime startTime:startTime
                                                               endTime:endTime andDelegate:self];
@@ -81,6 +84,7 @@
     CalendarEvent *newBlock = [self createEventBlockWithStartTime:[event startTime] endTime:[event endTime]];
     [newBlock setTitle:[event title]];
     [newBlock setEventId:[event identifier]];
+    [newBlock setColor:[[event category] color]];
     return newBlock;
 }
 
@@ -201,13 +205,21 @@
 #pragma mark -
 #pragma mark CalendarEventDelegate Methods
 
-- (void)showCategoryChooserWithDelegate:(id<CategoryChooserDelegate>)delegate {
-    [_delegate showCategoryChooserWithDelegate:delegate];
+- (void)showCategoryChooser {
+    [_delegate showCategoryChooserWithDelegate:self];
 }
 
 - (void)calendarEvent:(CalendarEvent*)event didChangeTitle:(NSString*)title {
     NSAssert([event eventId] != NULL, @"CalendarEvent does not have an identifier");
     [_delegate updateEvent:[event eventId] title:title];
+}
+
+#pragma mark -
+#pragma mark CategoryChooserDelegate Methods
+
+- (void)categoryChooser:(CategoryChooserController*)chooser didSelectCategory:(Category*)cat {
+    [_delegate updateEvent:[_activeEventBlock eventId] category:cat];
+    [_activeEventBlock setColor:[cat color]];
 }
 
 #pragma mark -

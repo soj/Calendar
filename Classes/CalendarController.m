@@ -91,6 +91,10 @@
     [[_calendar eventWithId:eventId] setEndTime:endTime];
 }
 
+- (void)updateEvent:(NSString*)eventId category:(Category *)category {
+    [[_calendar eventWithId:eventId] setCategory:category];
+}
+
 #pragma mark -
 #pragma mark UIScrollViewDelegate Methods
 

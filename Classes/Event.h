@@ -9,6 +9,7 @@
 }
 
 @property (nonatomic, strong) EKEvent *ekEvent;
+@property (nonatomic, strong) Category *category;
 @property (nonatomic) NSString *title;
 @property (nonatomic) NSTimeInterval startTime;
 @property (nonatomic) NSTimeInterval endTime;

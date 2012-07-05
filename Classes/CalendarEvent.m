@@ -17,15 +17,11 @@
     self = [super initWithBaseTime:baseTime startTime:startTime endTime:endTime];
     
     _nameField = [[ShadowedTextField alloc] init];
-    _catField = [[ShadowedTextField alloc] init];
-    
-	[_nameField setDelegate:self];
-    [_catField setDelegate:self];
+    [_nameField setDelegate:self];
     
     [self resizeTextFields];
 	
 	[self addSubview:_nameField];
-	[self addSubview:_catField];
 	
 	return self;
 }
@@ -40,8 +36,8 @@
     [self setFrame:[self reframe]];
 }
 
-- (void)setCategory:(Category*)cat {
-	[_catField setText:cat.name];
+- (void)setColor:(UIColor*)color {
+    _baseColor = color;
 }
 
 - (void)setTitle:(NSString*)title {
@@ -56,9 +52,6 @@
     [_nameField setFrame:CGRectMake(BORDER_PADDING_X, BORDER_PADDING_Y,
                                     [self frame].size.width - BORDER_PADDING_X * 2,
                                     TEXT_FIELD_HEIGHT)];
-    [_catField setFrame:CGRectMake(BORDER_PADDING_X, BORDER_PADDING_Y + TEXT_FIELD_HEIGHT,
-                                   [self frame].size.width - BORDER_PADDING_X * 2,
-                                   TEXT_FIELD_HEIGHT)];
 }
 
 - (CGRect)reframe {
@@ -85,17 +78,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	[_nameField resignFirstResponder];
-	if (!_catField.text.length) {
-		[_delegate showCategoryChooserWithDelegate:self];
-	}
-	return YES;
-}
-
-- (BOOL)textFieldShouldBeginEditing:(UITextField *)textField {
-	if (textField == _catField) {
-		[_delegate showCategoryChooserWithDelegate:self];
-		return NO;
-	}
+	[_delegate showCategoryChooser];
 	return YES;
 }
 
@@ -106,18 +89,11 @@
 }
 
 #pragma mark -
-#pragma mark CategoryChooserDelegate Methods
-
-- (void)categoryChooser:(CategoryChooserController*)chooser didSelectCategory:(Category*)cat {
-	[_catField setText:[cat name]];
-}
-
-#pragma mark -
 #pragma mark Drawing
 
 - (void)drawInContext:(CGContextRef)context {
 	// Set the rectangle area
-	float height = [[CalendarMath getInstance] timeOffsetToPixel:(_endTime - _startTime)];
+    float height = [[CalendarMath getInstance] timeOffsetToPixel:(_endTime - _startTime)];
 	float width = [self frame].size.width;
 	CGRect eventRect = CGRectMake(0, 0, width, height);
 	CGContextSaveGState(context);
@@ -125,10 +101,8 @@
 	
 	// Draw the grandient background
 	CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
-	float startComps[4] = {1, 0.3, 0, 1};
-	float endComps[4] = {1, 0.176, 0, 1};
-	CGColorRef startColor = CGColorCreate(space, startComps);
-	CGColorRef endColor = CGColorCreate(space, endComps);
+	CGColorRef startColor = CGColorCreate(space, CGColorGetComponents([_baseColor CGColor]));
+	CGColorRef endColor = CGColorCreate(space, CGColorGetComponents([[_baseColor colorByDarkeningColor:BG_GRADIENT_DARKEN] CGColor]));
 	NSArray *colors = [NSArray arrayWithObjects:(__bridge_transfer id)startColor, (__bridge_transfer id)endColor, nil];
 	CGFloat locations[] = {0, 1};
 	CGGradientRef gradient = CGGradientCreateWithColors(space, (__bridge_retained CFArrayRef)colors, locations);

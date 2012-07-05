@@ -31,6 +31,17 @@
     return [_ekEvent eventIdentifier];
 }
 
+- (void)setCategory:(Category *)category {
+    _category = category;
+}
+
+- (Category*)category {
+    if (_category == NULL) {
+        return [[Category alloc] initWithName:@"Uncategorized" andColor:[UIColor orangeColor]];
+    }
+    return _category;
+}
+
 - (void)setTitle:(NSString*)title {
     NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
     [_ekEvent setTitle:title];
