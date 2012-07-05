@@ -61,7 +61,7 @@
 }
 
 - (void)drawHourLine:(NSTimeInterval)time inContext:(CGContextRef)context {
-	float yPos = [self yPosFromTime:time];
+	float yPos = [self yPosFromTime:time] + 1;  // Add 1 because it's a 2pt line
 	
 	CGContextSetLineWidth(context, 1.0);
 	[self drawLineAtY:yPos inContext:context];
@@ -71,7 +71,7 @@
 }
 
 - (void)drawHalfHourLine:(NSTimeInterval)time inContext:(CGContextRef)context {
-	float yPos = [self yPosFromTime:time] - [[CalendarMath getInstance] pixelsPerHour] / 2;
+	float yPos = [self yPosFromTime:time] - [[CalendarMath getInstance] pixelsPerHour] / 2 + 1;   // Add 1 because it's a 2pt line
 	
 	CGContextSetLineWidth(context, 1.0);
 	CGFloat lineDashPattern[] = {10, 10};

@@ -116,18 +116,26 @@
 	CGColorSpaceRelease(space);
 
 	// Draw the border
-	CGRect borderRect = CGRectInset(eventRect, 1, 1);
 	CGContextSetRGBStrokeColor(context, BORDER_COLOR);
-	CGContextSetLineWidth(context, 2.0);
-	CGContextStrokeRect(context, borderRect);
+	CGContextSetLineWidth(context, 1.0);
+    CGContextMoveToPoint(context, 0, 0);
+    CGPoint borderPoints[] = {
+        CGPointMake(width, 0),
+        CGPointMake(width, height),
+        CGPointMake(0, height),
+        CGPointMake(0, 0)
+    };
+    CGContextAddLines(context, borderPoints, sizeof(borderPoints)/sizeof(borderPoints[0]));
+    CGContextStrokePath(context);
 	
 	// Draw the top highlight
 	CGContextSetBlendMode(context, kCGBlendModeOverlay);
-	CGContextSetLineWidth(context, 5.0);
-	CGContextSetRGBStrokeColor(context, 1, 1, 1, 0.5);
+	CGContextSetLineWidth(context, 2.0);
+	CGContextSetRGBStrokeColor(context, 1, 1, 1, 0.3);
 	CGContextMoveToPoint(context, 0, 0);
 	CGContextAddLineToPoint(context, width, 0);
 	CGContextStrokePath(context);
+    
 	CGContextSetBlendMode(context, kCGBlendModeNormal);
 	CGContextRestoreGState(context);
 }

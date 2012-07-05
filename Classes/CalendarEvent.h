@@ -6,7 +6,7 @@
 #import "CategoryChooserController.h"
 
 #define EVENT_DX			65.0
-#define RIGHT_RAIL_WIDTH	45.0
+#define RIGHT_RAIL_WIDTH	0.0
 
 #define BORDER_COLOR		0, 0, 0, 0.4
 #define BORDER_PADDING_X	10.0
