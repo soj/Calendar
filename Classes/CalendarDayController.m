@@ -94,6 +94,7 @@
     
     Event* e = [_delegate createEventWithStartTime:time endTime:endTime];
     [newBlock setEventId:[e identifier]];
+    [newBlock setColor:[[e category] color]];
     
 	return newBlock;
 }
@@ -155,7 +156,16 @@
 }
 
 - (void)handleTap:(UITapGestureRecognizer*)recognizer {
-    [self unsetActiveEventBlock];
+    float xLoc = [recognizer locationInView:_calendarDay].x;
+    float yLoc = [recognizer locationInView:_calendarDay].y;
+    
+    if (xLoc < EVENT_DX) {
+        [self unsetActiveEventBlock];
+    } else {
+        NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
+		[self setActiveEventBlock:[self createNewEventWithStartTime:startTime]];
+        [_activeEventBlock setFocus];
+    }
 }
 
 - (void)handleTapOnEventBlock:(UITapGestureRecognizer*)recognizer {

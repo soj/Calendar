@@ -37,7 +37,7 @@
 
 - (Category*)category {
     if (_category == NULL) {
-        return [[Category alloc] initWithName:@"Uncategorized" andColor:[UIColor orangeColor]];
+        return [[Category alloc] initWithName:@"Uncategorized" andColor:[UIColor colorWithRed:0.4 green:0.4 blue:0.4 alpha:1]];
     }
     return _category;
 }

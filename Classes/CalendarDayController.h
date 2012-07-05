@@ -3,7 +3,7 @@
 #import "CalendarEvent.h"
 #import "Event.h"
 
-#define EDGE_DRAG_PIXELS		40.0f
+#define EDGE_DRAG_PIXELS		30.0f
 
 typedef enum {
     kDragStartTime,
