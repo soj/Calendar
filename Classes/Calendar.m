@@ -4,6 +4,7 @@
 
 @implementation Calendar
 
+@synthesize eventStore;
 
 - (id)init {
 	self = [super init];
@@ -21,6 +22,13 @@
             while (eventIdentifier = [e nextObject]) {
                 Event *event = [_events objectForKey:eventIdentifier];
                 EKEvent *ekEvent = [_eventStore eventWithIdentifier:eventIdentifier];
+                
+                if (ekEvent == NULL) {
+                    // Event was deleted externally, remove from events dictionary
+                    [_events removeObjectForKey:eventIdentifier];
+                    continue;
+                }
+                
                 [event setEkEvent:ekEvent];
             }
         } else {
@@ -93,7 +101,7 @@
         }
         
         if (![_events objectForKey:[ekEvent eventIdentifier]]) {
-            Event *newEvent = [[Event alloc] initWithEKEvent:ekEvent];
+            Event *newEvent = [[Event alloc] initWithEKEvent:ekEvent andEventStore:_eventStore];
             [_events setObject:newEvent forKey:[ekEvent eventIdentifier]];
         }
     }
@@ -130,22 +138,31 @@
     EKEvent *newEKEvent = [EKEvent eventWithEventStore:_eventStore];
     [newEKEvent setStartDate:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
     [newEKEvent setEndDate:[NSDate dateWithTimeIntervalSinceReferenceDate:endTime]];
-    [newEKEvent setCalendar:_eventStore.defaultCalendarForNewEvents];
-    [newEKEvent setTitle:@"Test Event"];
+    [newEKEvent setCalendar:_ekCalendar];
+    [newEKEvent setTitle:DEFAULT_EVENT_TITLE];
     
-    Event *newEvent = [[Event alloc] initWithEKEvent:newEKEvent];
+    Event *newEvent = [[Event alloc] initWithEKEvent:newEKEvent andEventStore:_eventStore];
+    [newEvent save];                            // Need to save to get event identifier
+    [_events setObject:newEvent forKey:[newEvent identifier]];
+    return newEvent;
+}
+
+- (void)save {
+    // Save to EventKit
+    NSEnumerator *e = [_events objectEnumerator];
+    Event* event;
+    while (event = [e nextObject]) {
+        [event save];
+    }
+    
     NSError *saveError;
-    [_eventStore saveEvent:newEKEvent span:EKSpanThisEvent error:&saveError];
+    [_eventStore commit:&saveError];
     
     if (saveError != nil) {
         NSLog(@"%@", saveError.description);
     }
     
-    [_events setObject:newEvent forKey:[newEKEvent eventIdentifier]];
-    return newEvent;
-}
-
-- (void)save {
+    //Save locally
     NSData *serializedEvents = [NSKeyedArchiver archivedDataWithRootObject:_events];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

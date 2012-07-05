@@ -27,10 +27,7 @@
     NSEnumerator *e = [events objectEnumerator];
     Event *event;
     while (event = [e nextObject]) {
-        CalendarEvent *newEvent = [self createEventBlockWithStartTime:[event startTime]];
-        [newEvent setEventId:[event identifier]];
-        [newEvent setEndTime:[event endTime]];
-        [newEvent setTitle:[event title]];
+        [self createEventBlockWithExistingEvent:event];
     }
 }
 
@@ -68,18 +65,32 @@
 	[_calendarDay setNeedsDisplay];
 }
 
-- (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)time {
-	CalendarEvent *newBlock = [[CalendarEvent alloc] initWithBaseTime:_startTime startTime:time
-                                                              endTime:(time + MIN_TIME_INTERVAL) andDelegate:self];
+- (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {
+    CalendarEvent *newBlock = [[CalendarEvent alloc] initWithBaseTime:_startTime startTime:startTime
+                                                              endTime:endTime andDelegate:self];
 	[_eventBlocks addObject:newBlock];
-    
-    Event* e = [_delegate createEventWithStartTime:time endTime:(time + MIN_TIME_INTERVAL)];
-    [newBlock setEventId:[e identifier]];
     
     UITapGestureRecognizer *eventBlockTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnEventBlock:)];
     [newBlock addGestureRecognizer:eventBlockTap];
 	
 	[_calendarDay addSubview:newBlock];
+	return newBlock;
+}
+
+- (CalendarEvent*)createEventBlockWithExistingEvent:(Event*)event {
+    CalendarEvent *newBlock = [self createEventBlockWithStartTime:[event startTime] endTime:[event endTime]];
+    [newBlock setTitle:[event title]];
+    [newBlock setEventId:[event identifier]];
+    return newBlock;
+}
+
+- (CalendarEvent*)createNewEventWithStartTime:(NSTimeInterval)time {
+    NSTimeInterval endTime = time + MIN_TIME_INTERVAL;
+    CalendarEvent* newBlock = [self createEventBlockWithStartTime:time endTime:endTime];
+    
+    Event* e = [_delegate createEventWithStartTime:time endTime:endTime];
+    [newBlock setEventId:[e identifier]];
+    
 	return newBlock;
 }
 
@@ -114,19 +125,19 @@
         [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTap:)];
     [self.view addGestureRecognizer:tap];
     
-	UIPanGestureRecognizer *pan =
-        [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePan:)];
-    [self.view addGestureRecognizer:pan];
+	UILongPressGestureRecognizer *longPress =
+        [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
+    [self.view addGestureRecognizer:longPress];
     
     _eventBlockPan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanOnEventBlock:)];
 }
 
-- (void)handlePan:(UILongPressGestureRecognizer*)recognizer {	
+- (void)handleLongPress:(UILongPressGestureRecognizer*)recognizer {	
 	float yLoc = [recognizer locationInView:_calendarDay].y;
     
     if ([recognizer state] ==  UIGestureRecognizerStateBegan) {
 		NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
-		[self setActiveEventBlock:[self createEventBlockWithStartTime:startTime]];
+		[self setActiveEventBlock:[self createNewEventWithStartTime:startTime]];
     }
 	
 	_activeEventBlock.endTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
@@ -134,7 +145,7 @@
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
 		_activeEventBlock.endTime = [CalendarMath roundTimeToGranularity:[_activeEventBlock endTime]];
-	
+        [_delegate updateEvent:_activeEventBlock.eventId endTime:_activeEventBlock.endTime];
 		[_activeEventBlock setFocus];
 	}
 }
@@ -174,6 +185,9 @@
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
 		_activeEventBlock.startTime = [CalendarMath roundTimeToGranularity:_activeEventBlock.startTime];
 		_activeEventBlock.endTime = [CalendarMath roundTimeToGranularity:_activeEventBlock.endTime];
+        [_delegate updateEvent:_activeEventBlock.eventId startTime:_activeEventBlock.startTime];
+        [_delegate updateEvent:_activeEventBlock.eventId endTime:_activeEventBlock.endTime];
+
 	}
 }
 

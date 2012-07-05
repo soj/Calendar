@@ -15,6 +15,8 @@ typedef enum {
 - (void)showCategoryChooserWithDelegate:(id<CategoryChooserDelegate>)delegate;
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime;
 - (void)updateEvent:(NSString*)eventId title:(NSString*)title;
+- (void)updateEvent:(NSString*)eventId startTime:(NSTimeInterval)startTime;
+- (void)updateEvent:(NSString*)eventId endTime:(NSTimeInterval)endTime;
 @end
 
 @interface CalendarDayController : UIViewController <UIScrollViewDelegate, CalendarEventDelegate> {
@@ -37,9 +39,13 @@ typedef enum {
 - (id)initWithStartTime:(NSTimeInterval)startTime andDelegate:(id <CalendarDayDelegate>)delegate;
 - (void)setEvents:(NSArray*)events;
 
+- (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime;
+- (CalendarEvent*)createEventBlockWithExistingEvent:(Event*)event;
+- (CalendarEvent*)createNewEventWithStartTime:(NSTimeInterval)time;
+
 - (void)createGestureRecognizers;
 - (void)createCalendarDay;
-- (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)time;
+
 - (void)checkForEventBlocksParallelTo:(CalendarEvent*)event;
 - (void)setActiveEventBlock:(CalendarEvent*)event;
 - (void)unsetActiveEventBlock;

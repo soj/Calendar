@@ -5,9 +5,10 @@
 
 @synthesize ekEvent=_ekEvent;
 
-- (id)initWithEKEvent:(EKEvent*)ekEvent {
+- (id)initWithEKEvent:(EKEvent*)ekEvent andEventStore:(EKEventStore*)store {
     if (self = [super init]) {
         _ekEvent = ekEvent;
+        _ekEventStore = store;
     }
     
     return self;
@@ -26,15 +27,25 @@
 }
 
 - (NSString*)identifier {
+    NSAssert([_ekEvent eventIdentifier] != NULL, @"Need to save EKEvent before retrieving event identifier");
     return [_ekEvent eventIdentifier];
 }
 
 - (void)setTitle:(NSString*)title {
+    NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
     [_ekEvent setTitle:title];
+    [self save];
 }
 
 - (NSString*)title {
+    NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
     return [_ekEvent title];
+}
+
+- (void)setStartTime:(NSTimeInterval)startTime {
+    NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
+    [_ekEvent setStartDate:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
+    [self save];
 }
 
 - (NSTimeInterval)startTime {
@@ -42,9 +53,26 @@
     return [[_ekEvent startDate] timeIntervalSinceReferenceDate];
 }
 
+- (void)setEndTime:(NSTimeInterval)endTime {
+    NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
+    [_ekEvent setEndDate:[NSDate dateWithTimeIntervalSinceReferenceDate:endTime]];
+    [self save];
+}
+
 - (NSTimeInterval)endTime {
     NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
     return [[_ekEvent endDate] timeIntervalSinceReferenceDate];
+}
+
+- (void)save {
+    NSError *saveError;
+    if (![_ekEventStore saveEvent:_ekEvent span:EKSpanThisEvent error:&saveError]) {
+        NSLog(@"Warning: No new event data to save");
+    }
+    
+    if (saveError != nil) {
+        NSLog(@"%@", saveError.description);
+    }
 }
 
 @end

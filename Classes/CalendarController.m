@@ -80,8 +80,15 @@
 }
 
 - (void)updateEvent:(NSString*)eventId title:(NSString*)title {
-    Event* e = [_calendar eventWithId:eventId];
-    [e setTitle:title];
+    [[_calendar eventWithId:eventId] setTitle:title];
+}
+
+- (void)updateEvent:(NSString*)eventId startTime:(NSTimeInterval)startTime {
+    [[_calendar eventWithId:eventId] setStartTime:startTime];
+}
+
+- (void)updateEvent:(NSString*)eventId endTime:(NSTimeInterval)endTime {
+    [[_calendar eventWithId:eventId] setEndTime:endTime];
 }
 
 #pragma mark -
