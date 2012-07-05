@@ -18,6 +18,7 @@
     
     _nameField = [[ShadowedTextField alloc] init];
     [_nameField setDelegate:self];
+    [_nameField setEnabled:NO];
     
     [self resizeTextFields];
 	
@@ -38,6 +39,7 @@
 
 - (void)setColor:(UIColor*)color {
     _baseColor = color;
+    [self setNeedsDisplay];
 }
 
 - (void)setTitle:(NSString*)title {
@@ -45,6 +47,7 @@
 }
 
 - (void)setFocus {
+    [_nameField setEnabled:YES];
 	[_nameField becomeFirstResponder];
 }
 
@@ -78,6 +81,7 @@
 
 - (BOOL)textFieldShouldReturn:(UITextField *)textField {
 	[_nameField resignFirstResponder];
+    [_nameField setEnabled:NO];
 	[_delegate showCategoryChooser];
 	return YES;
 }

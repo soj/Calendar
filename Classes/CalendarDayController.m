@@ -159,7 +159,11 @@
 }
 
 - (void)handleTapOnEventBlock:(UITapGestureRecognizer*)recognizer {
-    [self setActiveEventBlock:(CalendarEvent*)[recognizer view]];
+    if ([recognizer view] == _activeEventBlock) {
+        [_activeEventBlock setFocus];
+    } else {
+        [self setActiveEventBlock:(CalendarEvent*)[recognizer view]];
+    }
 }
 
 - (void)handlePanOnEventBlock:(UIPanGestureRecognizer*)recognizer {

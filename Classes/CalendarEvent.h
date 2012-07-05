@@ -40,10 +40,11 @@
                endTime:(NSTimeInterval)endTime andDelegate:(id<CalendarEventDelegate>)delegate;
 
 - (void)setFocus;
-- (void)drawInContext:(CGContextRef)context;
+
+- (void)setTitle:(NSString*)title;
 - (void)setColor:(UIColor*)color;
 - (void)setMultitaskIndex:(int)index outOf:(int)numMultitasks;
+
 - (void)resizeTextFields;
-- (void)setTitle:(NSString*)title;
 
 @end
