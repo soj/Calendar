@@ -48,9 +48,11 @@ typedef enum {
 - (void)createGestureRecognizers;
 - (void)createCalendarDay;
 
-- (void)checkForEventBlocksParallelTo:(CalendarEvent*)event;
 - (void)setActiveEventBlock:(CalendarEvent*)event;
 - (void)unsetActiveEventBlock;
+
+- (NSTimeInterval)boundaryBeforeTime:(NSTimeInterval)time;
+- (NSTimeInterval)boundaryAfterTime:(NSTimeInterval)time;
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView;
 

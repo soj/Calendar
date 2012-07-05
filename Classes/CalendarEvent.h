@@ -28,9 +28,6 @@
 	ShadowedTextField *_nameField;
 
     UIColor *_baseColor;
-    
-    int _multitaskIndex;
-    int _numMultitasks;
 }
 
 @property (strong) id delegate;
@@ -43,7 +40,6 @@
 
 - (void)setTitle:(NSString*)title;
 - (void)setColor:(UIColor*)color;
-- (void)setMultitaskIndex:(int)index outOf:(int)numMultitasks;
 
 - (void)resizeTextFields;
 

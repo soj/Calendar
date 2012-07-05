@@ -34,6 +34,7 @@
 		29E54FE2153CBCF800D1B82F /* Calendar.m in Sources */ = {isa = PBXBuildFile; fileRef = 29E54FE1153CBCF800D1B82F /* Calendar.m */; };
 		5232E36D159BE4CE000AE3BC /* CalendarMath.m in Sources */ = {isa = PBXBuildFile; fileRef = 5232E36C159BE4CE000AE3BC /* CalendarMath.m */; };
 		52529D7915A51889009D5468 /* UIColor+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 52529D7815A51889009D5468 /* UIColor+Tools.m */; };
+		52529D7C15A57DD4009D5468 /* CalendarSubEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 52529D7B15A57DD4009D5468 /* CalendarSubEvent.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,6 +82,8 @@
 		5232E36C159BE4CE000AE3BC /* CalendarMath.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CalendarMath.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		52529D7715A51889009D5468 /* UIColor+Tools.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "UIColor+Tools.h"; path = "Classes/UIColor+Tools.h"; sourceTree = "<group>"; };
 		52529D7815A51889009D5468 /* UIColor+Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+Tools.m"; path = "Classes/UIColor+Tools.m"; sourceTree = "<group>"; };
+		52529D7A15A57DD3009D5468 /* CalendarSubEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarSubEvent.h; sourceTree = "<group>"; };
+		52529D7B15A57DD4009D5468 /* CalendarSubEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarSubEvent.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* calendar-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "calendar-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -127,6 +130,8 @@
 				294DCC8B152C16BD00637E0A /* CalendarEntity.m */,
 				29D98123151C14BC00B1E158 /* CalendarEvent.h */,
 				29D98124151C14BC00B1E158 /* CalendarEvent.m */,
+				52529D7A15A57DD3009D5468 /* CalendarSubEvent.h */,
+				52529D7B15A57DD4009D5468 /* CalendarSubEvent.m */,
 				29C1CF7B158EBEBF00842914 /* CategoryChooserCell.h */,
 				29C1CF7C158EBEBF00842914 /* CategoryChooserCell.m */,
 				292CB6F1158F081C006367C4 /* ShadowedTextField.h */,
@@ -308,6 +313,7 @@
 				29247E6915905B8000B12926 /* Event.m in Sources */,
 				5232E36D159BE4CE000AE3BC /* CalendarMath.m in Sources */,
 				52529D7915A51889009D5468 /* UIColor+Tools.m in Sources */,
+				52529D7C15A57DD4009D5468 /* CalendarSubEvent.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

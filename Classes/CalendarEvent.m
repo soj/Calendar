@@ -10,8 +10,6 @@
 
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
                endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
-    _multitaskIndex = 0;
-    _numMultitasks = 1;
     _delegate = delegate;
     
     self = [super initWithBaseTime:baseTime startTime:startTime endTime:endTime];
@@ -58,22 +56,12 @@
 }
 
 - (CGRect)reframe {
-    int width = ([[CalendarMath getInstance] dayWidth] - EVENT_DX - RIGHT_RAIL_WIDTH) / _numMultitasks;
-    int multitaskDX = width * _multitaskIndex;
+    int width = ([[CalendarMath getInstance] dayWidth] - EVENT_DX - RIGHT_RAIL_WIDTH);
     
-    return CGRectMake(EVENT_DX + multitaskDX, [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)],
+    return CGRectMake(EVENT_DX,
+                      [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)],
                       width,
                       [[CalendarMath getInstance] pixelsPerHour] * (_endTime - _startTime) / SECONDS_PER_HOUR);
-}
-
-- (void)setMultitaskIndex:(int)index outOf:(int)numMultitasks { 
-    NSAssert(numMultitasks >= 1, @"numMultitasks must be at least 1");
-    NSAssert(index < numMultitasks, @"index cannot be greater than number of multitasks");
-    
-    _multitaskIndex = index;
-    _numMultitasks = numMultitasks;
-    [self setFrame:[self reframe]];
-    [self resizeTextFields];
 }
 
 #pragma mark -

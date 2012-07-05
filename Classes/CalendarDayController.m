@@ -99,27 +99,28 @@
 	return newBlock;
 }
 
-- (void)checkForEventBlocksParallelTo:(CalendarEvent*)thisEvent {
-	NSEnumerator *e = [_eventBlocks objectEnumerator];
+- (NSTimeInterval)boundaryBeforeTime:(NSTimeInterval)time {
+    NSEnumerator *e = [_eventBlocks objectEnumerator];
 	CalendarEvent *thatEvent;
-    NSMutableSet *parallelBlocks = [[NSMutableSet alloc] initWithCapacity:[_eventBlocks count]];
-    
-	while (thatEvent = [e nextObject]) {
-		if ([CalendarMath timesIntersectS1:thatEvent.startTime e1:thatEvent.endTime s2:thisEvent.startTime e2:thisEvent.endTime]) {
-			[parallelBlocks addObject:thatEvent];
-		}
+    NSTimeInterval boundary = _startTime;
+    while (thatEvent = [e nextObject]) {
+        if ([thatEvent endTime] > boundary && [thatEvent endTime] < time) {
+            boundary = [thatEvent endTime];
+        }
     }
-    
-    [parallelBlocks addObject:thisEvent];
-    NSArray *descriptors = [[NSArray alloc] initWithObjects:
-                           [NSSortDescriptor sortDescriptorWithKey:@"startTime" ascending:YES],
-                           [NSSortDescriptor sortDescriptorWithKey:@"eventId" ascending:YES],
-                           nil];
-    NSArray *sorted = [parallelBlocks sortedArrayUsingDescriptors:descriptors];
-    
-    for (int i = 0; i < [sorted count]; i++) {
-        [(CalendarEvent*)[sorted objectAtIndex:i] setMultitaskIndex:i outOf:[sorted count]];
+    return boundary;
+}
+
+- (NSTimeInterval)boundaryAfterTime:(NSTimeInterval)time {
+    NSEnumerator *e = [_eventBlocks objectEnumerator];
+	CalendarEvent *thatEvent;
+    NSTimeInterval boundary = _startTime + SECONDS_PER_DAY;
+    while (thatEvent = [e nextObject]) {
+        if ([thatEvent startTime] < boundary && [thatEvent startTime] > time) {
+            boundary = [thatEvent startTime];
+        }
     }
+    return boundary;
 }
 
 #pragma mark -
@@ -146,7 +147,7 @@
     }
 	
 	_activeEventBlock.endTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
-	[self checkForEventBlocksParallelTo:_activeEventBlock];
+    _activeEventBlock.endTime = MIN(_activeEventBlock.endTime, [self boundaryAfterTime:_activeEventBlock.startTime]);
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
 		_activeEventBlock.endTime = [CalendarMath roundTimeToGranularity:[_activeEventBlock endTime]];
@@ -194,9 +195,11 @@
 	NSTimeInterval timeDiff = [[CalendarMath getInstance] pixelToTimeOffset:translation] - _prevDragTime;
 	if (_dragType == kDragStartTime || _dragType == kDragBoth) {
 		[_activeEventBlock setStartTime:(_activeEventBlock.startTime + timeDiff)];
+        _activeEventBlock.startTime = MAX(_activeEventBlock.startTime, [self boundaryBeforeTime:_activeEventBlock.endTime]);
 	}
     if (_dragType == kDragEndTime || _dragType == kDragBoth) {
 		[_activeEventBlock setEndTime:(_activeEventBlock.endTime + timeDiff)];
+        _activeEventBlock.endTime = MIN(_activeEventBlock.endTime, [self boundaryAfterTime:_activeEventBlock.startTime]);
 	}
     _prevDragTime = [[CalendarMath getInstance] pixelToTimeOffset:([recognizer translationInView:_activeEventBlock].y)];
 	
