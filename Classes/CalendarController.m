@@ -111,7 +111,7 @@
 
 - (BOOL)eventIsValid:(NSString*)eventId {
     Event *e = [_calendar eventWithId:eventId];
-    return !([e.title isEqualToString:DEFAULT_EVENT_TITLE]) && ([e categoryOrNull] != nil);
+    return !([e.title isEqualToString:DEFAULT_EVENT_TITLE] || [e categoryOrNull] == nil);
 }
 
 #pragma mark -

@@ -63,6 +63,11 @@
 
 - (void)unsetActiveEventBlock {
     if (_activeEventBlock != NULL) {
+        if (_activeEventBlock.hasFocus) {
+            [_activeEventBlock resignFocus];
+            [_delegate dismissCategoryChooser];
+        }
+        
         [_activeEventBlock removeGestureRecognizer:_eventBlockPan];
         _activeEventBlock = NULL;
     }
@@ -101,8 +106,13 @@
 
 - (void)deleteActiveEventBlock {
     CalendarEvent *block = _activeEventBlock;
+    
     [self unsetActiveEventBlock];
+    
+    [_delegate dismissCategoryChooser];
+    
     [_delegate deleteEvent:block.eventId];
+    [_eventBlocks removeObject:block];
     [block removeFromSuperview];
 }
 
@@ -169,8 +179,13 @@
 - (void)commitActiveEventBlockTimes {
     _activeEventBlock.startTime = [CalendarMath roundTimeToGranularity:_activeEventBlock.startTime];
     _activeEventBlock.endTime = [CalendarMath roundTimeToGranularity:_activeEventBlock.endTime];
-    [_delegate updateEvent:_activeEventBlock.eventId startTime:_activeEventBlock.startTime];
-    [_delegate updateEvent:_activeEventBlock.eventId endTime:_activeEventBlock.endTime];
+    
+    if (_activeEventBlock.endTime - _activeEventBlock.startTime < MIN_TIME_INTERVAL) {
+        [self deleteActiveEventBlock];
+    } else {
+        [_delegate updateEvent:_activeEventBlock.eventId startTime:_activeEventBlock.startTime];
+        [_delegate updateEvent:_activeEventBlock.eventId endTime:_activeEventBlock.endTime];
+    }
 }
 
 #pragma mark -
@@ -201,8 +216,6 @@
                 [_delegate dismissCategoryChooser];
                 [_activeEventBlock resignFocus];
             } else {
-                [_activeEventBlock resignFocus];
-                [_delegate dismissCategoryChooser];
                 [self deleteActiveEventBlock];
             }
         } else {

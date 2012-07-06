@@ -149,6 +149,7 @@
 
 - (void)deleteEvent:(NSString*)eventId {
     Event *e = [_events objectForKey:eventId];
+    [_events removeObjectForKey:eventId];
     
     NSError *deleteError;
     [_eventStore removeEvent:e.ekEvent span:EKSpanThisEvent error:&deleteError];
