@@ -124,6 +124,49 @@
 }
 
 #pragma mark -
+#pragma mark Event Block Movement
+
+- (DragType)dragTypeForYPosInActiveEventBlock:(CGFloat)y {
+    if (y < EDGE_DRAG_PIXELS) {
+        return kDragStartTime;
+    } else if (y > _activeEventBlock.frame.size.height - EDGE_DRAG_PIXELS) {
+        return kDragEndTime;
+    } else {
+        return kDragBoth;
+    }
+}
+
+- (void)drag:(DragType)type activeEventBlockBy:(NSTimeInterval)timeDiff {
+    NSTimeInterval blockSize = _activeEventBlock.endTime - _activeEventBlock.startTime;
+    NSTimeInterval newStartTime = _activeEventBlock.startTime, newEndTime = _activeEventBlock.endTime;
+    
+    if (type == kDragStartTime || type == kDragBoth) {
+        newStartTime = MAX(_activeEventBlock.startTime + timeDiff, [self boundaryBeforeTime:_activeEventBlock.endTime]);
+	}
+    if (type == kDragEndTime || type == kDragBoth) {
+        newEndTime = MIN(_activeEventBlock.endTime + timeDiff, [self boundaryAfterTime:_activeEventBlock.startTime]);
+	}
+    
+    if (type == kDragBoth) {
+        if (timeDiff < 0) {
+            newEndTime = newStartTime + blockSize;
+        } else {
+            newStartTime = newEndTime - blockSize;
+        }
+    }
+    
+    _activeEventBlock.startTime = newStartTime;
+    _activeEventBlock.endTime = newEndTime;
+}
+
+- (void)commitActiveEventBlockTimes {
+    _activeEventBlock.startTime = [CalendarMath roundTimeToGranularity:_activeEventBlock.startTime];
+    _activeEventBlock.endTime = [CalendarMath roundTimeToGranularity:_activeEventBlock.endTime];
+    [_delegate updateEvent:_activeEventBlock.eventId startTime:_activeEventBlock.startTime];
+    [_delegate updateEvent:_activeEventBlock.eventId endTime:_activeEventBlock.endTime];
+}
+
+#pragma mark -
 #pragma mark Gesture Recognizers
 
 - (void)createGestureRecognizers {
@@ -136,24 +179,6 @@
     [self.view addGestureRecognizer:longPress];
     
     _eventBlockPan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanOnEventBlock:)];
-}
-
-- (void)handleLongPress:(UILongPressGestureRecognizer*)recognizer {	
-	float yLoc = [recognizer locationInView:_calendarDay].y;
-    
-    if ([recognizer state] ==  UIGestureRecognizerStateBegan) {
-		NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
-		[self setActiveEventBlock:[self createNewEventWithStartTime:startTime]];
-    }
-	
-	_activeEventBlock.endTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
-    _activeEventBlock.endTime = MIN(_activeEventBlock.endTime, [self boundaryAfterTime:_activeEventBlock.startTime]);
-	
-	if ([recognizer state] == UIGestureRecognizerStateEnded) {
-		_activeEventBlock.endTime = [CalendarMath roundTimeToGranularity:[_activeEventBlock endTime]];
-        [_delegate updateEvent:_activeEventBlock.eventId endTime:_activeEventBlock.endTime];
-		[_activeEventBlock setFocus];
-	}
 }
 
 - (void)handleTap:(UITapGestureRecognizer*)recognizer {
@@ -177,38 +202,38 @@
     }
 }
 
+- (void)handleLongPress:(UILongPressGestureRecognizer*)recognizer {	
+	float yLoc = [recognizer locationInView:_calendarDay].y;
+    
+    if ([recognizer state] ==  UIGestureRecognizerStateBegan) {
+		NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
+		[self setActiveEventBlock:[self createNewEventWithStartTime:startTime]];
+    }
+	
+	_activeEventBlock.endTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
+    _activeEventBlock.endTime = MIN(_activeEventBlock.endTime, [self boundaryAfterTime:_activeEventBlock.startTime]);
+	
+	if ([recognizer state] == UIGestureRecognizerStateEnded) {
+        [self commitActiveEventBlockTimes];
+		[_activeEventBlock setFocus];
+	}
+}
+
 - (void)handlePanOnEventBlock:(UIPanGestureRecognizer*)recognizer {
     NSAssert(_activeEventBlock == [recognizer view], @"Only the active event block may receive gestures");
 
     if ([recognizer state] ==  UIGestureRecognizerStateBegan) {
-        if ([recognizer locationInView:[recognizer view]].y < EDGE_DRAG_PIXELS) {
-            _dragType = kDragStartTime;
-        } else if ([recognizer locationInView:[recognizer view]].y > [recognizer view].frame.size.height - EDGE_DRAG_PIXELS) {
-            _dragType = kDragEndTime;
-        } else {
-            _dragType = kDragBoth;
-        }
+        _dragType = [self dragTypeForYPosInActiveEventBlock:[recognizer locationInView:_activeEventBlock].y];
         _prevDragTime = 0;
     }
-
+    
     float translation = [recognizer translationInView:_activeEventBlock].y;
-	NSTimeInterval timeDiff = [[CalendarMath getInstance] pixelToTimeOffset:translation] - _prevDragTime;
-	if (_dragType == kDragStartTime || _dragType == kDragBoth) {
-		[_activeEventBlock setStartTime:(_activeEventBlock.startTime + timeDiff)];
-        _activeEventBlock.startTime = MAX(_activeEventBlock.startTime, [self boundaryBeforeTime:_activeEventBlock.endTime]);
-	}
-    if (_dragType == kDragEndTime || _dragType == kDragBoth) {
-		[_activeEventBlock setEndTime:(_activeEventBlock.endTime + timeDiff)];
-        _activeEventBlock.endTime = MIN(_activeEventBlock.endTime, [self boundaryAfterTime:_activeEventBlock.startTime]);
-	}
-    _prevDragTime = [[CalendarMath getInstance] pixelToTimeOffset:([recognizer translationInView:_activeEventBlock].y)];
+    float diff = [[CalendarMath getInstance] pixelToTimeOffset:translation] - _prevDragTime;
+    [self drag:_dragType activeEventBlockBy:diff];
+    _prevDragTime = [[CalendarMath getInstance] pixelToTimeOffset:translation];    
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
-		_activeEventBlock.startTime = [CalendarMath roundTimeToGranularity:_activeEventBlock.startTime];
-		_activeEventBlock.endTime = [CalendarMath roundTimeToGranularity:_activeEventBlock.endTime];
-        [_delegate updateEvent:_activeEventBlock.eventId startTime:_activeEventBlock.startTime];
-        [_delegate updateEvent:_activeEventBlock.eventId endTime:_activeEventBlock.endTime];
-
+        [self commitActiveEventBlockTimes];
 	}
 }
 

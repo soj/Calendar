@@ -19,19 +19,11 @@
 
 - (void)setStartTime:(NSTimeInterval)startTime {
 	_startTime = startTime;
-	if (_endTime - startTime < MIN_TIME_INTERVAL) {
-		_endTime = startTime + MIN_TIME_INTERVAL;
-	}
-	
 	[self setNeedsDisplay];
 }
 
 - (void)setEndTime:(NSTimeInterval)endTime {
 	_endTime = endTime;
-	if (_endTime - _startTime < MIN_TIME_INTERVAL) {
-		_endTime = _startTime + MIN_TIME_INTERVAL;
-	}
-	
 	[self setNeedsDisplay];
 }
      
