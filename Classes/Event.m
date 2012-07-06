@@ -42,6 +42,10 @@
     return _category;
 }
 
+- (Category*)categoryOrNull {
+    return _category;
+}
+
 - (void)setTitle:(NSString*)title {
     NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
     [_ekEvent setTitle:title];

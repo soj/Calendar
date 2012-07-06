@@ -18,4 +18,6 @@
 - (id)initWithEKEvent:(EKEvent*)ekEvent andEventStore:(EKEventStore*)store;
 - (void)save;
 
+- (Category*)categoryOrNull;
+
 @end

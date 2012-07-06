@@ -13,12 +13,15 @@ typedef enum {
 
 @protocol CalendarDayDelegate
 - (void)showCategoryChooserWithDelegate:(id<CategoryChooserDelegate>)delegate;
+- (void)dismissCategoryChooser;
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime;
 
 - (void)updateEvent:(NSString*)eventId title:(NSString*)title;
 - (void)updateEvent:(NSString*)eventId startTime:(NSTimeInterval)startTime;
 - (void)updateEvent:(NSString*)eventId endTime:(NSTimeInterval)endTime;
 - (void)updateEvent:(NSString*)eventId category:(Category*)category;
+- (void)deleteEvent:(NSString*)eventId;
+- (BOOL)eventIsValid:(NSString*)eventId;
 @end
 
 @interface CalendarDayController : UIViewController <UIScrollViewDelegate, CalendarEventDelegate, CategoryChooserDelegate> {

@@ -72,7 +72,17 @@
 - (void)showCategoryChooserWithDelegate:(id)delegate {
     CategoryChooserController *catController = [[CategoryChooserController alloc] initWithCalendar:_calendar andDelegate:delegate];
 	[self.view addSubview:catController.view];
+    
+    CGRect frame = catController.view.frame;
+    [catController.view setFrame:CGRectMake(frame.origin.x, 320, frame.size.width, frame.size.height)];
+    
     _catController = catController;
+}
+
+- (void)dismissCategoryChooser {
+    if (_catController != nil && [_catController.view superview] != nil) {
+        [_catController.view removeFromSuperview];
+    }
 }
 
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {
@@ -93,6 +103,15 @@
 
 - (void)updateEvent:(NSString*)eventId category:(Category *)category {
     [[_calendar eventWithId:eventId] setCategory:category];
+}
+
+- (void)deleteEvent:(NSString*)eventId {
+    [_calendar deleteEvent:eventId];
+}
+
+- (BOOL)eventIsValid:(NSString*)eventId {
+    Event *e = [_calendar eventWithId:eventId];
+    return !([e.title isEqualToString:DEFAULT_EVENT_TITLE]) && ([e categoryOrNull] != nil);
 }
 
 #pragma mark -

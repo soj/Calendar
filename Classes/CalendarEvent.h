@@ -23,6 +23,7 @@
 
 @interface CalendarEvent : CalendarEntity <UITextFieldDelegate> {
     id<CalendarEventDelegate> _delegate;
+    BOOL _hasFocus;
     
 	NSString *_eventId;
 	ShadowedTextField *_nameField;
@@ -32,11 +33,14 @@
 
 @property (strong) id delegate;
 @property (nonatomic, strong) NSString *eventId;
+@property BOOL hasFocus;
 
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
                endTime:(NSTimeInterval)endTime andDelegate:(id<CalendarEventDelegate>)delegate;
 
 - (void)setFocus;
+- (void)resignFocus;
+- (BOOL)hasFocus;
 
 - (void)setTitle:(NSString*)title;
 - (void)setColor:(UIColor*)color;

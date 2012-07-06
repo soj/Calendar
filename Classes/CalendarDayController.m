@@ -99,6 +99,13 @@
 	return newBlock;
 }
 
+- (void)deleteActiveEventBlock {
+    CalendarEvent *block = _activeEventBlock;
+    [self unsetActiveEventBlock];
+    [_delegate deleteEvent:block.eventId];
+    [block removeFromSuperview];
+}
+
 - (NSTimeInterval)boundaryBeforeTime:(NSTimeInterval)time {
     NSEnumerator *e = [_eventBlocks objectEnumerator];
 	CalendarEvent *thatEvent;
@@ -184,13 +191,24 @@
 - (void)handleTap:(UITapGestureRecognizer*)recognizer {
     float xLoc = [recognizer locationInView:_calendarDay].x;
     float yLoc = [recognizer locationInView:_calendarDay].y;
+    NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
     
     if (xLoc < EVENT_DX) {
         [self unsetActiveEventBlock];
     } else {
-        NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
-		[self setActiveEventBlock:[self createNewEventWithStartTime:startTime]];
-        [_activeEventBlock setFocus];
+        if (_activeEventBlock && [_activeEventBlock hasFocus]) {
+            if ([_delegate eventIsValid:_activeEventBlock.eventId]) {
+                [_delegate dismissCategoryChooser];
+                [_activeEventBlock resignFocus];
+            } else {
+                [_activeEventBlock resignFocus];
+                [_delegate dismissCategoryChooser];
+                [self deleteActiveEventBlock];
+            }
+        } else {
+            [self setActiveEventBlock:[self createNewEventWithStartTime:startTime]];
+            [_activeEventBlock setFocus];
+        }
     }
 }
 
@@ -262,6 +280,7 @@
 - (void)categoryChooser:(CategoryChooserController*)chooser didSelectCategory:(Category*)cat {
     [_delegate updateEvent:[_activeEventBlock eventId] category:cat];
     [_activeEventBlock setColor:[cat color]];
+    [_activeEventBlock resignFocus];
 }
 
 #pragma mark -
@@ -279,11 +298,6 @@
     [super didReceiveMemoryWarning];
 	
 	// Release any cached data, images, etc that aren't in use.
-}
-
-- (void)viewDidUnload {
-	// Release any retained subviews of the main view.
-	// e.g. self.myOutlet = nil;
 }
 
 @end

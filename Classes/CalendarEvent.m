@@ -6,7 +6,7 @@
 
 @implementation CalendarEvent
 
-@synthesize eventId=_eventId, delegate=_delegate;
+@synthesize eventId=_eventId, delegate=_delegate, hasFocus=_hasFocus;
 
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
                endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
@@ -45,8 +45,15 @@
 }
 
 - (void)setFocus {
+    _hasFocus = YES;
     [_nameField setEnabled:YES];
 	[_nameField becomeFirstResponder];
+}
+
+- (void)resignFocus {
+    _hasFocus = NO;
+    [_nameField resignFirstResponder];
+    [_nameField setEnabled:NO];
 }
 
 - (void)resizeTextFields {

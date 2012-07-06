@@ -147,6 +147,13 @@
     return newEvent;
 }
 
+- (void)deleteEvent:(NSString*)eventId {
+    Event *e = [_events objectForKey:eventId];
+    
+    NSError *deleteError;
+    [_eventStore removeEvent:e.ekEvent span:EKSpanThisEvent error:&deleteError];
+}
+
 - (void)save {
     // Save to EventKit
     NSEnumerator *e = [_events objectEnumerator];
