@@ -43,6 +43,7 @@ typedef enum {
 
 - (id)initWithStartTime:(NSTimeInterval)startTime andDelegate:(id <CalendarDayDelegate>)delegate;
 - (void)setEvents:(NSArray*)events;
+- (void)scrollToEntity:(CalendarEntity*)ent;
 
 - (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime;
 - (CalendarEvent*)createEventBlockWithExistingEvent:(Event*)event;

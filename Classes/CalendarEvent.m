@@ -74,17 +74,39 @@
 #pragma mark -
 #pragma mark UITextFieldDelegate Methods
 
-- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+- (void)beginHackToStopAutoScrollOnTextField:(UITextField*)textField {
+    UIScrollView *wrap = [[UIScrollView alloc] initWithFrame:textField.frame];
+    [textField.superview addSubview:wrap];
+    CGRect frame = textField.frame;
+    textField.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
+    [wrap addSubview:textField];
+}
+
+- (void)endHackToStopAutoScrollOnTextField:(UITextField*)textField {
+    UIScrollView *wrap = (UIScrollView*)textField.superview;
+    [wrap.superview addSubview:textField];
+    CGRect frame = textField.frame;
+    textField.frame = CGRectMake(wrap.frame.origin.x, wrap.frame.origin.y, frame.size.width, frame.size.height);
+    [wrap removeFromSuperview];
+}
+
+- (void)textFieldDidBeginEditing:(UITextField*)textField {
+    [self beginHackToStopAutoScrollOnTextField:textField];
+}
+
+- (BOOL)textFieldShouldReturn:(UITextField*)textField {
 	[_nameField resignFirstResponder];
     [_nameField setEnabled:NO];
 	[_delegate showCategoryChooser];
 	return YES;
 }
 
-- (void)textFieldDidEndEditing:(UITextField *)textField {
+- (void)textFieldDidEndEditing:(UITextField*)textField {
     if (textField == _nameField) {
         [_delegate calendarEvent:self didChangeTitle:[textField text]];   
     }
+    
+    [self endHackToStopAutoScrollOnTextField:textField];
 }
 
 #pragma mark -

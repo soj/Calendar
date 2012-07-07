@@ -43,6 +43,11 @@
 	[_calendarDay setNeedsDisplay];
 }
 
+- (void)scrollToEntity:(CalendarEntity*)ent {
+    CGFloat top = [[CalendarMath getInstance] timeOffsetToPixel:(ent.startTime - _startTime)];
+    [(UIScrollView*)self.view setContentOffset:CGPointMake(0, top) animated:YES];
+}
+
 #pragma mark -
 #pragma mark Event Block Management
 
@@ -95,6 +100,11 @@
 
 - (CalendarEvent*)createNewEventWithStartTime:(NSTimeInterval)time {
     NSTimeInterval endTime = time + MIN_TIME_INTERVAL;
+    
+    if (![self isTimeEmpty:time] || ![self isTimeEmpty:endTime]) {
+        return nil;
+    }
+    
     CalendarEvent* newBlock = [self createEventBlockWithStartTime:time endTime:endTime];
     
     Event* e = [_delegate createEventWithStartTime:time endTime:endTime];
@@ -138,6 +148,17 @@
         }
     }
     return boundary;
+}
+
+- (BOOL)isTimeEmpty:(NSTimeInterval)time {
+    NSEnumerator *e = [_eventBlocks objectEnumerator];
+	CalendarEvent *thatEvent;
+    while (thatEvent = [e nextObject]) {
+        if ([CalendarMath timesIntersectS1:time e1:time s2:thatEvent.startTime e2:thatEvent.endTime]) {
+            return NO;
+        }
+    }
+    return YES;
 }
 
 #pragma mark -
@@ -220,6 +241,7 @@
             }
         } else {
             [self setActiveEventBlock:[self createNewEventWithStartTime:startTime]];
+            [self scrollToEntity:_activeEventBlock];
             [_activeEventBlock setFocus];
         }
     }
@@ -227,6 +249,7 @@
 
 - (void)handleTapOnEventBlock:(UITapGestureRecognizer*)recognizer {
     if ([recognizer view] == _activeEventBlock) {
+        [self scrollToEntity:_activeEventBlock];
         [_activeEventBlock setFocus];
     } else {
         [self setActiveEventBlock:(CalendarEvent*)[recognizer view]];
@@ -238,8 +261,13 @@
     
     if ([recognizer state] ==  UIGestureRecognizerStateBegan) {
 		NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
-		[self setActiveEventBlock:[self createNewEventWithStartTime:startTime]];
+        CalendarEvent *new;
+        if ((new = [self createNewEventWithStartTime:startTime])) {
+            [self setActiveEventBlock:new];
+        }
     }
+    
+    if (!_activeEventBlock) return;
 	
 	_activeEventBlock.endTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
     _activeEventBlock.endTime = MAX(_activeEventBlock.endTime, _activeEventBlock.startTime + MIN_TIME_INTERVAL);
@@ -247,6 +275,7 @@
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
         [self commitActiveEventBlockTimes];
+        [self scrollToEntity:_activeEventBlock];
 		[_activeEventBlock setFocus];
 	}
 }
