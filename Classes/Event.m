@@ -28,6 +28,7 @@
     if (self = [super init]) {
         _identifier = [aDecoder decodeObjectForKey:@"eventIdentifier"];
         _category = [[Calendar getInstance] categoryWithId:[aDecoder decodeObjectForKey:@"categoryIdentifier"]];
+        NSLog(@"Cat name: %@", [aDecoder decodeObjectForKey:@"categoryIdentifier"]);
         _title = [aDecoder decodeObjectForKey:@"title"];
         _startTime = [aDecoder decodeFloatForKey:@"startTime"];
         _endTime = [aDecoder decodeFloatForKey:@"endTime"];
@@ -48,6 +49,7 @@
 
     if (_category != nil) {
         [aCoder encodeObject:_category.identifier forKey:@"categoryIdentifier"];
+        NSLog(@"Set cat name: %@", _category.identifier);
     }
         
     if (_ekEvent != nil) {

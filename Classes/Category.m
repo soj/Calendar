@@ -19,6 +19,7 @@
 
 - (id)initWithCoder:(NSCoder*)aDecoder {
     if (self = [super init]) {
+        _identifier = [aDecoder decodeObjectForKey:@"identifier"];
         _name = [aDecoder decodeObjectForKey:@"name"];
         _color = [aDecoder decodeObjectForKey:@"color"];
     }
@@ -26,6 +27,7 @@
 }
 
 - (void)encodeWithCoder:(NSCoder*)aCoder {
+    [aCoder encodeObject:_identifier forKey:@"identifier"];
     [aCoder encodeObject:_name forKey:@"name"];
     [aCoder encodeObject:_color forKey:@"color"];
 }

@@ -33,6 +33,8 @@
 - (void)deleteEvent:(NSString*)eventId;
 
 - (NSArray*)categories;
+- (void)addCategory:(Category*)category;
+
 - (Event*)eventWithId:(NSString*)identifier;
 - (Category*)categoryWithId:(NSString*)identifier;
 - (EKCalendar*)createNewCalendar;

@@ -7,6 +7,7 @@
 
 @protocol CategoryChooserDelegate
 - (void)categoryChooser:(CategoryChooserController*)chooser didSelectCategory:(Category*)cat;
+- (void)categoryChooser:(CategoryChooserController *)chooser didCreateNewCategory:(Category *)cat;  
 @end
 
 @interface CategoryChooserController : UIViewController <UITableViewDelegate, UITableViewDataSource> {

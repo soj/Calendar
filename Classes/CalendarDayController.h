@@ -16,6 +16,8 @@ typedef enum {
 - (void)dismissCategoryChooser;
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime;
 
+- (void)addNewCategory:(Category*)cat;
+
 - (void)updateEvent:(NSString*)eventId title:(NSString*)title;
 - (void)updateEvent:(NSString*)eventId startTime:(NSTimeInterval)startTime;
 - (void)updateEvent:(NSString*)eventId endTime:(NSTimeInterval)endTime;

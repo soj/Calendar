@@ -170,6 +170,10 @@ static Calendar* instance = nil;
     return [_categories allValues];
 }
 
+- (void)addCategory:(Category*)category {
+    [_categories setObject:category forKey:category.identifier];
+}
+
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime {
     Event *newEvent = [[Event alloc] init];
     newEvent.startTime = startTime;

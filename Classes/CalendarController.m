@@ -88,6 +88,10 @@
     }
 }
 
+- (void)addNewCategory:(Category *)cat {
+    [[Calendar getInstance] addCategory:cat];
+}
+
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {
     return [[Calendar getInstance] createEventWithStartTime:startTime andEndTime:endTime];
 }
