@@ -244,7 +244,11 @@
     NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
     
     if (xLoc < EVENT_DX) {
-        [self unsetActiveEventBlock];
+        if (![_delegate eventIsValid:_activeEventBlock.eventId]) {
+            [self deleteActiveEventBlock];
+        } else {
+            [self unsetActiveEventBlock];
+        }
     } else {
         if (_activeEventBlock && [_activeEventBlock hasFocus]) {
             if ([_delegate eventIsValid:_activeEventBlock.eventId]) {
