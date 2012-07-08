@@ -186,18 +186,26 @@
     }
 }
 
-- (void)resizeEventBlock:(CalendarEvent*)eventBlock startTime:(NSTimeInterval)time {
+- (void)resizeEventBlock:(CalendarEvent*)eventBlock startTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
     CalendarEvent *thatBlock = [self boundaryBlockBeforeTime:eventBlock.endTime];
-    if (thatBlock && time < thatBlock.endTime) {
-        [self resizeEventBlock:thatBlock endTime:time];
+    if (thatBlock && (time < thatBlock.endTime || forceLink)) {
+        [self resizeEventBlock:thatBlock endTime:time forceLink:NO];
+        if (thatBlock.size <= 0) {
+            [self commitEventBlockTimes:thatBlock];
+        }
+         _dragType = kDragLinkedStartTime;
     }
     eventBlock.startTime = time;
 }
 
-- (void)resizeEventBlock:(CalendarEvent*)eventBlock endTime:(NSTimeInterval)time {
+- (void)resizeEventBlock:(CalendarEvent*)eventBlock endTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
     CalendarEvent *thatBlock = [self boundaryBlockAfterTime:eventBlock.startTime];
-    if (thatBlock && time > thatBlock.startTime) {
-        [self resizeEventBlock:thatBlock startTime:time];
+    if (thatBlock && (time > thatBlock.startTime || forceLink)) {
+        [self resizeEventBlock:thatBlock startTime:time forceLink:NO];
+        if (thatBlock.size <= 0) {
+            [self commitEventBlockTimes:thatBlock];
+        }
+        _dragType = kDragLinkedEndTime;
     }
     eventBlock.endTime = time;
 }
@@ -325,24 +333,33 @@
 - (void)handlePanOnEventBlock:(UIPanGestureRecognizer*)recognizer {
     NSAssert(_activeEventBlock == [recognizer view], @"Only the active event block may receive gestures");
 
-    if ([recognizer state] ==  UIGestureRecognizerStateBegan) {
-        [self beginDragForYPosInActiveEventBlock:[recognizer locationInView:_activeEventBlock].y];
+    switch (recognizer.state) {
+        case UIGestureRecognizerStateBegan: {
+            [self beginDragForYPosInActiveEventBlock:[recognizer locationInView:_activeEventBlock].y];
+            break;
+        }
+        case UIGestureRecognizerStateChanged: {
+            float loc = [recognizer locationInView:_calendarDay].y;
+            if (_dragType == kDragBoth) {
+                [self dragActiveEventBlockTo:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)];
+            } else if (_dragType == kDragStartTime || _dragType == kDragLinkedStartTime) {
+                [self resizeEventBlock:_activeEventBlock startTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)
+                             forceLink:(_dragType == kDragLinkedStartTime)];
+            } else {
+                [self resizeEventBlock:_activeEventBlock endTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)
+                             forceLink:(_dragType == kDragLinkedEndTime)];
+            }
+            break;
+        }
+        case UIGestureRecognizerStateEnded: {
+            [self commitEventBlockTimes:[self boundaryBlockBeforeTime:_activeEventBlock.endTime]];
+            [self commitEventBlockTimes:_activeEventBlock];
+            [self commitEventBlockTimes:[self boundaryBlockAfterTime:_activeEventBlock.startTime]];
+            break;
+        }
+        default:
+            break;
     }
-    
-    float loc = [recognizer locationInView:_calendarDay].y;
-    if (_dragType == kDragBoth) {
-        [self dragActiveEventBlockTo:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)];
-    } else if (_dragType == kDragStartTime) {
-        [self resizeEventBlock:_activeEventBlock startTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)];
-    } else {
-        [self resizeEventBlock:_activeEventBlock endTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)];
-    }
-	
-	if ([recognizer state] == UIGestureRecognizerStateEnded) {
-        [self commitEventBlockTimes:[self boundaryBlockBeforeTime:_activeEventBlock.endTime]];
-        [self commitEventBlockTimes:_activeEventBlock];
-        [self commitEventBlockTimes:[self boundaryBlockAfterTime:_activeEventBlock.startTime]];
-	}
 }
 
 #pragma mark -

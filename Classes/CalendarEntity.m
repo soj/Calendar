@@ -26,6 +26,10 @@
 	_endTime = endTime;
 	[self setNeedsDisplay];
 }
+
+- (NSTimeInterval)size {
+    return _endTime - _startTime;
+}
      
 - (CGRect)reframe {
     [NSException raise:NSInternalInconsistencyException 

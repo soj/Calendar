@@ -8,7 +8,9 @@
 typedef enum {
     kDragStartTime,
     kDragEndTime,
-    kDragBoth
+    kDragBoth,
+    kDragLinkedStartTime,
+    kDragLinkedEndTime
 } DragType;
 
 @protocol CalendarDayDelegate

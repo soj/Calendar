@@ -14,6 +14,8 @@
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime;
 - (void)drawInContext:(CGContextRef)context;
 
+- (NSTimeInterval)size;
+
 - (CGRect)reframe;
 
 @end
