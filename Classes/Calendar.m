@@ -11,7 +11,7 @@ static Calendar* instance = nil;
 + (Calendar*)getInstance {
     if (instance == nil) {
         instance = [[Calendar alloc] init];
-        [instance loadEvents];
+        [instance loadSavedData];
     }
     return instance;
 }
@@ -33,21 +33,46 @@ static Calendar* instance = nil;
     return self;
 }
 
-- (void)loadEvents {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSData *serializedEvents = [defaults dataForKey:EVENTS_SAVE_KEY];
+- (NSArray*)defaultCategories {
+    return [[NSArray alloc] initWithObjects:
+            [[Category alloc] initWithName:@"Social" andColor:[UIColor orangeColor]],
+            [[Category alloc] initWithName:@"Health" andColor:[UIColor purpleColor]],
+            [[Category alloc] initWithName:@"Waste of Time" andColor:[UIColor greenColor]],
+            nil];
+}
+
+- (void)loadSavedCategories {
+    NSData *serializedCategories = [[NSUserDefaults standardUserDefaults] dataForKey:CATEGORIES_SAVE_KEY];
+    _categories = (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:serializedCategories];
+    
+    if (!_categories) {
+        _categories = [[NSMutableDictionary alloc] init];
+        [[self defaultCategories] enumerateObjectsUsingBlock:^(Category* cat, NSUInteger index, BOOL *stop){
+            [_categories setObject:cat forKey:cat.identifier];
+        }];
+    }
+}
+
+- (void)loadSavedEvents {
+    NSAssert(_categories != nil, @"Must load categories before events!");
+    
+    NSData *serializedEvents = [[NSUserDefaults standardUserDefaults] dataForKey:EVENTS_SAVE_KEY];
     _events = (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:serializedEvents];
     
     if (_events) {
-        [[_events allValues] enumerateObjectsUsingBlock:^(Event* x, NSUInteger index, BOOL *stop){
-            if (x.ekEvent) {
-                [_ekEvents setObject:x.ekEvent forKey:x.ekEvent.eventIdentifier];
+        [[_events allValues] enumerateObjectsUsingBlock:^(Event* e, NSUInteger index, BOOL *stop){
+            if (e.ekEvent) {
+                [_ekEvents setObject:e.ekEvent forKey:e.ekEvent.eventIdentifier];
             }
         }];
     } else {
         _events = [[NSMutableDictionary alloc] init];
     }
+}
 
+- (void)loadSavedData {
+    [self loadSavedCategories];
+    [self loadSavedEvents];
 }
 
 - (BOOL)shouldSaveToEventKit {
@@ -137,12 +162,12 @@ static Calendar* instance = nil;
     return [_events objectForKey:identifier];
 }
 
+- (Category*)categoryWithId:(NSString *)identifier {
+    return [_categories objectForKey:identifier];
+}
+
 - (NSArray*)categories {
-    NSMutableArray *categories = [[NSMutableArray alloc] init];
-    [categories addObject:[[Category alloc] initWithName:@"Social" andColor:[UIColor orangeColor]]];
-    [categories addObject:[[Category alloc] initWithName:@"Health" andColor:[UIColor purpleColor]]];
-    [categories addObject:[[Category alloc] initWithName:@"Waste of Time" andColor:[UIColor greenColor]]];
-    return categories;
+    return [_categories allValues];
 }
 
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime {
@@ -182,9 +207,11 @@ static Calendar* instance = nil;
     }
     
     NSData *serializedEvents = [NSKeyedArchiver archivedDataWithRootObject:_events];
+    NSData *serializedCategories = [NSKeyedArchiver archivedDataWithRootObject:_categories];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:serializedEvents forKey:EVENTS_SAVE_KEY];
+    [defaults setObject:serializedCategories forKey:CATEGORIES_SAVE_KEY];
     [defaults synchronize];
 }
 

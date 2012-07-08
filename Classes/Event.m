@@ -27,7 +27,7 @@
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super init]) {
         _identifier = [aDecoder decodeObjectForKey:@"eventIdentifier"];
-        _category = [aDecoder decodeObjectForKey:@"category"];
+        _category = [[Calendar getInstance] categoryWithId:[aDecoder decodeObjectForKey:@"categoryIdentifier"]];
         _title = [aDecoder decodeObjectForKey:@"title"];
         _startTime = [aDecoder decodeFloatForKey:@"startTime"];
         _endTime = [aDecoder decodeFloatForKey:@"endTime"];
@@ -42,11 +42,14 @@
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
     [aCoder encodeObject:[self identifier] forKey:@"eventIdentifier"];
-    [aCoder encodeObject:[self categoryOrNull] forKey:@"category"];
     [aCoder encodeObject:[self title] forKey:@"title"];
     [aCoder encodeFloat:[self startTime] forKey:@"startTime"];
     [aCoder encodeFloat:[self endTime] forKey:@"endTime"];
 
+    if (_category != nil) {
+        [aCoder encodeObject:_category.identifier forKey:@"categoryIdentifier"];
+    }
+        
     if (_ekEvent != nil) {
         [aCoder encodeObject:[_ekEvent eventIdentifier] forKey:@"ekEventIdentifier"];
     }

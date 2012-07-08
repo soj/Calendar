@@ -2,12 +2,14 @@
 
 @implementation Category
 
-@synthesize color=_color, name=_name;
+@synthesize identifier=_identifier, color=_color, name=_name;
 
 - (id)initWithName:(NSString*)name andColor:(UIColor*)color {
 	self = [super init];
 	
 	if (self != nil) {
+        _identifier = [[NSProcessInfo processInfo] globallyUniqueString];
+
 		_name = name;
 		_color = color;
 	}

@@ -72,8 +72,12 @@
     CategoryChooserController *catController = [[CategoryChooserController alloc] initWithCalendar:[Calendar getInstance] andDelegate:delegate];
 	[self.view addSubview:catController.view];
     
+    CGRect screen = [[UIScreen mainScreen] bounds];
     CGRect frame = catController.view.frame;
-    [catController.view setFrame:CGRectMake(frame.origin.x, 320, frame.size.width, frame.size.height)];
+    CGRect newFrame = CGRectMake(frame.origin.x, 
+                                screen.size.height - frame.size.height,
+                                frame.size.width, frame.size.height);
+    [catController.view setFrame:newFrame];
     
     _catController = catController;
 }

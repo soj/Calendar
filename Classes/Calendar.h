@@ -4,11 +4,14 @@
 
 #define CALENDAR_TITLE                  @"Focus Calendar"
 #define EVENTS_SAVE_KEY                 @"events"
+#define CATEGORIES_SAVE_KEY            @"categories"
 #define CALENDAR_IDENTIFIER_SAVE_KEY    @"calendarIdentifier"
 
 @interface Calendar : NSObject {
 	EKEventStore *_ekEventStore;
     EKCalendar *_ekCalendar;
+    
+    NSMutableDictionary *_categories;
 	NSMutableDictionary *_events;
     NSMutableDictionary *_ekEvents;
     
@@ -21,7 +24,7 @@
 
 + (Calendar*)getInstance;
 
-- (void)loadEvents;
+- (void)loadSavedData;
 - (BOOL)shouldSaveToEventKit;
 
 - (void)loadEKEventsBetweenStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime;
@@ -31,6 +34,7 @@
 
 - (NSArray*)categories;
 - (Event*)eventWithId:(NSString*)identifier;
+- (Category*)categoryWithId:(NSString*)identifier;
 - (EKCalendar*)createNewCalendar;
 - (EKCalendar*)fetchExistingCalendar;
 
