@@ -36,7 +36,7 @@ typedef enum {
 	NSTimeInterval _topTime;
 	
 	DragType _dragType;
-    NSTimeInterval _prevDragTime;
+    NSTimeInterval _dragEventTimeOffset;
 }
 
 @property (readonly) NSTimeInterval startTime;
