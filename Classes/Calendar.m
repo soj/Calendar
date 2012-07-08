@@ -4,43 +4,55 @@
 
 @implementation Calendar
 
-@synthesize eventStore;
+@synthesize ekEventStore=_ekEventStore, ekCalendar=_ekCalendar;
+
+static Calendar* instance = nil;
+
++ (Calendar*)getInstance {
+    if (instance == nil) {
+        instance = [[Calendar alloc] init];
+        [instance loadEvents];
+    }
+    return instance;
+}
 
 - (id)init {
+    NSAssert(instance == nil, @"Attempted to create multiple instances of Singleton");
+    
 	self = [super init];
 	
 	if (self != nil) {
-        _eventStore = [[EKEventStore alloc] init];
+        _ekEventStore = [[EKEventStore alloc] init];
+        _ekEvents = [[NSMutableDictionary alloc] init];
         
-        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-        NSData *serializedEvents = [defaults dataForKey:EVENTS_SAVE_KEY];
-        _events = (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:serializedEvents];
-        
-        if (_events != NULL) {
-            NSEnumerator *e = [_events keyEnumerator];
-            NSString *eventIdentifier;
-            while (eventIdentifier = [e nextObject]) {
-                Event *event = [_events objectForKey:eventIdentifier];
-                EKEvent *ekEvent = [_eventStore eventWithIdentifier:eventIdentifier];
-                
-                if (ekEvent == NULL) {
-                    // Event was deleted externally, remove from events dictionary
-                    [_events removeObjectForKey:eventIdentifier];
-                    continue;
-                }
-                
-                [event setEkEvent:ekEvent];
-            }
-        } else {
-            _events = [[NSMutableDictionary alloc] init];
-        }
-                
         if (!(_ekCalendar = [self fetchExistingCalendar])) {
             _ekCalendar = [self createNewCalendar];
         }
-	}
+    }
 	
     return self;
+}
+
+- (void)loadEvents {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSData *serializedEvents = [defaults dataForKey:EVENTS_SAVE_KEY];
+    _events = (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:serializedEvents];
+    
+    if (_events) {
+        [[_events allValues] enumerateObjectsUsingBlock:^(Event* x, NSUInteger index, BOOL *stop){
+            if (x.ekEvent) {
+                [_ekEvents setObject:x.ekEvent forKey:x.ekEvent.eventIdentifier];
+            }
+        }];
+    } else {
+        _events = [[NSMutableDictionary alloc] init];
+    }
+
+}
+
+- (BOOL)shouldSaveToEventKit {
+    // TODO: Make this a setting
+    return YES;
 }
 
 - (EKCalendar*)fetchExistingCalendar {
@@ -48,14 +60,14 @@
     NSString *calendarIdentifier = [defaults stringForKey:CALENDAR_IDENTIFIER_SAVE_KEY];
     
     if (calendarIdentifier != NULL) {
-        return [_eventStore calendarWithIdentifier:calendarIdentifier];
+        return [_ekEventStore calendarWithIdentifier:calendarIdentifier];
     }
     return NULL;
 }
 
 - (EKCalendar*)createNewCalendar {
     EKSource* localSource;
-    for (EKSource* source in _eventStore.sources) {
+    for (EKSource* source in _ekEventStore.sources) {
         if (source.sourceType == EKSourceTypeLocal) {
             localSource = source;
             break;
@@ -66,12 +78,12 @@
         return NULL;
     }
     
-    EKCalendar *calendar = [EKCalendar calendarWithEventStore:_eventStore];
+    EKCalendar *calendar = [EKCalendar calendarWithEventStore:_ekEventStore];
     calendar.source = localSource;
     calendar.title = CALENDAR_TITLE;
     
     NSError* error;
-    [_eventStore saveCalendar:calendar commit:YES error:&error];
+    [_ekEventStore saveCalendar:calendar commit:YES error:&error];
     
     NSString *calendarIdentifier = [calendar calendarIdentifier];
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -89,22 +101,21 @@
     NSDate *startDate = [NSDate dateWithTimeIntervalSinceReferenceDate:startTime];
     NSDate *endDate = [NSDate dateWithTimeIntervalSinceReferenceDate:endTime];
     
-    NSPredicate *predicate = [_eventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:nil];
-    NSArray *ekEvents = [_eventStore eventsMatchingPredicate:predicate];
+    NSPredicate *predicate = [_ekEventStore predicateForEventsWithStartDate:startDate endDate:endDate calendars:nil];
+    NSArray *ekEvents = [_ekEventStore eventsMatchingPredicate:predicate];
     
-    NSEnumerator *e = [ekEvents objectEnumerator];
-    EKEvent *ekEvent;
-    while (ekEvent = [e nextObject]) {
+    [ekEvents enumerateObjectsUsingBlock:^(EKEvent* ekEvent, NSUInteger index, BOOL *stop){
         // Ignore all-day events because they're impossible to represent
         if ([ekEvent isAllDay]) {
-            continue;
+            return;
         }
         
-        if (![_events objectForKey:[ekEvent eventIdentifier]]) {
-            Event *newEvent = [[Event alloc] initWithEKEvent:ekEvent andEventStore:_eventStore];
-            [_events setObject:newEvent forKey:[ekEvent eventIdentifier]];
+        if (![_ekEvents objectForKey:[ekEvent eventIdentifier]]) {
+            Event *newEvent = [[Event alloc] initWithEvent:ekEvent];
+            [_events setObject:newEvent forKey:[newEvent identifier]];
+            [_ekEvents setObject:ekEvent forKey:[ekEvent eventIdentifier]];
         }
-    }
+    }];
 }
 
 - (NSArray*)getEventsBetweenStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime {
@@ -135,14 +146,9 @@
 }
 
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime {
-    EKEvent *newEKEvent = [EKEvent eventWithEventStore:_eventStore];
-    [newEKEvent setStartDate:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
-    [newEKEvent setEndDate:[NSDate dateWithTimeIntervalSinceReferenceDate:endTime]];
-    [newEKEvent setCalendar:_ekCalendar];
-    [newEKEvent setTitle:DEFAULT_EVENT_TITLE];
-    
-    Event *newEvent = [[Event alloc] initWithEKEvent:newEKEvent andEventStore:_eventStore];
-    [newEvent save];                            // Need to save to get event identifier
+    Event *newEvent = [[Event alloc] init];
+    newEvent.startTime = startTime;
+    newEvent.endTime = endTime;
     [_events setObject:newEvent forKey:[newEvent identifier]];
     return newEvent;
 }
@@ -152,25 +158,29 @@
     [_events removeObjectForKey:eventId];
     
     NSError *deleteError;
-    [_eventStore removeEvent:e.ekEvent span:EKSpanThisEvent error:&deleteError];
+    [_ekEventStore removeEvent:e.ekEvent span:EKSpanThisEvent error:&deleteError];
 }
 
-- (void)save {
-    // Save to EventKit
+- (void)saveToEventKit {
     NSEnumerator *e = [_events objectEnumerator];
     Event* event;
     while (event = [e nextObject]) {
-        [event save];
+        [event saveToEventKit];
     }
     
     NSError *saveError;
-    [_eventStore commit:&saveError];
+    [_ekEventStore commit:&saveError];
     
     if (saveError != nil) {
         NSLog(@"%@", saveError.description);
     }
+}
+
+- (void)save {    
+    if ([self shouldSaveToEventKit]) {
+        [self saveToEventKit];
+    }
     
-    //Save locally
     NSData *serializedEvents = [NSKeyedArchiver archivedDataWithRootObject:_events];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

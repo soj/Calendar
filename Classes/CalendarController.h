@@ -4,7 +4,6 @@
 #import "CategoryChooserController.h"
 
 @interface CalendarController : UIViewController <CalendarDayDelegate, UIScrollViewDelegate> {
-	Calendar *_calendar;
 	UIScrollView *_scrollView;
     CategoryChooserController *_catController;
 	

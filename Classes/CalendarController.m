@@ -8,7 +8,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
 	
-	_calendar = [[Calendar alloc] init];
 	_calendarDays = [[NSMutableDictionary alloc] init];
 	
 	[self setToday:[CalendarMath floorTimeToStartOfDay:[[NSDate date] timeIntervalSinceReferenceDate]]];
@@ -29,7 +28,7 @@
 	} else {
 		dayController = [[CalendarDayController alloc] initWithStartTime:startTime andDelegate:self];
 		[_calendarDays setObject:dayController forKey:[NSNumber numberWithInt:startTime]];
-        NSArray *events = [_calendar getEventsBetweenStartTime:[dayController startTime] andEndTime:endTime];
+        NSArray *events = [[Calendar getInstance] getEventsBetweenStartTime:[dayController startTime] andEndTime:endTime];
         [dayController setEvents:events];
 	}
 
@@ -63,14 +62,14 @@
 }
 
 - (void)prepareToExit {
-    [_calendar save];
+    [[Calendar getInstance] save];
 }
 
 #pragma mark -
 #pragma mark CalendarDayDelegate Methods
 
 - (void)showCategoryChooserWithDelegate:(id)delegate {
-    CategoryChooserController *catController = [[CategoryChooserController alloc] initWithCalendar:_calendar andDelegate:delegate];
+    CategoryChooserController *catController = [[CategoryChooserController alloc] initWithCalendar:[Calendar getInstance] andDelegate:delegate];
 	[self.view addSubview:catController.view];
     
     CGRect frame = catController.view.frame;
@@ -86,31 +85,31 @@
 }
 
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {
-    return [_calendar createEventWithStartTime:startTime andEndTime:endTime];
+    return [[Calendar getInstance] createEventWithStartTime:startTime andEndTime:endTime];
 }
 
 - (void)updateEvent:(NSString*)eventId title:(NSString*)title {
-    [[_calendar eventWithId:eventId] setTitle:title];
+    [[[Calendar getInstance] eventWithId:eventId] setTitle:title];
 }
 
 - (void)updateEvent:(NSString*)eventId startTime:(NSTimeInterval)startTime {
-    [[_calendar eventWithId:eventId] setStartTime:startTime];
+    [[[Calendar getInstance] eventWithId:eventId] setStartTime:startTime];
 }
 
 - (void)updateEvent:(NSString*)eventId endTime:(NSTimeInterval)endTime {
-    [[_calendar eventWithId:eventId] setEndTime:endTime];
+    [[[Calendar getInstance] eventWithId:eventId] setEndTime:endTime];
 }
 
 - (void)updateEvent:(NSString*)eventId category:(Category *)category {
-    [[_calendar eventWithId:eventId] setCategory:category];
+    [[[Calendar getInstance] eventWithId:eventId] setCategory:category];
 }
 
 - (void)deleteEvent:(NSString*)eventId {
-    [_calendar deleteEvent:eventId];
+    [[Calendar getInstance] deleteEvent:eventId];
 }
 
 - (BOOL)eventIsValid:(NSString*)eventId {
-    Event *e = [_calendar eventWithId:eventId];
+    Event *e = [[Calendar getInstance] eventWithId:eventId];
     return !([e.title isEqualToString:DEFAULT_EVENT_TITLE] || [e categoryOrNull] == nil);
 }
 

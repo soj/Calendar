@@ -1,14 +1,24 @@
 #import "Event.h"
-
+#import "Calendar.h"
 
 @implementation Event
 
-@synthesize ekEvent=_ekEvent;
+@synthesize ekEvent=_ekEvent, title=_title, startTime=_startTime, endTime=_endTime, category=_category, identifier=_identifier;
 
-- (id)initWithEKEvent:(EKEvent*)ekEvent andEventStore:(EKEventStore*)store {
+- (id)init {
     if (self = [super init]) {
-        _ekEvent = ekEvent;
-        _ekEventStore = store;
+        _identifier = [[NSProcessInfo processInfo] globallyUniqueString];
+    }
+    
+    return self;
+}
+
+- (id)initWithEvent:(EKEvent*)event {
+    if (self = [self init]) {
+        _ekEvent = event;
+        _title = [_ekEvent title];
+        _startTime = [[_ekEvent startDate] timeIntervalSinceReferenceDate];
+        _endTime = [[_ekEvent endDate] timeIntervalSinceReferenceDate];
     }
     
     return self;
@@ -16,23 +26,30 @@
 
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super init]) {
+        _identifier = [aDecoder decodeObjectForKey:@"eventIdentifier"];
         _category = [aDecoder decodeObjectForKey:@"category"];
+        _title = [aDecoder decodeObjectForKey:@"title"];
+        _startTime = [aDecoder decodeFloatForKey:@"startTime"];
+        _endTime = [aDecoder decodeFloatForKey:@"endTime"];
+        
+        NSString *ekEventIdentifier = [aDecoder decodeObjectForKey:@"ekEventIdentifier"];
+        if (ekEventIdentifier) {
+            [self loadFromEventKitWithIdentifier:ekEventIdentifier];
+        }
     }
     return self;
 }
 
 - (void)encodeWithCoder:(NSCoder *)aCoder {
-    [aCoder encodeObject:_ekEvent.eventIdentifier forKey:@"eventIdentifier"];
-    [aCoder encodeObject:_category forKey:@"category"];
-}
+    [aCoder encodeObject:[self identifier] forKey:@"eventIdentifier"];
+    [aCoder encodeObject:[self categoryOrNull] forKey:@"category"];
+    [aCoder encodeObject:[self title] forKey:@"title"];
+    [aCoder encodeFloat:[self startTime] forKey:@"startTime"];
+    [aCoder encodeFloat:[self endTime] forKey:@"endTime"];
 
-- (NSString*)identifier {
-    NSAssert([_ekEvent eventIdentifier] != NULL, @"Need to save EKEvent before retrieving event identifier");
-    return [_ekEvent eventIdentifier];
-}
-
-- (void)setCategory:(Category *)category {
-    _category = category;
+    if (_ekEvent != nil) {
+        [aCoder encodeObject:[_ekEvent eventIdentifier] forKey:@"ekEventIdentifier"];
+    }
 }
 
 - (Category*)category {
@@ -46,42 +63,27 @@
     return _category;
 }
 
-- (void)setTitle:(NSString*)title {
-    NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
-    [_ekEvent setTitle:title];
-    [self save];
+- (BOOL)loadFromEventKitWithIdentifier:(NSString*)identifier {
+    if (_ekEvent) return YES;
+    _ekEvent = [[[Calendar getInstance] ekEventStore] eventWithIdentifier:identifier];
+    return (_ekEvent != nil);
 }
 
-- (NSString*)title {
-    NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
-    return [_ekEvent title];
+- (void)prepEKEvent {
+    if (!_ekEvent) {
+        EKEvent *newEKEvent = [EKEvent eventWithEventStore:[[Calendar getInstance] ekEventStore]];
+        [newEKEvent setStartDate:[NSDate dateWithTimeIntervalSinceReferenceDate:_startTime]];
+        [newEKEvent setEndDate:[NSDate dateWithTimeIntervalSinceReferenceDate:_endTime]];
+        [newEKEvent setCalendar:[[Calendar getInstance] ekCalendar]];
+        [newEKEvent setTitle:DEFAULT_EVENT_TITLE];
+    }
 }
 
-- (void)setStartTime:(NSTimeInterval)startTime {
-    NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
-    [_ekEvent setStartDate:[NSDate dateWithTimeIntervalSinceReferenceDate:startTime]];
-    [self save];
-}
-
-- (NSTimeInterval)startTime {
-    NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
-    return [[_ekEvent startDate] timeIntervalSinceReferenceDate];
-}
-
-- (void)setEndTime:(NSTimeInterval)endTime {
-    NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
-    [_ekEvent setEndDate:[NSDate dateWithTimeIntervalSinceReferenceDate:endTime]];
-    [self save];
-}
-
-- (NSTimeInterval)endTime {
-    NSAssert(_ekEvent != NULL, @"Could not find EKEvent for Event");
-    return [[_ekEvent endDate] timeIntervalSinceReferenceDate];
-}
-
-- (void)save {
+- (void)saveToEventKit {
+    [self prepEKEvent];
+    
     NSError *saveError;
-    if (![_ekEventStore saveEvent:_ekEvent span:EKSpanThisEvent error:&saveError]) {
+    if (![[[Calendar getInstance] ekEventStore] saveEvent:_ekEvent span:EKSpanThisEvent error:&saveError]) {
         NSLog(@"Warning: No new event data to save");
     }
     
