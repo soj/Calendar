@@ -1,5 +1,6 @@
 #import "CalendarDayController.h"
 #import "CalendarMath.h"
+#import "UIGestureRecognizer+Tools.h"
 
 @implementation CalendarDayController
 
@@ -114,40 +115,47 @@
 	return newBlock;
 }
 
-- (void)deleteActiveEventBlock {
-    CalendarEvent *block = _activeEventBlock;
+- (void)deleteEventBlock:(CalendarEvent*)event {
+    if (event == _activeEventBlock) {
+        [self unsetActiveEventBlock];
+        [_delegate dismissCategoryChooser];
+    }
     
-    [self unsetActiveEventBlock];
-    
-    [_delegate dismissCategoryChooser];
-    
-    [_delegate deleteEvent:block.eventId];
-    [_eventBlocks removeObject:block];
-    [block removeFromSuperview];
+    [_delegate deleteEvent:event.eventId];
+    [_eventBlocks removeObject:event];
+    [event removeFromSuperview];
+}
+
+- (CalendarEvent*)boundaryBlockBeforeTime:(NSTimeInterval)time {
+    __block CalendarEvent *boundaryBlock = nil;
+    [[_eventBlocks allObjects] enumerateObjectsUsingBlock:^(CalendarEvent* block, NSUInteger index, BOOL *stop){
+        if (block.endTime > (boundaryBlock ? boundaryBlock.endTime : _startTime) && block.endTime < time) {
+            boundaryBlock = block;
+        }
+    }];
+    return boundaryBlock;
+}
+
+- (CalendarEvent*)boundaryBlockAfterTime:(NSTimeInterval)time {
+    __block CalendarEvent *boundaryBlock = nil;
+    [[_eventBlocks allObjects] enumerateObjectsUsingBlock:^(CalendarEvent* block, NSUInteger index, BOOL *stop){
+        if (block.startTime < (boundaryBlock ? boundaryBlock.startTime : _startTime + SECONDS_PER_DAY) && block.startTime > time) {
+            boundaryBlock = block;
+        }
+    }];
+    return boundaryBlock;
 }
 
 - (NSTimeInterval)boundaryBeforeTime:(NSTimeInterval)time {
-    NSEnumerator *e = [_eventBlocks objectEnumerator];
-	CalendarEvent *thatEvent;
-    NSTimeInterval boundary = _startTime;
-    while (thatEvent = [e nextObject]) {
-        if ([thatEvent endTime] > boundary && [thatEvent endTime] < time) {
-            boundary = [thatEvent endTime];
-        }
-    }
-    return boundary;
+    CalendarEvent *thatBlock = [self boundaryBlockBeforeTime:time];
+    if (thatBlock) return thatBlock.endTime;
+    else return _startTime;
 }
 
 - (NSTimeInterval)boundaryAfterTime:(NSTimeInterval)time {
-    NSEnumerator *e = [_eventBlocks objectEnumerator];
-	CalendarEvent *thatEvent;
-    NSTimeInterval boundary = _startTime + SECONDS_PER_DAY;
-    while (thatEvent = [e nextObject]) {
-        if ([thatEvent startTime] < boundary && [thatEvent startTime] > time) {
-            boundary = [thatEvent startTime];
-        }
-    }
-    return boundary;
+    CalendarEvent *thatBlock = [self boundaryBlockAfterTime:time];
+    if (thatBlock) return thatBlock.startTime;
+    else return _startTime + SECONDS_PER_DAY;
 }
 
 - (BOOL)isTimeEmpty:(NSTimeInterval)time {
@@ -178,18 +186,20 @@
     }
 }
 
-- (void)resize:(DragType)type activeEventBlockTo:(NSTimeInterval)time {
-    NSTimeInterval newStartTime = _activeEventBlock.startTime, newEndTime = _activeEventBlock.endTime;
+- (void)resizeEventBlock:(CalendarEvent*)eventBlock startTime:(NSTimeInterval)time {
+    CalendarEvent *thatBlock = [self boundaryBlockBeforeTime:eventBlock.endTime];
+    if (thatBlock && time < thatBlock.endTime) {
+        [self resizeEventBlock:thatBlock endTime:time];
+    }
+    eventBlock.startTime = time;
+}
 
-    if (type == kDragStartTime) {
-        newStartTime = MAX(time, [self boundaryBeforeTime:_activeEventBlock.endTime]);
-	}
-    if (type == kDragEndTime) {
-        newEndTime = MIN(time, [self boundaryAfterTime:_activeEventBlock.startTime]);
-	}
-    
-    _activeEventBlock.startTime = newStartTime;
-    _activeEventBlock.endTime = newEndTime;
+- (void)resizeEventBlock:(CalendarEvent*)eventBlock endTime:(NSTimeInterval)time {
+    CalendarEvent *thatBlock = [self boundaryBlockAfterTime:eventBlock.startTime];
+    if (thatBlock && time > thatBlock.startTime) {
+        [self resizeEventBlock:thatBlock startTime:time];
+    }
+    eventBlock.endTime = time;
 }
 
 - (void)dragActiveEventBlockTo:(NSTimeInterval)time {
@@ -211,15 +221,17 @@
     _activeEventBlock.endTime = newEndTime;
 }
 
-- (void)commitActiveEventBlockTimes {
-    _activeEventBlock.startTime = [CalendarMath roundTimeToGranularity:_activeEventBlock.startTime];
-    _activeEventBlock.endTime = [CalendarMath roundTimeToGranularity:_activeEventBlock.endTime];
+- (void)commitEventBlockTimes:(CalendarEvent*)event {
+    if (!event) return;
     
-    if (_activeEventBlock.endTime - _activeEventBlock.startTime < MIN_TIME_INTERVAL) {
-        [self deleteActiveEventBlock];
+    event.startTime = [CalendarMath roundTimeToGranularity:event.startTime];
+    event.endTime = [CalendarMath roundTimeToGranularity:event.endTime];
+    
+    if (event.endTime - event.startTime < MIN_TIME_INTERVAL) {
+        [self deleteEventBlock:event];
     } else {
-        [_delegate updateEvent:_activeEventBlock.eventId startTime:_activeEventBlock.startTime];
-        [_delegate updateEvent:_activeEventBlock.eventId endTime:_activeEventBlock.endTime];
+        [_delegate updateEvent:event.eventId startTime:event.startTime];
+        [_delegate updateEvent:event.eventId endTime:event.endTime];
     }
 }
 
@@ -244,10 +256,12 @@
     NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
     
     if (xLoc < EVENT_DX) {
-        if (![_delegate eventIsValid:_activeEventBlock.eventId]) {
-            [self deleteActiveEventBlock];
-        } else {
-            [self unsetActiveEventBlock];
+        if (_activeEventBlock) {
+            if (![_delegate eventIsValid:_activeEventBlock.eventId]) {
+                [self deleteEventBlock:_activeEventBlock];
+            } else {
+                [self unsetActiveEventBlock];
+            }
         }
     } else {
         if (_activeEventBlock && [_activeEventBlock hasFocus]) {
@@ -255,7 +269,7 @@
                 [_delegate dismissCategoryChooser];
                 [_activeEventBlock resignFocus];
             } else {
-                [self deleteActiveEventBlock];
+                [self deleteEventBlock:_activeEventBlock];
             }
         } else {
             [self setActiveEventBlock:[self createNewEventWithStartTime:startTime]];
@@ -277,25 +291,35 @@
 - (void)handleLongPress:(UILongPressGestureRecognizer*)recognizer {	
 	float yLoc = [recognizer locationInView:_calendarDay].y;
     
-    if ([recognizer state] ==  UIGestureRecognizerStateBegan) {
-		NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
-        CalendarEvent *new;
-        if ((new = [self createNewEventWithStartTime:startTime])) {
-            [self setActiveEventBlock:new];
+    switch (recognizer.state) {
+        case UIGestureRecognizerStateBegan: {
+            NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
+            CalendarEvent *new;
+            if ((new = [self createNewEventWithStartTime:startTime])) {
+                [self setActiveEventBlock:new];
+            } else {
+                [recognizer cancel];
+            }
+            
+            break;
         }
+        case UIGestureRecognizerStateChanged: {
+            if (!_activeEventBlock) return;
+            _activeEventBlock.endTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
+            _activeEventBlock.endTime = MAX(_activeEventBlock.endTime, _activeEventBlock.startTime + MIN_TIME_INTERVAL);
+            _activeEventBlock.endTime = MIN(_activeEventBlock.endTime, [self boundaryAfterTime:_activeEventBlock.startTime]);
+            break;
+        }
+        case UIGestureRecognizerStateEnded: {
+            [self commitEventBlockTimes:_activeEventBlock];
+            [self commitEventBlockTimes:[self boundaryBlockAfterTime:_activeEventBlock.startTime]];
+            [self scrollToEntity:_activeEventBlock];
+            [_activeEventBlock setFocus];
+            break;
+        }
+        default:
+            break;
     }
-    
-    if (!_activeEventBlock) return;
-	
-	_activeEventBlock.endTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
-    _activeEventBlock.endTime = MAX(_activeEventBlock.endTime, _activeEventBlock.startTime + MIN_TIME_INTERVAL);
-    _activeEventBlock.endTime = MIN(_activeEventBlock.endTime, [self boundaryAfterTime:_activeEventBlock.startTime]);
-	
-	if ([recognizer state] == UIGestureRecognizerStateEnded) {
-        [self commitActiveEventBlockTimes];
-        [self scrollToEntity:_activeEventBlock];
-		[_activeEventBlock setFocus];
-	}
 }
 
 - (void)handlePanOnEventBlock:(UIPanGestureRecognizer*)recognizer {
@@ -308,12 +332,16 @@
     float loc = [recognizer locationInView:_calendarDay].y;
     if (_dragType == kDragBoth) {
         [self dragActiveEventBlockTo:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)];
+    } else if (_dragType == kDragStartTime) {
+        [self resizeEventBlock:_activeEventBlock startTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)];
     } else {
-        [self resize:_dragType activeEventBlockTo:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)];
+        [self resizeEventBlock:_activeEventBlock endTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)];
     }
 	
 	if ([recognizer state] == UIGestureRecognizerStateEnded) {
-        [self commitActiveEventBlockTimes];
+        [self commitEventBlockTimes:[self boundaryBlockBeforeTime:_activeEventBlock.endTime]];
+        [self commitEventBlockTimes:_activeEventBlock];
+        [self commitEventBlockTimes:[self boundaryBlockAfterTime:_activeEventBlock.startTime]];
 	}
 }
 
