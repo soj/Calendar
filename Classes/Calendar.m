@@ -52,7 +52,7 @@ static Calendar* instance = nil;
 
 - (BOOL)shouldSaveToEventKit {
     // TODO: Make this a setting
-    return YES;
+    return NO;
 }
 
 - (EKCalendar*)fetchExistingCalendar {
@@ -176,7 +176,7 @@ static Calendar* instance = nil;
     }
 }
 
-- (void)save {    
+- (void)save {
     if ([self shouldSaveToEventKit]) {
         [self saveToEventKit];
     }

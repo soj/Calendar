@@ -71,11 +71,11 @@
 
 - (void)prepEKEvent {
     if (!_ekEvent) {
-        EKEvent *newEKEvent = [EKEvent eventWithEventStore:[[Calendar getInstance] ekEventStore]];
-        [newEKEvent setStartDate:[NSDate dateWithTimeIntervalSinceReferenceDate:_startTime]];
-        [newEKEvent setEndDate:[NSDate dateWithTimeIntervalSinceReferenceDate:_endTime]];
-        [newEKEvent setCalendar:[[Calendar getInstance] ekCalendar]];
-        [newEKEvent setTitle:DEFAULT_EVENT_TITLE];
+        _ekEvent = [EKEvent eventWithEventStore:[[Calendar getInstance] ekEventStore]];
+        [_ekEvent setStartDate:[NSDate dateWithTimeIntervalSinceReferenceDate:_startTime]];
+        [_ekEvent setEndDate:[NSDate dateWithTimeIntervalSinceReferenceDate:_endTime]];
+        [_ekEvent setCalendar:[[Calendar getInstance] ekCalendar]];
+        [_ekEvent setTitle:[self title]];
     }
 }
 
