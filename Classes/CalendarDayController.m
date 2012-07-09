@@ -149,7 +149,7 @@
     NSTimeInterval endTime = time + MIN_TIME_INTERVAL;
     
     if (![self isTimeEmptyBetween:time and:endTime]) {
-        endTime = [self boundaryAfterTime:(time - 1)];
+        endTime = [self boundaryAfterTime:(time - 1)]; // -1 to account for completely overlapping blocks
         time = endTime - MIN_TIME_INTERVAL;
         if (![self isTimeEmptyBetween:time and:endTime]) {
             return nil;
