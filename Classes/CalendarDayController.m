@@ -50,6 +50,52 @@
 }
 
 #pragma mark -
+#pragma mark Event Block Management Helpers
+
+- (CalendarEvent*)boundaryBlockBeforeTime:(NSTimeInterval)time {
+    __block CalendarEvent *boundaryBlock = nil;
+    [[_eventBlocks allObjects] enumerateObjectsUsingBlock:^(CalendarEvent* block, NSUInteger index, BOOL *stop){
+        if (block.endTime > (boundaryBlock ? boundaryBlock.endTime : _startTime) && block.endTime < time) {
+            boundaryBlock = block;
+        }
+    }];
+    return boundaryBlock;
+}
+
+- (CalendarEvent*)boundaryBlockAfterTime:(NSTimeInterval)time {
+    __block CalendarEvent *boundaryBlock = nil;
+    [[_eventBlocks allObjects] enumerateObjectsUsingBlock:^(CalendarEvent* block, NSUInteger index, BOOL *stop){
+        if (block.startTime < (boundaryBlock ? boundaryBlock.startTime : _startTime + SECONDS_PER_DAY) && block.startTime > time) {
+            boundaryBlock = block;
+        }
+    }];
+    return boundaryBlock;
+}
+
+- (NSTimeInterval)boundaryBeforeTime:(NSTimeInterval)time {
+    CalendarEvent *thatBlock = [self boundaryBlockBeforeTime:time];
+    if (thatBlock) return thatBlock.endTime;
+    else return _startTime;
+}
+
+- (NSTimeInterval)boundaryAfterTime:(NSTimeInterval)time {
+    CalendarEvent *thatBlock = [self boundaryBlockAfterTime:time];
+    if (thatBlock) return thatBlock.startTime;
+    else return _startTime + SECONDS_PER_DAY;
+}
+
+- (BOOL)isTimeEmpty:(NSTimeInterval)time {
+    NSEnumerator *e = [_eventBlocks objectEnumerator];
+	CalendarEvent *thatEvent;
+    while (thatEvent = [e nextObject]) {
+        if ([CalendarMath timesIntersectS1:time e1:time s2:thatEvent.startTime e2:thatEvent.endTime]) {
+            return NO;
+        }
+    }
+    return YES;
+}
+
+#pragma mark -
 #pragma mark Event Block Management
 
 - (void)setEvents:(NSArray*)events {
@@ -124,49 +170,6 @@
     [_delegate deleteEvent:event.eventId];
     [_eventBlocks removeObject:event];
     [event removeFromSuperview];
-}
-
-- (CalendarEvent*)boundaryBlockBeforeTime:(NSTimeInterval)time {
-    __block CalendarEvent *boundaryBlock = nil;
-    [[_eventBlocks allObjects] enumerateObjectsUsingBlock:^(CalendarEvent* block, NSUInteger index, BOOL *stop){
-        if (block.endTime > (boundaryBlock ? boundaryBlock.endTime : _startTime) && block.endTime < time) {
-            boundaryBlock = block;
-        }
-    }];
-    return boundaryBlock;
-}
-
-- (CalendarEvent*)boundaryBlockAfterTime:(NSTimeInterval)time {
-    __block CalendarEvent *boundaryBlock = nil;
-    [[_eventBlocks allObjects] enumerateObjectsUsingBlock:^(CalendarEvent* block, NSUInteger index, BOOL *stop){
-        if (block.startTime < (boundaryBlock ? boundaryBlock.startTime : _startTime + SECONDS_PER_DAY) && block.startTime > time) {
-            boundaryBlock = block;
-        }
-    }];
-    return boundaryBlock;
-}
-
-- (NSTimeInterval)boundaryBeforeTime:(NSTimeInterval)time {
-    CalendarEvent *thatBlock = [self boundaryBlockBeforeTime:time];
-    if (thatBlock) return thatBlock.endTime;
-    else return _startTime;
-}
-
-- (NSTimeInterval)boundaryAfterTime:(NSTimeInterval)time {
-    CalendarEvent *thatBlock = [self boundaryBlockAfterTime:time];
-    if (thatBlock) return thatBlock.startTime;
-    else return _startTime + SECONDS_PER_DAY;
-}
-
-- (BOOL)isTimeEmpty:(NSTimeInterval)time {
-    NSEnumerator *e = [_eventBlocks objectEnumerator];
-	CalendarEvent *thatEvent;
-    while (thatEvent = [e nextObject]) {
-        if ([CalendarMath timesIntersectS1:time e1:time s2:thatEvent.startTime e2:thatEvent.endTime]) {
-            return NO;
-        }
-    }
-    return YES;
 }
 
 #pragma mark -
@@ -289,8 +292,13 @@
 
 - (void)handleTapOnEventBlock:(UITapGestureRecognizer*)recognizer {
     if ([recognizer view] == _activeEventBlock) {
-        [self scrollToEntity:_activeEventBlock];
-        [_activeEventBlock setFocus];
+        if (![_activeEventBlock hasFocus]) {
+            [self scrollToEntity:_activeEventBlock];
+            [_activeEventBlock setFocus];
+        } else {
+            [_activeEventBlock resignFocus];
+            [_delegate dismissCategoryChooser];
+        }
     } else {
         [self setActiveEventBlock:(CalendarEvent*)[recognizer view]];
     }
