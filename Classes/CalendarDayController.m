@@ -149,7 +149,11 @@
     NSTimeInterval endTime = time + MIN_TIME_INTERVAL;
     
     if (![self isTimeEmptyBetween:time and:endTime]) {
-        return nil;
+        endTime = [self boundaryAfterTime:(time - 1)];
+        time = endTime - MIN_TIME_INTERVAL;
+        if (![self isTimeEmptyBetween:time and:endTime]) {
+            return nil;
+        }
     }
     
     CalendarEvent* newBlock = [self createEventBlockWithStartTime:time endTime:endTime];
