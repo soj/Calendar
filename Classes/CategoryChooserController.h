@@ -15,6 +15,8 @@
 	
 	UITableView *_categoryTableView;
     CategoryChooserCell *_activeCell;
+    
+    BOOL _keyboardOffset;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *categoryTableView;

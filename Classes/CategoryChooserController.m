@@ -11,6 +11,11 @@
 	if (self != nil) {
 		_delegate = delegate;
         [self sortCategories];
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiKeyboardDidShow:)
+                                                     name:UIKeyboardDidShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiKeyboardDidHide:)
+                                                     name:UIKeyboardDidHideNotification object:nil];
 	}
     
 	return self;
@@ -26,6 +31,36 @@
     _categories = [_categories sortedArrayUsingComparator:^(Category *c1, Category *c2) {
         return (NSComparisonResult)[c1.name compare:c2.name];
     }];
+}
+
+- (void)uiKeyboardDidShow:(NSNotification*)notification {
+    // Note: When you animate this, use UIKeyboardAnimationDurationUserInfoKey, UIKeyboardAnimationCurveUserInfoKey and UIKeyboardFrameBeginUserInfoKey
+    
+    NSDictionary* keyboardInfo = [notification userInfo];
+    NSValue* keyboardFrameEnd = [keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
+    CGRect keyboardFrame = [keyboardFrameEnd CGRectValue];
+    
+    CGRect frame = self.view.frame;
+    CGRect newFrame = CGRectMake(frame.origin.x, 
+                                 frame.origin.y - keyboardFrame.size.height,
+                                 frame.size.width, frame.size.height);
+    [self.view setFrame:newFrame];
+    
+    _keyboardOffset = YES;
+}
+
+- (void)uiKeyboardDidHide:(NSNotification*)notification {
+    if (!_keyboardOffset) return;
+    
+    NSDictionary* keyboardInfo = [notification userInfo];
+    NSValue* keyboardFrameBegin = [keyboardInfo valueForKey:UIKeyboardFrameBeginUserInfoKey];
+    CGRect keyboardFrame = [keyboardFrameBegin CGRectValue];
+    
+    CGRect frame = self.view.frame;
+    CGRect newFrame = CGRectMake(frame.origin.x, 
+                                 frame.origin.y + keyboardFrame.size.height,
+                                 frame.size.width, frame.size.height);
+    [self.view setFrame:newFrame];
 }
 
 #pragma mark -
