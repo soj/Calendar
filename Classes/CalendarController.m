@@ -66,6 +66,44 @@
 }
 
 #pragma mark -
+#pragma mark Notification Handling
+
+- (UILocalNotification*)getNotificationForEvent:(Event*)event {
+    NSArray *notifs = [[UIApplication sharedApplication] scheduledLocalNotifications];
+    NSUInteger idx = [notifs indexOfObjectPassingTest:^BOOL(UILocalNotification* notif, NSUInteger idx, BOOL *stop) {
+        return [notif.userInfo objectForKey:@"eventIdentifier"] == event.identifier;
+    }];
+    if (idx < [notifs count]) {
+        return [notifs objectAtIndex:idx];
+    }
+    return nil;
+}
+
+- (void)cancelLocalNotificationForEvent:(Event*)event {
+    UILocalNotification *notif = [self getNotificationForEvent:event];
+    if (notif) {
+        [[UIApplication sharedApplication] cancelLocalNotification:notif];
+    }
+}
+
+- (void)scheduleLocalNotificationForEvent:(Event*)event {
+    if (!SHOW_NOTIFICATIONS ||
+        event.startTime < [[NSDate date] timeIntervalSinceReferenceDate] + MIN_NOTIFICATION_FUTURE) {
+        return;
+    }
+    
+    UILocalNotification *notif = [[UILocalNotification alloc] init];
+    notif.fireDate = [NSDate dateWithTimeIntervalSinceReferenceDate:event.startTime];
+    notif.alertBody = event.title;
+    notif.soundName = nil;
+    
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:event.identifier, @"eventIdentifier", nil];
+    notif.userInfo = infoDict;
+    
+    [[UIApplication sharedApplication] scheduleLocalNotification:notif];
+}
+
+#pragma mark -
 #pragma mark CalendarDayDelegate Methods
 
 - (void)showCategoryChooserWithDelegate:(id)delegate {
@@ -93,7 +131,9 @@
 }
 
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {
-    return [[Calendar getInstance] createEventWithStartTime:startTime andEndTime:endTime];
+    Event *newEvent = [[Calendar getInstance] createEventWithStartTime:startTime andEndTime:endTime];
+    [self scheduleLocalNotificationForEvent:newEvent];
+    return newEvent;
 }
 
 - (void)updateEvent:(NSString*)eventId title:(NSString*)title {
@@ -101,7 +141,12 @@
 }
 
 - (void)updateEvent:(NSString*)eventId startTime:(NSTimeInterval)startTime {
-    [[[Calendar getInstance] eventWithId:eventId] setStartTime:startTime];
+    Event *e = [[Calendar getInstance] eventWithId:eventId];
+    if (startTime != e.startTime) {
+        [self cancelLocalNotificationForEvent:e];
+        [self scheduleLocalNotificationForEvent:e];
+    }
+    [e setStartTime:startTime];
 }
 
 - (void)updateEvent:(NSString*)eventId endTime:(NSTimeInterval)endTime {
@@ -113,6 +158,8 @@
 }
 
 - (void)deleteEvent:(NSString*)eventId {
+    Event *e = [[Calendar getInstance] eventWithId:eventId];
+    [self cancelLocalNotificationForEvent:e];
     [[Calendar getInstance] deleteEvent:eventId];
 }
 

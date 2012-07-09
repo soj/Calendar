@@ -84,11 +84,11 @@
     else return _startTime + SECONDS_PER_DAY;
 }
 
-- (BOOL)isTimeEmpty:(NSTimeInterval)time {
+- (BOOL)isTimeEmptyBetween:(NSTimeInterval)time and:(NSTimeInterval)endTime {
     NSEnumerator *e = [_eventBlocks objectEnumerator];
 	CalendarEvent *thatEvent;
     while (thatEvent = [e nextObject]) {
-        if ([CalendarMath timesIntersectS1:time e1:time s2:thatEvent.startTime e2:thatEvent.endTime]) {
+        if ([CalendarMath timesIntersectS1:time e1:endTime s2:thatEvent.startTime e2:thatEvent.endTime]) {
             return NO;
         }
     }
@@ -148,7 +148,7 @@
 - (CalendarEvent*)createNewEventWithStartTime:(NSTimeInterval)time {
     NSTimeInterval endTime = time + MIN_TIME_INTERVAL;
     
-    if (![self isTimeEmpty:time] || ![self isTimeEmpty:endTime]) {
+    if (![self isTimeEmptyBetween:time and:endTime]) {
         return nil;
     }
     
@@ -283,9 +283,14 @@
                 [self deleteEventBlock:_activeEventBlock];
             }
         } else {
-            [self setActiveEventBlock:[self createNewEventWithStartTime:startTime]];
-            [self scrollToEntity:_activeEventBlock];
-            [_activeEventBlock setFocus];
+            CalendarEvent *new;
+            if ((new = [self createNewEventWithStartTime:startTime])) {
+                [self setActiveEventBlock:new];
+                [self scrollToEntity:_activeEventBlock];
+                [_activeEventBlock setFocus];
+            } else {
+                [recognizer cancel];
+            }
         }
     }
 }

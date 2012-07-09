@@ -24,7 +24,7 @@ static CalendarMath* instance = nil;
 }
 
 + (BOOL)timesIntersectS1:(NSTimeInterval)s1 e1:(NSTimeInterval)e1 s2:(NSTimeInterval)s2 e2:(NSTimeInterval)e2 {
-	return (s1 > s2 && s1 < e2) || (e1 > s2 && e1 < e2) || (s1 < s2 && e1 > e2);
+	return (s1 > s2 && s1 < e2) || (e1 > s2 && e1 < e2) || (s1 < s2 && e1 > e2) || (s2 < s1 && e2 > e1) || (s1 == s2 && e1 == e2);
 }
 
 + (NSInteger)calendarHourFromTime:(NSTimeInterval)time {
