@@ -9,6 +9,7 @@
 #define MIN_NOTIFICATION_FUTURE SECONDS_PER_MINUTE * 15
 
 @interface CalendarController : UIViewController <CalendarDayDelegate, UIScrollViewDelegate> {
+    Calendar *_calendar;
 	UIScrollView *_scrollView;
     CategoryChooserController *_catController;
 	

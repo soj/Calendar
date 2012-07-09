@@ -24,7 +24,7 @@
 #pragma mark UITableViewDataSource Methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [[_calendar categories] count] + 1;  // +1 for new button
+	return [[Category allCategories] count] + 1;  // +1 for new button
 }
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath {
@@ -36,10 +36,10 @@
 		cell = [topLevelObjects objectAtIndex:0];
 	}
     
-    if (indexPath.row >= [_calendar categories].count) {
+    if (indexPath.row >= [Category allCategories].count) {
         [cell setName:@"New Category..."];
     } else {
-        Category *cat = (Category*)[[_calendar categories] objectAtIndex:indexPath.row];
+        Category *cat = (Category*)[[Category allCategories] objectAtIndex:indexPath.row];
         [cell setName:[cat name]];
         [cell setColor:[cat color]];
     }
@@ -51,11 +51,11 @@
 #pragma mark UITableViewDelegate Methods
 	
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row >= [_calendar categories].count) {
+    if (indexPath.row >= [Category allCategories].count) {
         Category *newCat = [[Category alloc] initWithName:@"New Category" andColor:[UIColor redColor]];
         [_delegate categoryChooser:self didCreateNewCategory:newCat];
     } else {
-        [_delegate categoryChooser:self didSelectCategory:[[_calendar categories] objectAtIndex:indexPath.row]];
+        [_delegate categoryChooser:self didSelectCategory:[[Category allCategories] objectAtIndex:indexPath.row]];
     }
     [self.view removeFromSuperview];
 }

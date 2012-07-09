@@ -9,6 +9,10 @@
 @property (nonatomic, strong) NSString *name;
 @property (nonatomic, strong) UIColor *color;
 
++ (void)loadCategoriesFrom:(NSArray*)categories;
++ (NSArray*)allCategories;
++ (Category*)categoryByIdentifier:(NSString*)identifier;
+
 - (id)initWithName:(NSString*)name andColor:(UIColor*)color;
 
 - (id)initWithCoder:(NSCoder *)aDecoder;

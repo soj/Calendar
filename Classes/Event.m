@@ -1,9 +1,8 @@
 #import "Event.h"
-#import "Calendar.h"
 
 @implementation Event
 
-@synthesize ekEvent=_ekEvent, title=_title, startTime=_startTime, endTime=_endTime, category=_category, identifier=_identifier;
+@synthesize ekEvent=_ekEvent, title=_title, startTime=_startTime, endTime=_endTime, identifier=_identifier, categoryIdentifier=_categoryIdentifier;
 
 - (id)init {
     if (self = [super init]) {
@@ -27,8 +26,7 @@
 - (id)initWithCoder:(NSCoder *)aDecoder {
     if (self = [super init]) {
         _identifier = [aDecoder decodeObjectForKey:@"eventIdentifier"];
-        _category = [[Calendar getInstance] categoryWithId:[aDecoder decodeObjectForKey:@"categoryIdentifier"]];
-        NSLog(@"Cat name: %@", [aDecoder decodeObjectForKey:@"categoryIdentifier"]);
+        _categoryIdentifier = [aDecoder decodeObjectForKey:@"categoryIdentifier"];
         _title = [aDecoder decodeObjectForKey:@"title"];
         _startTime = [aDecoder decodeFloatForKey:@"startTime"];
         _endTime = [aDecoder decodeFloatForKey:@"endTime"];
@@ -47,9 +45,8 @@
     [aCoder encodeFloat:[self startTime] forKey:@"startTime"];
     [aCoder encodeFloat:[self endTime] forKey:@"endTime"];
 
-    if (_category != nil) {
-        [aCoder encodeObject:_category.identifier forKey:@"categoryIdentifier"];
-        NSLog(@"Set cat name: %@", _category.identifier);
+    if (_categoryIdentifier != nil) {
+        [aCoder encodeObject:_categoryIdentifier forKey:@"categoryIdentifier"];
     }
         
     if (_ekEvent != nil) {
@@ -57,29 +54,38 @@
     }
 }
 
+- (void)setEKEventStore:(EKEventStore*)eventStore andEKCalendar:(EKCalendar*)calendar {
+    _ekEventStore = eventStore;
+    _ekCalendar = calendar;
+}
+
 - (Category*)category {
-    if (_category == NULL) {
+    if (_categoryIdentifier == nil) {
         return [[Category alloc] initWithName:@"Uncategorized" andColor:[UIColor colorWithRed:0.4 green:0.4 blue:0.4 alpha:1]];
     }
-    return _category;
+    return [Category categoryByIdentifier:_categoryIdentifier];
 }
 
 - (Category*)categoryOrNull {
-    return _category;
+    return [Category categoryByIdentifier:_categoryIdentifier];
 }
 
 - (BOOL)loadFromEventKitWithIdentifier:(NSString*)identifier {
     if (_ekEvent) return YES;
-    _ekEvent = [[[Calendar getInstance] ekEventStore] eventWithIdentifier:identifier];
+    
+    NSAssert(_ekEventStore != nil, @"Must set EKEventStore and EKCalendar on Event");
+    _ekEvent = [_ekEventStore eventWithIdentifier:identifier];
     return (_ekEvent != nil);
 }
 
 - (void)prepEKEvent {
     if (!_ekEvent) {
-        _ekEvent = [EKEvent eventWithEventStore:[[Calendar getInstance] ekEventStore]];
+        NSAssert(_ekEventStore != nil && _ekCalendar != nil, @"Must set EKEventStore and EKCalendar on Event");
+
+        _ekEvent = [EKEvent eventWithEventStore:_ekEventStore];
         [_ekEvent setStartDate:[NSDate dateWithTimeIntervalSinceReferenceDate:_startTime]];
         [_ekEvent setEndDate:[NSDate dateWithTimeIntervalSinceReferenceDate:_endTime]];
-        [_ekEvent setCalendar:[[Calendar getInstance] ekCalendar]];
+        [_ekEvent setCalendar:_ekCalendar];
         [_ekEvent setTitle:[self title]];
     }
 }
@@ -87,8 +93,10 @@
 - (void)saveToEventKit {
     [self prepEKEvent];
     
+    NSAssert(_ekEventStore != nil, @"Must set EKEventStore and EKCalendar on Event");
+    
     NSError *saveError;
-    if (![[[Calendar getInstance] ekEventStore] saveEvent:_ekEvent span:EKSpanThisEvent error:&saveError]) {
+    if (![_ekEventStore saveEvent:_ekEvent span:EKSpanThisEvent error:&saveError]) {
         NSLog(@"Warning: No new event data to save");
     }
     

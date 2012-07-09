@@ -11,7 +11,6 @@
 	EKEventStore *_ekEventStore;
     EKCalendar *_ekCalendar;
     
-    NSMutableDictionary *_categories;
 	NSMutableDictionary *_events;
     NSMutableDictionary *_ekEvents;
     
@@ -22,8 +21,6 @@
 @property (nonatomic, readonly, strong) EKEventStore* ekEventStore;
 @property (nonatomic, readonly, strong) EKCalendar* ekCalendar;
 
-+ (Calendar*)getInstance;
-
 - (void)loadSavedData;
 - (BOOL)shouldSaveToEventKit;
 
@@ -32,11 +29,7 @@
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime;
 - (void)deleteEvent:(NSString*)eventId;
 
-- (NSArray*)categories;
-- (void)addCategory:(Category*)category;
-
 - (Event*)eventWithId:(NSString*)identifier;
-- (Category*)categoryWithId:(NSString*)identifier;
 - (EKCalendar*)createNewCalendar;
 - (EKCalendar*)fetchExistingCalendar;
 

@@ -408,7 +408,6 @@
 }
 
 - (void)categoryChooser:(CategoryChooserController *)chooser didCreateNewCategory:(Category *)cat {
-    [_delegate addNewCategory:cat];
     [_delegate updateEvent:[_activeEventBlock eventId] category:cat];
     [_activeEventBlock setColor:[cat color]];
     [_activeEventBlock resignFocus];

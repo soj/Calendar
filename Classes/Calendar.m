@@ -6,19 +6,7 @@
 
 @synthesize ekEventStore=_ekEventStore, ekCalendar=_ekCalendar;
 
-static Calendar* instance = nil;
-
-+ (Calendar*)getInstance {
-    if (instance == nil) {
-        instance = [[Calendar alloc] init];
-        [instance loadSavedData];
-    }
-    return instance;
-}
-
 - (id)init {
-    NSAssert(instance == nil, @"Attempted to create multiple instances of Singleton");
-    
 	self = [super init];
 	
 	if (self != nil) {
@@ -29,6 +17,8 @@ static Calendar* instance = nil;
             _ekCalendar = [self createNewCalendar];
         }
     }
+    
+    [self loadSavedData];
 	
     return self;
 }
@@ -43,24 +33,22 @@ static Calendar* instance = nil;
 
 - (void)loadSavedCategories {
     NSData *serializedCategories = [[NSUserDefaults standardUserDefaults] dataForKey:CATEGORIES_SAVE_KEY];
-    _categories = (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:serializedCategories];
+    NSArray *categories = (NSArray*)[NSKeyedUnarchiver unarchiveObjectWithData:serializedCategories];
     
-    if (!_categories) {
-        _categories = [[NSMutableDictionary alloc] init];
-        [[self defaultCategories] enumerateObjectsUsingBlock:^(Category* cat, NSUInteger index, BOOL *stop){
-            [_categories setObject:cat forKey:cat.identifier];
-        }];
+    if (!categories) {
+        categories = [self defaultCategories];
     }
+    
+    [Category loadCategoriesFrom:categories];
 }
 
 - (void)loadSavedEvents {
-    NSAssert(_categories != nil, @"Must load categories before events!");
-    
     NSData *serializedEvents = [[NSUserDefaults standardUserDefaults] dataForKey:EVENTS_SAVE_KEY];
     _events = (NSMutableDictionary*)[NSKeyedUnarchiver unarchiveObjectWithData:serializedEvents];
     
     if (_events) {
         [[_events allValues] enumerateObjectsUsingBlock:^(Event* e, NSUInteger index, BOOL *stop){
+            [e setEKEventStore:_ekEventStore andEKCalendar:_ekCalendar];
             if (e.ekEvent) {
                 [_ekEvents setObject:e.ekEvent forKey:e.ekEvent.eventIdentifier];
             }
@@ -137,6 +125,7 @@ static Calendar* instance = nil;
         
         if (![_ekEvents objectForKey:[ekEvent eventIdentifier]]) {
             Event *newEvent = [[Event alloc] initWithEvent:ekEvent];
+            [newEvent setEKEventStore:_ekEventStore andEKCalendar:_ekCalendar];
             [_events setObject:newEvent forKey:[newEvent identifier]];
             [_ekEvents setObject:ekEvent forKey:[ekEvent eventIdentifier]];
         }
@@ -162,20 +151,10 @@ static Calendar* instance = nil;
     return [_events objectForKey:identifier];
 }
 
-- (Category*)categoryWithId:(NSString *)identifier {
-    return [_categories objectForKey:identifier];
-}
-
-- (NSArray*)categories {
-    return [_categories allValues];
-}
-
-- (void)addCategory:(Category*)category {
-    [_categories setObject:category forKey:category.identifier];
-}
-
 - (Event*)createEventWithStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime {
     Event *newEvent = [[Event alloc] init];
+    [newEvent setEKEventStore:_ekEventStore andEKCalendar:_ekCalendar];
+    
     newEvent.startTime = startTime;
     newEvent.endTime = endTime;
     [_events setObject:newEvent forKey:[newEvent identifier]];
@@ -211,7 +190,7 @@ static Calendar* instance = nil;
     }
     
     NSData *serializedEvents = [NSKeyedArchiver archivedDataWithRootObject:_events];
-    NSData *serializedCategories = [NSKeyedArchiver archivedDataWithRootObject:_categories];
+    NSData *serializedCategories = [NSKeyedArchiver archivedDataWithRootObject:[Category allCategories]];
     
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:serializedEvents forKey:EVENTS_SAVE_KEY];
