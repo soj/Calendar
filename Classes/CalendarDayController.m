@@ -407,12 +407,6 @@
     [_activeEventBlock resignFocus];
 }
 
-- (void)categoryChooser:(CategoryChooserController *)chooser didCreateNewCategory:(Category *)cat {
-    [_delegate updateEvent:[_activeEventBlock eventId] category:cat];
-    [_activeEventBlock setColor:[cat color]];
-    [_activeEventBlock resignFocus];
-}
-
 #pragma mark -
 #pragma mark UIScrollViewDelegate Methods
 

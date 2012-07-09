@@ -10,11 +10,7 @@
 	
 	if (self != nil) {
 		_delegate = delegate;
-        _categories = [Category allCategories];
-        
-        _categories = [_categories sortedArrayUsingComparator:^(Category *c1, Category *c2) {
-            return (NSComparisonResult)[c1.name compare:c2.name];
-        }];
+        [self sortCategories];
 	}
     
 	return self;
@@ -22,6 +18,14 @@
 
 - (void)viewDidLoad {
     _categoryTableView.delegate = self;
+}
+
+- (void)sortCategories {
+    _categories = [Category allCategories];
+    
+    _categories = [_categories sortedArrayUsingComparator:^(Category *c1, Category *c2) {
+        return (NSComparisonResult)[c1.name compare:c2.name];
+    }];
 }
 
 #pragma mark -
@@ -53,15 +57,38 @@
 
 #pragma mark -
 #pragma mark UITableViewDelegate Methods
-	
-- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+
+- (NSIndexPath*)tableView:(UITableView*)tableView willSelectRowAtIndexPath:(NSIndexPath*)indexPath {
     if (indexPath.row >= _categories.count) {
-        Category *newCat = [[Category alloc] initAndRegisterWithName:@"New Category" andColor:[UIColor redColor]];
-        [_delegate categoryChooser:self didCreateNewCategory:newCat];
-    } else {
-        [_delegate categoryChooser:self didSelectCategory:[_categories objectAtIndex:indexPath.row]];
+        CategoryChooserCell *cell = (CategoryChooserCell*)[tableView cellForRowAtIndexPath:indexPath];
+        [cell.categoryName setHidden:YES];
+        [cell.nameEntry setHidden:NO];
+        [cell.nameEntry becomeFirstResponder];
+        [cell.nameEntry setDelegate:self];
+        [cell setColor:[UIColor redColor]];
+        _activeCell = cell;
+        return nil;
     }
+    return indexPath;
+}
+
+- (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath {
+    [_delegate categoryChooser:self didSelectCategory:[_categories objectAtIndex:indexPath.row]];
     [self.view removeFromSuperview];
+}
+
+#pragma mark -
+#pragma mark UITextField Delegate
+
+- (BOOL)textFieldShouldReturn:(UITextField*)textField {
+    Category *newCat = [[Category alloc] initAndRegisterWithName:textField.text andColor:[_activeCell color]];
+    [_delegate categoryChooser:self didSelectCategory:newCat];
+    [self sortCategories];
+    
+    [_categoryTableView reloadData];
+    [textField resignFirstResponder];
+    [self.view removeFromSuperview];
+    return YES;
 }
 
 #pragma mark -

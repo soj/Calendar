@@ -4,7 +4,7 @@
 
 @implementation CategoryChooserCell
 
-@synthesize categoryName=_categoryName, colorView=_colorView;
+@synthesize categoryName=_categoryName, colorView=_colorView, nameEntry=_nameEntry;
 
 - (id)initWithFrame:(CGRect)frame {
     
@@ -21,6 +21,10 @@
 - (void)setColor:(UIColor*)color {
 	_colorView.backgroundColor = color;
 	_color = color;
+}
+
+- (UIColor*)color {
+    return _color;
 }
 
 - (void)setName:(NSString*)name {

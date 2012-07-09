@@ -7,14 +7,14 @@
 
 @protocol CategoryChooserDelegate
 - (void)categoryChooser:(CategoryChooserController*)chooser didSelectCategory:(Category*)cat;
-- (void)categoryChooser:(CategoryChooserController *)chooser didCreateNewCategory:(Category *)cat;  
 @end
 
-@interface CategoryChooserController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
+@interface CategoryChooserController : UIViewController <UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate> {
 	id<CategoryChooserDelegate> _delegate;
     NSArray *_categories;
 	
 	UITableView *_categoryTableView;
+    CategoryChooserCell *_activeCell;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *categoryTableView;
