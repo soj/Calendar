@@ -5,12 +5,16 @@
 
 @synthesize categoryTableView=_categoryTableView;
 
-- (id)initWithCalendar:(Calendar*)cal andDelegate:(id<CategoryChooserDelegate>)delegate {
+- (id)initWithDelegate:(id<CategoryChooserDelegate>)delegate {
 	self = [super initWithNibName:@"CategoryChooserController" bundle:nil];
 	
 	if (self != nil) {
-		_calendar = cal;
 		_delegate = delegate;
+        _categories = [Category allCategories];
+        
+        _categories = [_categories sortedArrayUsingComparator:^(Category *c1, Category *c2) {
+            return (NSComparisonResult)[c1.name compare:c2.name];
+        }];
 	}
     
 	return self;
@@ -24,7 +28,7 @@
 #pragma mark UITableViewDataSource Methods
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-	return [[Category allCategories] count] + 1;  // +1 for new button
+	return [_categories count] + 1;  // +1 for new button
 }
 
 - (UITableViewCell*)tableView:(UITableView*)tableView cellForRowAtIndexPath:(NSIndexPath*)indexPath {
@@ -36,10 +40,10 @@
 		cell = [topLevelObjects objectAtIndex:0];
 	}
     
-    if (indexPath.row >= [Category allCategories].count) {
+    if (indexPath.row >= _categories.count) {
         [cell setName:@"New Category..."];
     } else {
-        Category *cat = (Category*)[[Category allCategories] objectAtIndex:indexPath.row];
+        Category *cat = (Category*)[_categories objectAtIndex:indexPath.row];
         [cell setName:[cat name]];
         [cell setColor:[cat color]];
     }
@@ -51,11 +55,11 @@
 #pragma mark UITableViewDelegate Methods
 	
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (indexPath.row >= [Category allCategories].count) {
-        Category *newCat = [[Category alloc] initWithName:@"New Category" andColor:[UIColor redColor]];
+    if (indexPath.row >= _categories.count) {
+        Category *newCat = [[Category alloc] initAndRegisterWithName:@"New Category" andColor:[UIColor redColor]];
         [_delegate categoryChooser:self didCreateNewCategory:newCat];
     } else {
-        [_delegate categoryChooser:self didSelectCategory:[[Category allCategories] objectAtIndex:indexPath.row]];
+        [_delegate categoryChooser:self didSelectCategory:[_categories objectAtIndex:indexPath.row]];
     }
     [self.view removeFromSuperview];
 }

@@ -108,7 +108,7 @@
 #pragma mark CalendarDayDelegate Methods
 
 - (void)showCategoryChooserWithDelegate:(id)delegate {
-    CategoryChooserController *catController = [[CategoryChooserController alloc] initWithCalendar:_calendar andDelegate:delegate];
+    CategoryChooserController *catController = [[CategoryChooserController alloc] initWithDelegate:delegate];
 	[self.view addSubview:catController.view];
     
     CGRect screen = [[UIScreen mainScreen] bounds];

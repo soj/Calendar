@@ -12,8 +12,10 @@
 + (void)loadCategoriesFrom:(NSArray*)categories;
 + (NSArray*)allCategories;
 + (Category*)categoryByIdentifier:(NSString*)identifier;
++ (Category*)uncategorized;
 
 - (id)initWithName:(NSString*)name andColor:(UIColor*)color;
+- (id)initAndRegisterWithName:(NSString*)name andColor:(UIColor*)color;
 
 - (id)initWithCoder:(NSCoder *)aDecoder;
 - (void)encodeWithCoder:(NSCoder *)aCoder;

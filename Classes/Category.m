@@ -27,17 +27,22 @@ static NSMutableDictionary* categoriesByIdentifier = nil;
     [categoriesByIdentifier setObject:cat forKey:cat.identifier];
 }
 
-- (id)initWithName:(NSString*)name andColor:(UIColor*)color {
-	self = [super init];
-	
-	if (self != nil) {
++ (Category*)uncategorized {
+    return [[Category alloc] initWithName:@"Uncategorized" andColor:[UIColor colorWithRed:0.4 green:0.4 blue:0.4 alpha:1]];
+}
+
+- (id)initWithName:(NSString *)name andColor:(UIColor *)color {
+	if (self = [super init]) {
         _identifier = [[NSProcessInfo processInfo] globallyUniqueString];
 		_name = name;
 		_color = color;
 	}
-    
+    return self;
+}
+
+- (id)initAndRegisterWithName:(NSString*)name andColor:(UIColor*)color {
+	self = [self initWithName:name andColor:color];
     [Category registerCategory:self];
-	
 	return self;
 }
 

@@ -11,14 +11,14 @@
 @end
 
 @interface CategoryChooserController : UIViewController <UITableViewDelegate, UITableViewDataSource> {
-	Calendar *_calendar;
 	id<CategoryChooserDelegate> _delegate;
+    NSArray *_categories;
 	
 	UITableView *_categoryTableView;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *categoryTableView;
 
-- (id)initWithCalendar:(Calendar*)cal andDelegate:(id<CategoryChooserDelegate>)delegate;
+- (id)initWithDelegate:(id<CategoryChooserDelegate>)delegate;
 
 @end
