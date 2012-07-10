@@ -14,6 +14,8 @@
     NSTimeInterval _startTime;
     NSTimeInterval _endTime;
 	NSString *_categoryIdentifier;
+    
+    NSString *_prepEKEventIdentifier;
 }
 
 @property (nonatomic, strong) EKEvent *ekEvent;

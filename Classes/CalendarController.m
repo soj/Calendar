@@ -66,13 +66,18 @@
     [_calendar save];
 }
 
+- (void)jumpToTime:(NSTimeInterval)time {
+    [self setToday:[CalendarMath floorTimeToStartOfDay:time]];
+    [[_calendarDays objectForKey:[NSNumber numberWithInt:_today]] scrollToTime:time];
+}
+
 #pragma mark -
 #pragma mark Notification Handling
 
 - (UILocalNotification*)getNotificationForEvent:(Event*)event {
     NSArray *notifs = [[UIApplication sharedApplication] scheduledLocalNotifications];
     NSUInteger idx = [notifs indexOfObjectPassingTest:^BOOL(UILocalNotification* notif, NSUInteger idx, BOOL *stop) {
-        return [notif.userInfo objectForKey:@"eventIdentifier"] == event.identifier;
+        return [[notif.userInfo objectForKey:@"eventIdentifier"] isEqualToString:event.identifier];
     }];
     if (idx < [notifs count]) {
         return [notifs objectAtIndex:idx];
@@ -98,7 +103,7 @@
     notif.alertBody = event.title;
     notif.soundName = nil;
     
-    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:event.identifier, @"eventIdentifier", nil];
+    NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:event.identifier, @"eventIdentifier", [NSNumber numberWithFloat:event.startTime], @"eventStartTime", nil];
     notif.userInfo = infoDict;
     
     [[UIApplication sharedApplication] scheduleLocalNotification:notif];

@@ -30,11 +30,7 @@
         _title = [aDecoder decodeObjectForKey:@"title"];
         _startTime = [aDecoder decodeFloatForKey:@"startTime"];
         _endTime = [aDecoder decodeFloatForKey:@"endTime"];
-        
-        NSString *ekEventIdentifier = [aDecoder decodeObjectForKey:@"ekEventIdentifier"];
-        if (ekEventIdentifier) {
-            [self loadFromEventKitWithIdentifier:ekEventIdentifier];
-        }
+        _prepEKEventIdentifier = [aDecoder decodeObjectForKey:@"ekEventIdentifier"];
     }
     return self;
 }
@@ -57,6 +53,11 @@
 - (void)setEKEventStore:(EKEventStore*)eventStore andEKCalendar:(EKCalendar*)calendar {
     _ekEventStore = eventStore;
     _ekCalendar = calendar;
+    
+    if (_prepEKEventIdentifier) {
+        [self loadFromEventKitWithIdentifier:_prepEKEventIdentifier];
+        _prepEKEventIdentifier = nil;
+    }
 }
 
 - (Category*)category {

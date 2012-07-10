@@ -22,5 +22,6 @@
 - (void)createDayControllerForStartTime:(NSTimeInterval)time;
 - (void)setToday:(NSTimeInterval)today;
 - (void)prepareToExit;
+- (void)jumpToTime:(NSTimeInterval)time;
 
 @end

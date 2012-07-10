@@ -49,6 +49,11 @@
     [viewController prepareToExit];
 }
 
+- (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {
+    if ([application applicationState] == UIApplicationStateInactive) {
+        [viewController jumpToTime:[[notification.userInfo objectForKey:@"eventStartTime"] floatValue]];
+    }
+}
 
 #pragma mark -
 #pragma mark Memory management

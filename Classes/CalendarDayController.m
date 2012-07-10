@@ -45,7 +45,11 @@
 }
 
 - (void)scrollToEntity:(CalendarEntity*)ent {
-    CGFloat top = [[CalendarMath getInstance] timeOffsetToPixel:(ent.startTime - _startTime)];
+    [self scrollToTime:ent.startTime];
+}
+
+- (void)scrollToTime:(NSTimeInterval)time {
+    CGFloat top = [[CalendarMath getInstance] timeOffsetToPixel:(time - _startTime)];
     [(UIScrollView*)self.view setContentOffset:CGPointMake(0, top) animated:YES];
 }
 
@@ -197,10 +201,11 @@
     CalendarEvent *thatBlock = [self boundaryBlockBeforeTime:eventBlock.endTime];
     if (thatBlock && (time < thatBlock.endTime || forceLink)) {
         [self resizeEventBlock:thatBlock endTime:time forceLink:NO];
+        _dragType = kDragLinkedStartTime;
         if (thatBlock.size <= 0) {
             [self commitEventBlockTimes:thatBlock];
+            _dragType = kDragStartTime;
         }
-         _dragType = kDragLinkedStartTime;
     }
     eventBlock.startTime = time;
 }
@@ -209,10 +214,11 @@
     CalendarEvent *thatBlock = [self boundaryBlockAfterTime:eventBlock.startTime];
     if (thatBlock && (time > thatBlock.startTime || forceLink)) {
         [self resizeEventBlock:thatBlock startTime:time forceLink:NO];
+        _dragType = kDragLinkedEndTime;
         if (thatBlock.size <= 0) {
             [self commitEventBlockTimes:thatBlock];
+            _dragType = kDragEndTime;
         }
-        _dragType = kDragLinkedEndTime;
     }
     eventBlock.endTime = time;
 }
@@ -268,7 +274,7 @@
 - (void)handleTap:(UITapGestureRecognizer*)recognizer {
     float xLoc = [recognizer locationInView:_calendarDay].x;
     float yLoc = [recognizer locationInView:_calendarDay].y;
-    NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
+    NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime - FINGER_TAP_TIME_OFFSET)];
     
     if (xLoc < EVENT_DX) {
         if (_activeEventBlock) {

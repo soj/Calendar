@@ -4,6 +4,7 @@
 #import "Event.h"
 
 #define EDGE_DRAG_PIXELS		30.0f
+#define FINGER_TAP_TIME_OFFSET  SECONDS_PER_MINUTE * 15
 
 typedef enum {
     kDragStartTime,
@@ -46,6 +47,7 @@ typedef enum {
 - (id)initWithStartTime:(NSTimeInterval)startTime andDelegate:(id <CalendarDayDelegate>)delegate;
 - (void)setEvents:(NSArray*)events;
 - (void)scrollToEntity:(CalendarEntity*)ent;
+- (void)scrollToTime:(NSTimeInterval)time;
 
 - (CalendarEvent*)createEventBlockWithStartTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime;
 - (CalendarEvent*)createEventBlockWithExistingEvent:(Event*)event;
