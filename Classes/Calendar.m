@@ -119,7 +119,8 @@
     
     [ekEvents enumerateObjectsUsingBlock:^(EKEvent* ekEvent, NSUInteger index, BOOL *stop){
         // Ignore all-day events because they're impossible to represent
-        if ([ekEvent isAllDay]) {
+        if ([ekEvent isAllDay] ||
+            ([ekEvent.endDate timeIntervalSinceReferenceDate] - [ekEvent.startDate timeIntervalSinceReferenceDate]) > SECONDS_PER_DAY) {
             return;
         }
         
@@ -165,8 +166,10 @@
     Event *e = [_events objectForKey:eventId];
     [_events removeObjectForKey:eventId];
     
-    NSError *deleteError;
-    [_ekEventStore removeEvent:e.ekEvent span:EKSpanThisEvent error:&deleteError];
+    if ([self shouldSaveToEventKit]) {
+        NSError *deleteError;
+        [_ekEventStore removeEvent:e.ekEvent span:EKSpanThisEvent error:&deleteError];
+    }
 }
 
 - (void)saveToEventKit {
