@@ -338,14 +338,22 @@
             } else {
                 [recognizer cancel];
             }
-            
-            break;
+            // Fall through
         }
         case UIGestureRecognizerStateChanged: {
             if (!_activeEventBlock) return;
-            _activeEventBlock.endTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
-            _activeEventBlock.endTime = MAX(_activeEventBlock.endTime, _activeEventBlock.startTime + MIN_TIME_INTERVAL);
-            _activeEventBlock.endTime = MIN(_activeEventBlock.endTime, [self boundaryAfterTime:_activeEventBlock.startTime]);
+            NSTimeInterval dragTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
+            if (dragTime < _activeEventBlock.startTime || (dragTime < _activeEventBlock.endTime && _dragType == kDragStartTime)) {
+                _activeEventBlock.startTime = dragTime;
+                _activeEventBlock.startTime = MIN(_activeEventBlock.startTime, _activeEventBlock.endTime - MIN_TIME_INTERVAL);
+                _activeEventBlock.startTime = MAX(_activeEventBlock.startTime, [self boundaryBeforeTime:_activeEventBlock.endTime]);   
+                _dragType = kDragStartTime;
+            } else if (dragTime > _activeEventBlock.endTime || _dragType == kDragEndTime) {
+                _activeEventBlock.endTime = dragTime;
+                _activeEventBlock.endTime = MAX(_activeEventBlock.endTime, _activeEventBlock.startTime + MIN_TIME_INTERVAL);
+                _activeEventBlock.endTime = MIN(_activeEventBlock.endTime, [self boundaryAfterTime:_activeEventBlock.startTime]);
+                _dragType = kDragEndTime;
+            }
             break;
         }
         case UIGestureRecognizerStateEnded: {
