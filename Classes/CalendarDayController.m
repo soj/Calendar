@@ -153,8 +153,15 @@
     NSTimeInterval endTime = time + MIN_TIME_INTERVAL;
     
     if (![self isTimeEmptyBetween:time and:endTime]) {
-        endTime = [self boundaryAfterTime:(time - 1)]; // -1 to account for completely overlapping blocks
-        time = endTime - MIN_TIME_INTERVAL;
+        NSTimeInterval newStartTime = [self boundaryBeforeTime:endTime];
+        NSTimeInterval newEndTime = [self boundaryAfterTime:(time - 1)]; // -1 to account for completely overlapping blocks
+        if (fabs(newStartTime - time) < fabs(newEndTime - endTime)) {
+            time = newStartTime;
+            endTime = newStartTime + MIN_TIME_INTERVAL;
+        } else {
+            endTime = newEndTime;
+            time = endTime - MIN_TIME_INTERVAL;
+        }
         if (![self isTimeEmptyBetween:time and:endTime]) {
             return nil;
         }
