@@ -53,6 +53,17 @@
     [(UIScrollView*)self.view setContentOffset:CGPointMake(0, top) animated:YES];
 }
 
+- (BOOL)isTimeVisible:(NSTimeInterval)time {
+    if (time < _startTime || time > _startTime + SECONDS_PER_DAY) {
+        return NO;
+    }
+    
+    float pixelOffset = [(UIScrollView*)self.view contentOffset].y - DAY_TOP_OFFSET;
+    NSTimeInterval topVisible = [[CalendarMath getInstance] pixelToTimeOffset:pixelOffset] + _startTime;
+    NSTimeInterval bottomVisible = topVisible + [[CalendarMath getInstance] pixelToTimeOffset:self.view.frame.size.height];
+    return time >= topVisible && time <= bottomVisible;
+}
+
 #pragma mark -
 #pragma mark Event Block Management Helpers
 
@@ -190,7 +201,7 @@
 #pragma mark -
 #pragma mark Event Block Movement
 
-- (void)beginDragForYPosInActiveEventBlock:(CGFloat)y {
+- (BOOL)beginDragForYPosInActiveEventBlock:(CGFloat)y {
     if (y < EDGE_DRAG_PIXELS) {
         _dragEventTimeOffset = [[CalendarMath getInstance] pixelToTimeOffset:y];
         _dragType = kDragStartTime;
@@ -199,9 +210,13 @@
         _dragEventTimeOffset = eventLength - [[CalendarMath getInstance] pixelToTimeOffset:y];
         _dragType = kDragEndTime;
     } else {
+        if (![self isTimeVisible:_activeEventBlock.endTime] && ![self isTimeVisible:_activeEventBlock.startTime]) {
+            return NO;
+        }
         _dragEventTimeOffset = [[CalendarMath getInstance] pixelToTimeOffset:y];
         _dragType = kDragBoth;
     }
+    return YES;
 }
 
 - (void)resizeEventBlock:(CalendarEvent*)eventBlock startTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
@@ -276,6 +291,8 @@
     [self.view addGestureRecognizer:longPress];
     
     _eventBlockPan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanOnEventBlock:)];
+    _eventBlockPan.cancelsTouchesInView = NO;
+    _eventBlockPan.delegate = self;
 }
 
 - (void)handleTap:(UITapGestureRecognizer*)recognizer {
@@ -372,10 +389,6 @@
     NSAssert(_activeEventBlock == [recognizer view], @"Only the active event block may receive gestures");
 
     switch (recognizer.state) {
-        case UIGestureRecognizerStateBegan: {
-            [self beginDragForYPosInActiveEventBlock:[recognizer locationInView:_activeEventBlock].y];
-            break;
-        }
         case UIGestureRecognizerStateChanged: {
             float loc = [recognizer locationInView:_calendarDay].y;
             if (_dragType == kDragBoth) {
@@ -398,6 +411,18 @@
         default:
             break;
     }
+}
+
+#pragma mark -
+#pragma mark UIGestureRecognizerDelegate Methods
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)recognizer {
+    if (recognizer == _eventBlockPan) {
+        if (![self beginDragForYPosInActiveEventBlock:[recognizer locationInView:_activeEventBlock].y]) {
+            return NO;
+        }
+    }
+    return YES;
 }
 
 #pragma mark -

@@ -27,7 +27,7 @@ typedef enum {
 - (BOOL)eventIsValid:(NSString*)eventId;
 @end
 
-@interface CalendarDayController : UIViewController <UIScrollViewDelegate, CalendarEventDelegate, CategoryChooserDelegate> {
+@interface CalendarDayController : UIViewController <UIScrollViewDelegate, UIGestureRecognizerDelegate, CalendarEventDelegate, CategoryChooserDelegate> {
 	id<CalendarDayDelegate> _delegate;
 	CalendarDay *_calendarDay;
 	CalendarEvent *_activeEventBlock;

@@ -13,7 +13,7 @@
 #define LINES_WHITE			0.9, 0.9, 0.9, 1.0
 #define LINES_RED			0.9, 0.0, 0.0, 0.6
 
-#define TOP_OFFSET			15.0f
+#define DAY_TOP_OFFSET			15.0f
 
 @interface CalendarDay : CalendarEntity {
 	NSTimeInterval _currentTime;

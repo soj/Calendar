@@ -10,8 +10,8 @@
 	
 	if (self) {
 		CGRect bounds = self.bounds;
-		bounds.origin.y = -20;
-		bounds.size.height = bounds.size.height + 20;
+		bounds.origin.y = -DAY_TOP_OFFSET;
+		bounds.size.height = bounds.size.height + DAY_TOP_OFFSET;
 		[self setBounds:bounds];
 	}
 	
@@ -19,7 +19,7 @@
 }
 
 - (CGRect)reframe {
-    return CGRectMake(0, [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + TOP_OFFSET,
+    return CGRectMake(0, [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + DAY_TOP_OFFSET,
                       [[CalendarMath getInstance] dayWidth],
                       [[CalendarMath getInstance] pixelsPerHour] * HOURS_PER_DAY);
 }
