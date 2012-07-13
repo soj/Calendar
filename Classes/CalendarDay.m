@@ -86,14 +86,14 @@
 	float yPos = [self yPosFromTime:time];
 
 	CGContextSetLineWidth(context, 1.0);
-	CGContextSetRGBStrokeColor(context, LINES_RED);
+	CGContextSetRGBStrokeColor(context, CURRENT_LINE_COLOR);
 	[self drawFullBleedLineAtY:yPos inContext:context];
-	CGContextSetRGBStrokeColor(context, LINES_WHITE);
+	CGContextSetRGBStrokeColor(context, DAY_LINE_COLOR);
 }
 
 - (void)drawInContext:(CGContextRef)context {	
-	CGContextSetRGBStrokeColor(context, LINES_WHITE);
-	CGContextSetRGBFillColor(context, LINES_WHITE);
+	CGContextSetRGBStrokeColor(context, DAY_LINE_COLOR);
+	CGContextSetRGBFillColor(context, DAY_LINE_COLOR);
 	
 	[self drawDayLine:_startTime inContext:context];
 	

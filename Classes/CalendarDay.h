@@ -9,9 +9,8 @@
 #define LINE_FONT_SIZE		13.0
 #define LINE_BIG_FONT_SIZE	20.0
 
-#define BG_BLACK			0.05
-#define LINES_WHITE			0.9, 0.9, 0.9, 1.0
-#define LINES_RED			0.9, 0.0, 0.0, 0.6
+#define DAY_LINE_COLOR		0.059, 0.059, 0.059, 1.0
+#define CURRENT_LINE_COLOR	1.0, 0.15, 0.15, 1.0
 
 #define DAY_TOP_OFFSET			15.0f
 
