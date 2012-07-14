@@ -47,6 +47,16 @@
 	CGContextStrokePath(context);
 }
 
+- (void)drawRightFacingTriangleAtX:(float)xPos y:(float)yPos inContext:(CGContextRef)context {
+    static const float triangleWidth = 12.5;
+    static const float triangleHeight = 17.5;
+    
+    CGContextMoveToPoint(context, xPos, yPos);
+    CGContextAddLineToPoint(context, xPos - triangleWidth, yPos - triangleHeight/2);
+    CGContextAddLineToPoint(context, xPos - triangleWidth, yPos + triangleHeight/2);
+    CGContextFillPath(context);
+}
+
 - (void)drawDayLine:(NSTimeInterval)time inContext:(CGContextRef)context {
 	float yPos = [self yPosFromTime:time];
 
@@ -54,10 +64,10 @@
 	[self drawLineAtY:yPos inContext:context];
 
 	CGPoint textPoint = CGPointMake(LINE_TEXT_X, yPos + LINE_TEXT_BIG_DY);
-	[[self dateStringFromTime:time withFormat:@"EEE"] drawAtPoint:textPoint withFont:[UIFont boldSystemFontOfSize:LINE_BIG_FONT_SIZE]];
+	[[self dateStringFromTime:time withFormat:@"EEE"] drawAtPoint:textPoint withFont:MEDIUM_BOLD_FONT];
 	
 	textPoint = CGPointMake(LINE_TEXT_X, yPos + LINE_TEXT_SUB_DY);
-	[[self dateStringFromTime:time withFormat:@"MMM dd"] drawAtPoint:textPoint withFont:[UIFont systemFontOfSize:LINE_FONT_SIZE]];
+	[[self dateStringFromTime:time withFormat:@"MMM dd"] drawAtPoint:textPoint withFont:SMALL_FONT];
 }
 
 - (void)drawHourLine:(NSTimeInterval)time inContext:(CGContextRef)context {
@@ -67,7 +77,11 @@
 	[self drawLineAtY:yPos inContext:context];
 	
 	CGPoint textPoint = CGPointMake(LINE_TEXT_X, yPos + LINE_TEXT_DY);
-	[[self dateStringFromTime:time withFormat:@"h a"] drawAtPoint:textPoint withFont:[UIFont systemFontOfSize:LINE_FONT_SIZE]];
+    NSString *hourString = [self dateStringFromTime:time withFormat:@"h"];
+    NSString *ampmString = [[self dateStringFromTime:time withFormat:@"a"] substringToIndex:1];
+    CGSize hourStringSize = [hourString sizeWithFont:MEDIUM_BOLD_FONT];
+    [hourString drawAtPoint:textPoint withFont:MEDIUM_BOLD_FONT];
+    [ampmString drawAtPoint:CGPointMake(textPoint.x + hourStringSize.width, textPoint.y) withFont:MEDIUM_LIGHT_FONT];
 }
 
 - (void)drawHalfHourLine:(NSTimeInterval)time inContext:(CGContextRef)context {
@@ -83,12 +97,15 @@
 }
 
 - (void)drawCurrentTimeLine:(NSTimeInterval)time inContext:(CGContextRef)context {
-	float yPos = [self yPosFromTime:time];
+	float yPos = [self yPosFromTime:time] - 1;
 
-	CGContextSetLineWidth(context, 1.0);
+	CGContextSetLineWidth(context, 2.0);
+    CGContextSetRGBFillColor(context, CURRENT_LINE_COLOR);
 	CGContextSetRGBStrokeColor(context, CURRENT_LINE_COLOR);
 	[self drawFullBleedLineAtY:yPos inContext:context];
+    [self drawRightFacingTriangleAtX:57 y:yPos inContext:context];
 	CGContextSetRGBStrokeColor(context, DAY_LINE_COLOR);
+    CGContextSetRGBFillColor(context, DAY_LINE_COLOR);
 }
 
 - (void)drawInContext:(CGContextRef)context {	
