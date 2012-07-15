@@ -350,13 +350,15 @@
     
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan: {
-            NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime)];
+            NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime - FINGER_TAP_TIME_OFFSET)];
             CalendarEvent *new;
-            if ((new = [self createNewEventWithStartTime:startTime])) {
+            if ([self isTimeEmptyBetween:startTime and:startTime] && (new = [self createNewEventWithStartTime:startTime])) {
                 [self setActiveEventBlock:new];
+                [self scrollToEntity:_activeEventBlock];
                 [_calendarDay fadeInTimeLines];
             } else {
                 [recognizer cancel];
+                break;
             }
             // Fall through
         }
