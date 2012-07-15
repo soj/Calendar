@@ -20,6 +20,7 @@
         _timeLinesLayer.name = @"TimeLines";
         _timeLinesLayer.delegate = _sublayerDelegate;
         _timeLinesLayer.frame = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+        _timeLinesLayer.opacity = 0;
         [self.layer addSublayer:_timeLinesLayer];
         [_timeLinesLayer setNeedsDisplay];
 	}
@@ -34,11 +35,25 @@
 }
 
 - (void)fadeInTimeLines {
-    
+    CABasicAnimation *fadeIn = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    fadeIn.fromValue = [NSNumber numberWithFloat:_timeLinesLayer.opacity];
+    fadeIn.toValue = [NSNumber numberWithFloat:1.0];
+    fadeIn.duration = ANIM_DURATION_FADE;
+    fadeIn.removedOnCompletion = NO;
+    fadeIn.fillMode = kCAFillModeForwards;
+    _timeLinesLayer.opacity = 1.0;
+    [_timeLinesLayer addAnimation:fadeIn forKey:@"opacity"];
 }
 
 - (void)fadeOutTimeLines {
-    
+    CABasicAnimation *fadeOut = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    fadeOut.fromValue = [NSNumber numberWithFloat:_timeLinesLayer.opacity];
+    fadeOut.toValue = [NSNumber numberWithFloat:0];
+    fadeOut.duration = ANIM_DURATION_FADE;
+    fadeOut.removedOnCompletion = NO;
+    fadeOut.fillMode = kCAFillModeForwards;
+    _timeLinesLayer.opacity = 0.0;
+    [_timeLinesLayer addAnimation:fadeOut forKey:@"opacity"];
 }
 
 #pragma mark -

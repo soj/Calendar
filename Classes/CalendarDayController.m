@@ -299,7 +299,7 @@
     float xLoc = [recognizer locationInView:_calendarDay].x;
     float yLoc = [recognizer locationInView:_calendarDay].y;
     NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime - FINGER_TAP_TIME_OFFSET)];
-    
+      
     if (xLoc < EVENT_DX) {
         if (_activeEventBlock) {
             if (![_delegate eventIsValid:_activeEventBlock.eventId]) {
@@ -352,6 +352,7 @@
             CalendarEvent *new;
             if ((new = [self createNewEventWithStartTime:startTime])) {
                 [self setActiveEventBlock:new];
+                [_calendarDay fadeInTimeLines];
             } else {
                 [recognizer cancel];
             }
@@ -378,6 +379,7 @@
             [self commitEventBlockTimes:[self boundaryBlockAfterTime:_activeEventBlock.startTime]];
             [self scrollToEntity:_activeEventBlock];
             [_activeEventBlock setFocus];
+            [_calendarDay fadeOutTimeLines];
             break;
         }
         default:
@@ -389,6 +391,10 @@
     NSAssert(_activeEventBlock == [recognizer view], @"Only the active event block may receive gestures");
 
     switch (recognizer.state) {
+        case UIGestureRecognizerStateBegan: {
+            [_calendarDay fadeInTimeLines];
+            break;
+        }
         case UIGestureRecognizerStateChanged: {
             float loc = [recognizer locationInView:_calendarDay].y;
             if (_dragType == kDragBoth) {
@@ -406,6 +412,7 @@
             [self commitEventBlockTimes:[self boundaryBlockBeforeTime:_activeEventBlock.endTime]];
             [self commitEventBlockTimes:_activeEventBlock];
             [self commitEventBlockTimes:[self boundaryBlockAfterTime:_activeEventBlock.startTime]];
+            [_calendarDay fadeOutTimeLines];
             break;
         }
         default:

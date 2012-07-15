@@ -20,6 +20,8 @@
 #define MEDIUM_LIGHT_FONT   [UIFont fontWithName:@"Helvetica-Light" size:22.0]
 #define SMALL_FONT          [UIFont fontWithName:@"Helvetica" size:13.0]
 
+#define ANIM_DURATION_FADE  0.25;
+
 
 @interface CalendarDay : CalendarEntity {
     CALayer *_timeLinesLayer;
