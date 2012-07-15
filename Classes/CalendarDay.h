@@ -3,7 +3,7 @@
 #import "CalendarEntity.h"
 #import "LayerDelegate.h"
 
-#define TIME_LINES_X		50.0
+#define TIME_LINES_X		52.5
 #define TIME_LINES_FULL_X   65.0
 #define LINE_TEXT_X			5.0
 #define LINE_TEXT_DY		-20.0
@@ -14,7 +14,7 @@
 #define TIME_LINE_COLOR     0.56, 0.56, 0.56, 1.0
 #define CURRENT_LINE_COLOR	1.0, 0.6, 0.6, 1.0
 
-#define DAY_TOP_OFFSET		15.0f
+#define DAY_TOP_OFFSET		15
 
 #define MEDIUM_BOLD_FONT    [UIFont fontWithName:@"Helvetica-Bold" size:22.0]
 #define MEDIUM_FONT         [UIFont fontWithName:@"Helvetica" size:22.0]
