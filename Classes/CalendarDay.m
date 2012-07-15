@@ -106,14 +106,14 @@
 }
 
 - (void)drawHourLine:(NSTimeInterval)time inContext:(CGContextRef)context {
-	float yPos = [self yPosFromTime:time] + 1;  // Add 1 because it's a 2pt line
+	float yPos = [self yPosFromTime:time];
 	
 	CGContextSetLineWidth(context, 1.0);
 	[self drawLineAtY:yPos inContext:context];
 }
 
 - (void)drawHalfHourLine:(NSTimeInterval)time inContext:(CGContextRef)context {
-	float yPos = [self yPosFromTime:time] - [[CalendarMath getInstance] pixelsPerHour] / 2 + 1;   // Add 1 because it's a 2pt line
+	float yPos = [self yPosFromTime:time] - [[CalendarMath getInstance] pixelsPerHour] / 2;
 	
 	CGContextSetLineWidth(context, 1.0);
 	CGFloat lineDashPattern[] = {10, 10};
@@ -150,7 +150,7 @@
 }
 
 - (void)drawHourTextForTime:(NSTimeInterval)time inContext:(CGContextRef)context {
-    float yPos = [self yPosFromTime:time] + 1;  // Add 1 because it's a 2pt line
+    float yPos = [self yPosFromTime:time];
     CGPoint textPoint = CGPointMake(LINE_TEXT_X, yPos + LINE_TEXT_DY);
     NSString *hourString = [self dateStringFromTime:time withFormat:@"h"];
     NSString *ampmString = [[self dateStringFromTime:time withFormat:@"a"] substringToIndex:1];
@@ -166,8 +166,10 @@
 #pragma mark Draw Delegates
 
 - (void)drawTimeLinesLayer:(CALayer*)layer inContext:(CGContextRef)context {
-    CGContextSetRGBStrokeColor(context, DAY_LINE_COLOR);
-    CGContextSetRGBFillColor(context, DAY_LINE_COLOR);
+    CGContextSetRGBStrokeColor(context, TIME_LINE_COLOR);
+    CGContextSetRGBFillColor(context, TIME_LINE_COLOR);
+    
+    CGContextSetShouldAntialias(context, NO);
     
     [self drawDayLine:_startTime inContext:context];
     
@@ -183,8 +185,8 @@
     
 	[self drawCurrentTimeLine:_currentTime inContext:context];
     
-    CGContextSetRGBStrokeColor(context, DAY_LINE_COLOR);
-	CGContextSetRGBFillColor(context, DAY_LINE_COLOR);
+    CGContextSetRGBStrokeColor(context, TEXT_COLOR);
+	CGContextSetRGBFillColor(context, TEXT_COLOR);
     
     [self drawDayTextForTime:_startTime inContext:context];
     

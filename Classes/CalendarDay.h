@@ -10,7 +10,8 @@
 #define LINE_TEXT_BIG_DY	-16.0
 #define LINE_TEXT_SUB_DY	6.0
 
-#define DAY_LINE_COLOR		0.059, 0.059, 0.059, 1.0
+#define TEXT_COLOR          0.059, 0.059, 0.059, 1.0
+#define TIME_LINE_COLOR     0.56, 0.56, 0.56, 1.0
 #define CURRENT_LINE_COLOR	1.0, 0.6, 0.6, 1.0
 
 #define DAY_TOP_OFFSET		15.0f
