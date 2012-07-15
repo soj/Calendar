@@ -1,7 +1,10 @@
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "CalendarEntity.h"
+#import "LayerDelegate.h"
 
 #define TIME_LINES_X		50.0
+#define TIME_LINES_FULL_X   65.0
 #define LINE_TEXT_X			5.0
 #define LINE_TEXT_DY		-20.0
 #define LINE_TEXT_BIG_DY	-16.0
@@ -19,18 +22,15 @@
 
 
 @interface CalendarDay : CalendarEntity {
+    CALayer *_timeLinesLayer;
+    LayerDelegate *_sublayerDelegate;
+    
 	NSTimeInterval _currentTime;
 }
 
 @property (nonatomic) NSTimeInterval currentTime;
 
-- (float)yPosFromTime:(NSTimeInterval)time;
-- (NSString*)dateStringFromTime:(NSTimeInterval)time withFormat:(NSString*)format;
-
-- (void)drawHourLine:(NSTimeInterval)time inContext:(CGContextRef)context;
-- (void)drawDayLine:(NSTimeInterval)time inContext:(CGContextRef)context;
-- (void)drawCurrentTimeLine:(NSTimeInterval)time inContext:(CGContextRef)context;
-- (void)drawLineAtY:(int)yPos inContext:(CGContextRef)context;
-- (void)drawFullBleedLineAtY:(int)yPos inContext:(CGContextRef)context;
+- (void)fadeOutTimeLines;
+- (void)fadeInTimeLines;
 
 @end
