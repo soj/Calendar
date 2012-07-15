@@ -130,13 +130,19 @@
 
 - (void)unsetActiveEventBlock {
     if (_activeEventBlock != NULL) {
-        if (_activeEventBlock.hasFocus) {
-            [_activeEventBlock resignFocus];
+        CalendarEvent *block = _activeEventBlock;
+        _activeEventBlock = NULL;
+
+        if (block.hasFocus) {
+            [block resignFocus];
             [_delegate dismissCategoryChooser];
         }
         
-        [_activeEventBlock removeGestureRecognizer:_eventBlockPan];
-        _activeEventBlock = NULL;
+        [block removeGestureRecognizer:_eventBlockPan];
+        
+        if (![_delegate eventIsValid:block.eventId]) {
+            [self deleteEventBlock:block];
+        }
     }
 }
 
@@ -302,11 +308,7 @@
       
     if (xLoc < EVENT_DX) {
         if (_activeEventBlock) {
-            if (![_delegate eventIsValid:_activeEventBlock.eventId]) {
-                [self deleteEventBlock:_activeEventBlock];
-            } else {
-                [self unsetActiveEventBlock];
-            }
+            [self unsetActiveEventBlock];
         }
     } else {
         if (_activeEventBlock && [_activeEventBlock hasFocus]) {

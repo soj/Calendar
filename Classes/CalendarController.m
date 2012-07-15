@@ -161,8 +161,10 @@
 
 - (void)deleteEvent:(NSString*)eventId {
     Event *e = [_calendar eventWithId:eventId];
-    [self cancelLocalNotificationForEvent:e];
-    [_calendar deleteEvent:eventId];
+    if (e) {
+        [self cancelLocalNotificationForEvent:e];
+        [_calendar deleteEvent:eventId];
+    }
 }
 
 - (BOOL)eventIsValid:(NSString*)eventId {
