@@ -126,6 +126,7 @@
     
     _activeEventBlock = event;
     [_activeEventBlock setIsActive:YES];
+    [self.view bringSubviewToFront:_activeEventBlock];
     [_activeEventBlock addGestureRecognizer:_eventBlockPan];
 }
 
