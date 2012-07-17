@@ -5,20 +5,22 @@
 #import "CategoryChooserController.h"
 #import "LayerDelegate.h"
 
-#define EVENT_DX			75.0
-#define RAIL_COLOR_WIDTH    20.0
-#define RIGHT_RAIL_WIDTH	5.0
-#define DEPTH_BORDER_WIDTH  7.0
-#define DEPTH_BORDER_DARKEN_MULTIPLIER 0.8
+#define UI_EVENT_DX             75.0
+#define UI_RIGHT_PADDING        5.0
 
-#define BORDER_PADDING_X	10.0
-#define BORDER_PADDING_Y	5.0
+#define UI_RAIL_COLOR_WIDTH     20.0
 
-#define EVENT_BG_COLOR      [UIColor colorWithRed:0.98 green:0.98 blue:0.98 alpha:1.0]
+#define UI_DEPTH_BORDER_WIDTH   7.0
+#define UI_DEPTH_BORDER_DARKEN  0.8
 
-#define NAME_COLOR          [UIColor colorWithRed:0.059 green:0.059 blue:0.059 alpha:1.0]
-#define NAME_FONT           [UIFont fontWithName:@"Helvetica-Light" size:25.0f]
-#define NAME_FIELD_HEIGHT   30.0f
+#define UI_BORDER_PADDING_X     10.0
+#define UI_BORDER_PADDING_Y     5.0
+
+#define UI_NAME_FIELD_HEIGHT    30.0f
+
+#define UI_EVENT_BG_COLOR       [UIColor colorWithRed:0.98 green:0.98 blue:0.98 alpha:1.0]
+#define UI_NAME_COLOR           [UIColor colorWithRed:0.059 green:0.059 blue:0.059 alpha:1.0]
+#define UI_NAME_FONT            [UIFont fontWithName:@"Helvetica-Light" size:25.0f]
 
 @class CalendarEvent;
 

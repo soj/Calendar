@@ -13,7 +13,7 @@
 	
 	[self setToday:[CalendarMath floorTimeToStartOfDay:[[NSDate date] timeIntervalSinceReferenceDate]]];
 	
-	CGSize totalSize = CGSizeMake(PIXELS_PER_DAY * 3, 480.0);
+	CGSize totalSize = CGSizeMake(UI_DAY_WIDTH * 3, 480.0);
 	[_scrollView setContentSize:totalSize];
 }
 
@@ -38,7 +38,7 @@
 	}
 	
 	CGRect frame = dayController.view.frame;
-	frame.origin.x = ((int)startTime - (int)_yesterday) / SECONDS_PER_DAY * PIXELS_PER_DAY;
+	frame.origin.x = ((int)startTime - (int)_yesterday) / SECONDS_PER_DAY * UI_DAY_WIDTH;
 	[dayController.view setFrame:frame];
 }
 
@@ -59,7 +59,7 @@
 	[self createDayControllerForStartTime:_yesterday];
 	[self createDayControllerForStartTime:_tomorrow];
 	
-	[_scrollView setContentOffset:CGPointMake(PIXELS_PER_DAY, 0) animated:NO];
+	[_scrollView setContentOffset:CGPointMake(UI_DAY_WIDTH, 0) animated:NO];
 }
 
 - (void)prepareToExit {
@@ -178,7 +178,7 @@
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
 	if ([scrollView contentOffset].x == 0) {
 		_today -= SECONDS_PER_DAY;
-	} else if ([scrollView contentOffset].x == PIXELS_PER_DAY * 2) {
+	} else if ([scrollView contentOffset].x == UI_DAY_WIDTH * 2) {
 		_today += SECONDS_PER_DAY;
 	}
 	

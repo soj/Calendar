@@ -4,7 +4,7 @@
 
 #define CALENDAR_TITLE                  @"Focus Calendar"
 #define EVENTS_SAVE_KEY                 @"events"
-#define CATEGORIES_SAVE_KEY            @"categories"
+#define CATEGORIES_SAVE_KEY             @"categories"
 #define CALENDAR_IDENTIFIER_SAVE_KEY    @"calendarIdentifier"
 
 @interface Calendar : NSObject {

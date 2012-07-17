@@ -1,6 +1,5 @@
 #import <UIKit/UIKit.h>
 
-
 @interface CategoryChooserCell : UITableViewCell <UITextFieldDelegate> {
 	UILabel *_categoryName;
 	UIView *_colorView;

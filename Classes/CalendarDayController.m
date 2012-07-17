@@ -58,7 +58,7 @@
         return NO;
     }
     
-    float pixelOffset = [(UIScrollView*)self.view contentOffset].y - DAY_TOP_OFFSET;
+    float pixelOffset = [(UIScrollView*)self.view contentOffset].y - UI_DAY_TOP_OFFSET;
     NSTimeInterval topVisible = [[CalendarMath getInstance] pixelToTimeOffset:pixelOffset] + _startTime;
     NSTimeInterval bottomVisible = topVisible + [[CalendarMath getInstance] pixelToTimeOffset:self.view.frame.size.height];
     return time >= topVisible && time <= bottomVisible;
@@ -169,17 +169,17 @@
 }
 
 - (CalendarEvent*)createNewEventWithStartTime:(NSTimeInterval)time {
-    NSTimeInterval endTime = time + MIN_TIME_INTERVAL;
+    NSTimeInterval endTime = time + MIN_EVENT_TIME_INTERVAL;
     
     if (![self isTimeEmptyBetween:time and:endTime]) {
         NSTimeInterval newStartTime = [self boundaryBeforeTime:endTime];
         NSTimeInterval newEndTime = [self boundaryAfterTime:(time - 1)]; // -1 to account for completely overlapping blocks
         if (fabs(newStartTime - time) < fabs(newEndTime - endTime)) {
             time = newStartTime;
-            endTime = newStartTime + MIN_TIME_INTERVAL;
+            endTime = newStartTime + MIN_EVENT_TIME_INTERVAL;
         } else {
             endTime = newEndTime;
-            time = endTime - MIN_TIME_INTERVAL;
+            time = endTime - MIN_EVENT_TIME_INTERVAL;
         }
         if (![self isTimeEmptyBetween:time and:endTime]) {
             return nil;
@@ -210,10 +210,10 @@
 #pragma mark Event Block Movement
 
 - (BOOL)beginDragForYPosInActiveEventBlock:(CGFloat)y {
-    if (y < EDGE_DRAG_PIXELS) {
+    if (y < UI_EDGE_DRAG_PIXELS) {
         _dragEventTimeOffset = [[CalendarMath getInstance] pixelToTimeOffset:y];
         _dragType = kDragStartTime;
-    } else if (y > _activeEventBlock.frame.size.height - EDGE_DRAG_PIXELS) {
+    } else if (y > _activeEventBlock.frame.size.height - UI_EDGE_DRAG_PIXELS) {
         NSTimeInterval eventLength = _activeEventBlock.endTime - _activeEventBlock.startTime;
         _dragEventTimeOffset = eventLength - [[CalendarMath getInstance] pixelToTimeOffset:y];
         _dragType = kDragEndTime;
@@ -278,7 +278,7 @@
     event.startTime = [CalendarMath roundTimeToGranularity:event.startTime];
     event.endTime = [CalendarMath roundTimeToGranularity:event.endTime];
     
-    if (event.endTime - event.startTime < MIN_TIME_INTERVAL) {
+    if (event.endTime - event.startTime < MIN_EVENT_TIME_INTERVAL) {
         [self deleteEventBlock:event];
     } else {
         [_delegate updateEvent:event.eventId startTime:event.startTime];
@@ -308,7 +308,7 @@
     float yLoc = [recognizer locationInView:_calendarDay].y;
     NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime - FINGER_TAP_TIME_OFFSET)];
       
-    if (xLoc < EVENT_DX) {
+    if (xLoc < UI_EVENT_DX) {
         if (_activeEventBlock) {
             [self unsetActiveEventBlock];
         }
@@ -369,12 +369,12 @@
             NSTimeInterval dragTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
             if (dragTime < _activeEventBlock.startTime || (dragTime < _activeEventBlock.endTime && _dragType == kDragStartTime)) {
                 _activeEventBlock.startTime = dragTime;
-                _activeEventBlock.startTime = MIN(_activeEventBlock.startTime, _activeEventBlock.endTime - MIN_TIME_INTERVAL);
+                _activeEventBlock.startTime = MIN(_activeEventBlock.startTime, _activeEventBlock.endTime - MIN_EVENT_TIME_INTERVAL);
                 _activeEventBlock.startTime = MAX(_activeEventBlock.startTime, [self boundaryBeforeTime:_activeEventBlock.endTime]);   
                 _dragType = kDragStartTime;
             } else if (dragTime > _activeEventBlock.endTime || _dragType == kDragEndTime) {
                 _activeEventBlock.endTime = dragTime;
-                _activeEventBlock.endTime = MAX(_activeEventBlock.endTime, _activeEventBlock.startTime + MIN_TIME_INTERVAL);
+                _activeEventBlock.endTime = MAX(_activeEventBlock.endTime, _activeEventBlock.startTime + MIN_EVENT_TIME_INTERVAL);
                 _activeEventBlock.endTime = MIN(_activeEventBlock.endTime, [self boundaryAfterTime:_activeEventBlock.startTime]);
                 _dragType = kDragEndTime;
             }

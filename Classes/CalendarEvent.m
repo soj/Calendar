@@ -17,7 +17,7 @@
 
         _boxLayer = [_sublayerDelegate makeLayerWithName:@"Box"];
         _boxLayer.borderWidth = 2.0f;
-        _boxLayer.backgroundColor = [EVENT_BG_COLOR CGColor];
+        _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
         [self disableAnimationsOnLayer:_boxLayer];
         
         _railLayer = [_sublayerDelegate makeLayerWithName:@"Rail"];
@@ -33,8 +33,8 @@
         [self.layer addSublayer:_railLayer];
         
         _nameField = [[UITextField alloc] init];
-        [_nameField setFont:NAME_FONT];
-        [_nameField setTextColor:NAME_COLOR];
+        [_nameField setFont:UI_NAME_FONT];
+        [_nameField setTextColor:UI_NAME_COLOR];
         [_nameField setReturnKeyType:UIReturnKeyDone];
         [_nameField setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
         [_nameField setDelegate:self];
@@ -50,8 +50,8 @@
 
 - (void)reframeLayers {
     [_boxLayer setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-    [_railLayer setFrame:CGRectMake(self.frame.size.width - RAIL_COLOR_WIDTH, 0, RAIL_COLOR_WIDTH, self.frame.size.height)];
-    [_depthLayer setFrame:CGRectMake(0, 0, self.frame.size.width + DEPTH_BORDER_WIDTH, self.frame.size.height + DEPTH_BORDER_WIDTH)];
+    [_railLayer setFrame:CGRectMake(self.frame.size.width - UI_RAIL_COLOR_WIDTH, 0, UI_RAIL_COLOR_WIDTH, self.frame.size.height)];
+    [_depthLayer setFrame:CGRectMake(0, 0, self.frame.size.width + UI_DEPTH_BORDER_WIDTH, self.frame.size.height + UI_DEPTH_BORDER_WIDTH)];
 }
 
 - (void)disableAnimationsOnLayer:(CALayer*)layer {
@@ -103,14 +103,14 @@
 }
 
 - (void)resizeTextFields {
-    [_nameField setFrame:CGRectMake(BORDER_PADDING_X, BORDER_PADDING_Y,
-                                    [self frame].size.width - BORDER_PADDING_X * 2,
-                                    NAME_FIELD_HEIGHT)];
+    [_nameField setFrame:CGRectMake(UI_BORDER_PADDING_X, UI_BORDER_PADDING_Y,
+                                    [self frame].size.width - UI_BORDER_PADDING_X * 2,
+                                    UI_NAME_FIELD_HEIGHT)];
 }
 
 - (CGRect)reframe {
-    int width = ([[CalendarMath getInstance] dayWidth] - EVENT_DX - RIGHT_RAIL_WIDTH);
-    return CGRectMake(EVENT_DX,
+    int width = ([[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING);
+    return CGRectMake(UI_EVENT_DX,
                       [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)],
                       width,
                       [[CalendarMath getInstance] pixelsPerHour] * (_endTime - _startTime) / SECONDS_PER_HOUR);
@@ -160,19 +160,19 @@
 - (void)drawDepthLayer:(CALayer*)layer inContext:(CGContextRef)context {
     CGPoint rightLines[] = {
         CGPointMake(self.frame.size.width, 0),
-        CGPointMake(self.frame.size.width + DEPTH_BORDER_WIDTH, DEPTH_BORDER_WIDTH),
-        CGPointMake(self.frame.size.width + DEPTH_BORDER_WIDTH, self.frame.size.height + DEPTH_BORDER_WIDTH),
+        CGPointMake(self.frame.size.width + UI_DEPTH_BORDER_WIDTH, UI_DEPTH_BORDER_WIDTH),
+        CGPointMake(self.frame.size.width + UI_DEPTH_BORDER_WIDTH, self.frame.size.height + UI_DEPTH_BORDER_WIDTH),
         CGPointMake(self.frame.size.width, self.frame.size.height),
         CGPointMake(self.frame.size.width, 0)
     };
     CGContextAddLines(context, rightLines, 5);
-    CGContextSetFillColorWithColor(context, [[_baseColor colorByDarkeningColor:DEPTH_BORDER_DARKEN_MULTIPLIER] CGColor]);
+    CGContextSetFillColorWithColor(context, [[_baseColor colorByDarkeningColor:UI_DEPTH_BORDER_DARKEN] CGColor]);
     CGContextFillPath(context);
     
     CGPoint bottomLines[] = {
         CGPointMake(self.frame.size.width, self.frame.size.height),
-        CGPointMake(self.frame.size.width + DEPTH_BORDER_WIDTH, self.frame.size.height + DEPTH_BORDER_WIDTH),
-        CGPointMake(DEPTH_BORDER_WIDTH, self.frame.size.height + DEPTH_BORDER_WIDTH),
+        CGPointMake(self.frame.size.width + UI_DEPTH_BORDER_WIDTH, self.frame.size.height + UI_DEPTH_BORDER_WIDTH),
+        CGPointMake(UI_DEPTH_BORDER_WIDTH, self.frame.size.height + UI_DEPTH_BORDER_WIDTH),
         CGPointMake(0, self.frame.size.height),
         CGPointMake(self.frame.size.width, self.frame.size.height)
     };

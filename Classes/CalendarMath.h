@@ -1,9 +1,9 @@
 #import <Foundation/Foundation.h>
 
-#define PIXELS_PER_HOUR			100.0
-#define PIXELS_PER_DAY			320.0
-
 #define EVENT_TIME_GRANULARITY	15 * SECONDS_PER_MINUTE
+
+#define UI_PIXELS_PER_HOUR			100.0
+#define UI_DAY_WIDTH                320.0
 
 @interface CalendarMath : NSObject {
     float _pixelsPerHour;

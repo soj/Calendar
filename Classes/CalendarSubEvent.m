@@ -22,10 +22,10 @@
 }
 
 - (CGRect)reframe {
-    int multitaskDX = _multitaskIndex * MULTITASK_DX;
-    int width = ([[CalendarMath getInstance] dayWidth] - EVENT_DX - RIGHT_RAIL_WIDTH) - multitaskDX;
+    int multitaskDX = _multitaskIndex * UI_MULTITASK_DX;
+    int width = ([[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING) - multitaskDX;
     
-    return CGRectMake(EVENT_DX + multitaskDX,
+    return CGRectMake(UI_EVENT_DX + multitaskDX,
                       [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)],
                       width,
                       [[CalendarMath getInstance] pixelsPerHour] * (_endTime - _startTime) / SECONDS_PER_HOUR);

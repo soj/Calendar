@@ -1,8 +1,6 @@
 #import <UIKit/UIKit.h>
 #import "LayerDelegate.h"
 
-#define MIN_TIME_INTERVAL	SECONDS_PER_HOUR / 2
-
 @interface CalendarEntity : UIView {
     LayerDelegate *_sublayerDelegate;
     

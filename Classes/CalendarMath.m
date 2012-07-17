@@ -17,8 +17,8 @@ static CalendarMath* instance = nil;
     NSAssert(instance == nil, @"Attempted to create multiple instances of Singleton");
     
     if (self = [super init]) {
-        _pixelsPerHour = PIXELS_PER_HOUR;
-        _dayWidth = PIXELS_PER_DAY;
+        _pixelsPerHour = UI_PIXELS_PER_HOUR;
+        _dayWidth = UI_DAY_WIDTH;
     }
     return self;
 }

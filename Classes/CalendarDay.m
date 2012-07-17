@@ -10,12 +10,12 @@
 	
 	if (self) {
 		CGRect bounds = self.bounds;
-		bounds.origin.y = -DAY_TOP_OFFSET;
-		bounds.size.height = bounds.size.height + DAY_TOP_OFFSET;
+		bounds.origin.y = -UI_DAY_TOP_OFFSET;
+		bounds.size.height = bounds.size.height + UI_DAY_TOP_OFFSET;
 		[self setBounds:bounds];
         
         _timeLinesLayer = [_sublayerDelegate makeLayerWithName:@"Timelines"];
-        _timeLinesLayer.frame = CGRectMake(0, -DAY_TOP_OFFSET, self.frame.size.width, self.frame.size.height);
+        _timeLinesLayer.frame = CGRectMake(0, -UI_DAY_TOP_OFFSET, self.frame.size.width, self.frame.size.height);
         _timeLinesLayer.bounds = self.bounds;
         _timeLinesLayer.opacity = 0;
         [self.layer addSublayer:_timeLinesLayer];
@@ -25,7 +25,7 @@
 }
 
 - (CGRect)reframe {
-    return CGRectMake(0, DAY_TOP_OFFSET,
+    return CGRectMake(0, UI_DAY_TOP_OFFSET,
                       [[CalendarMath getInstance] dayWidth],
                       [[CalendarMath getInstance] pixelsPerHour] * HOURS_PER_DAY);
 }
@@ -34,7 +34,7 @@
     CABasicAnimation *fadeIn = [CABasicAnimation animationWithKeyPath:@"opacity"];
     fadeIn.fromValue = [NSNumber numberWithFloat:_timeLinesLayer.opacity];
     fadeIn.toValue = [NSNumber numberWithFloat:1.0];
-    fadeIn.duration = ANIM_DURATION_FADE;
+    fadeIn.duration = UI_ANIM_DURATION_FADE;
     fadeIn.removedOnCompletion = NO;
     fadeIn.fillMode = kCAFillModeForwards;
     _timeLinesLayer.opacity = 1.0;
@@ -45,7 +45,7 @@
     CABasicAnimation *fadeOut = [CABasicAnimation animationWithKeyPath:@"opacity"];
     fadeOut.fromValue = [NSNumber numberWithFloat:_timeLinesLayer.opacity];
     fadeOut.toValue = [NSNumber numberWithFloat:0];
-    fadeOut.duration = ANIM_DURATION_FADE;
+    fadeOut.duration = UI_ANIM_DURATION_FADE;
     fadeOut.removedOnCompletion = NO;
     fadeOut.fillMode = kCAFillModeForwards;
     _timeLinesLayer.opacity = 0.0;
@@ -97,45 +97,45 @@
 - (void)drawDayLine:(NSTimeInterval)time shortened:(BOOL)shortened inContext:(CGContextRef)context {
 	float yPos = [self yPosFromTime:time];
 
-    CGContextSetRGBStrokeColor(context, TIME_LINE_COLOR);
-    CGContextSetRGBFillColor(context, TIME_LINE_COLOR);
+    CGContextSetRGBStrokeColor(context, UI_TIME_LINE_COLOR);
+    CGContextSetRGBFillColor(context, UI_TIME_LINE_COLOR);
     CGContextSetShouldAntialias(context, NO);
 	CGContextSetLineWidth(context, 5.0);
     
     if (shortened) {
-        [self drawLineAtY:yPos startX:TIME_LINES_X endX:TIME_LINES_FULL_X inContext:context];
+        [self drawLineAtY:yPos startX:UI_TIME_LINES_X endX:UI_TIME_LINES_FULL_X inContext:context];
     } else {
-        [self drawLineAtY:yPos startX:TIME_LINES_FULL_X endX:self.frame.size.width inContext:context];
+        [self drawLineAtY:yPos startX:UI_TIME_LINES_FULL_X endX:self.frame.size.width inContext:context];
     }
 }
 
 - (void)drawHourLine:(NSTimeInterval)time shortened:(BOOL)shortened inContext:(CGContextRef)context {
 	float yPos = [self yPosFromTime:time];
     
-    CGContextSetRGBStrokeColor(context, TIME_LINE_COLOR);
-    CGContextSetRGBFillColor(context, TIME_LINE_COLOR);
+    CGContextSetRGBStrokeColor(context, UI_TIME_LINE_COLOR);
+    CGContextSetRGBFillColor(context, UI_TIME_LINE_COLOR);
     CGContextSetShouldAntialias(context, NO);
 	CGContextSetLineWidth(context, 1.0);
     
     if (shortened) {
-        [self drawLineAtY:yPos startX:TIME_LINES_X endX:TIME_LINES_FULL_X inContext:context];
+        [self drawLineAtY:yPos startX:UI_TIME_LINES_X endX:UI_TIME_LINES_FULL_X inContext:context];
     } else {
-        [self drawLineAtY:yPos startX:TIME_LINES_FULL_X endX:self.frame.size.width inContext:context];
+        [self drawLineAtY:yPos startX:UI_TIME_LINES_FULL_X endX:self.frame.size.width inContext:context];
     }
 }
 
 - (void)drawHalfHourLine:(NSTimeInterval)time inContext:(CGContextRef)context {
 	float yPos = [self yPosFromTime:time] - [[CalendarMath getInstance] pixelsPerHour] / 2;
     
-    CGContextSetRGBStrokeColor(context, TIME_LINE_COLOR);
-    CGContextSetRGBFillColor(context, TIME_LINE_COLOR);
+    CGContextSetRGBStrokeColor(context, UI_TIME_LINE_COLOR);
+    CGContextSetRGBFillColor(context, UI_TIME_LINE_COLOR);
     CGContextSetShouldAntialias(context, NO);
 	CGContextSetLineWidth(context, 1.0);
     
 	CGFloat lineDashPattern[] = {10, 10};
 	CGContextSetLineDash(context, 0, lineDashPattern, 2);
 	
-    [self drawLineAtY:yPos startX:TIME_LINES_X endX:self.frame.size.width inContext:context];
+    [self drawLineAtY:yPos startX:UI_TIME_LINES_X endX:self.frame.size.width inContext:context];
 	
 	CGContextSetLineDash(context, 0, NULL, 0);	
 }
@@ -143,8 +143,8 @@
 - (void)drawCurrentTimeLine:(NSTimeInterval)time inContext:(CGContextRef)context {
 	float yPos = [self yPosFromTime:time] - 1;
 
-    CGContextSetRGBStrokeColor(context, CURRENT_LINE_COLOR);
-    CGContextSetRGBFillColor(context, CURRENT_LINE_COLOR);
+    CGContextSetRGBStrokeColor(context, UI_CURRENT_LINE_COLOR);
+    CGContextSetRGBFillColor(context, UI_CURRENT_LINE_COLOR);
     CGContextSetShouldAntialias(context, YES);
     CGContextSetLineWidth(context, 2.0);
 
@@ -159,33 +159,33 @@
     float yPos = [self yPosFromTime:time];
     
     UIGraphicsPushContext(context);
-    CGContextSetRGBStrokeColor(context, TEXT_COLOR);
-    CGContextSetRGBFillColor(context, TEXT_COLOR);
+    CGContextSetRGBStrokeColor(context, UI_TEXT_COLOR);
+    CGContextSetRGBFillColor(context, UI_TEXT_COLOR);
     CGContextSetShouldAntialias(context, YES);
 
-    CGPoint textPoint = CGPointMake(LINE_TEXT_X, yPos + LINE_TEXT_BIG_DY);
-	[[self dateStringFromTime:time withFormat:@"EEE"] drawAtPoint:textPoint withFont:MEDIUM_BOLD_FONT];
+    CGPoint textPoint = CGPointMake(UI_LINE_TEXT_X, yPos + UI_LINE_TEXT_BIG_DY);
+	[[self dateStringFromTime:time withFormat:@"EEE"] drawAtPoint:textPoint withFont:UI_MEDIUM_BOLD_FONT];
 	
-	textPoint = CGPointMake(LINE_TEXT_X, yPos + LINE_TEXT_SUB_DY);
-	[[self dateStringFromTime:time withFormat:@"MMM dd"] drawAtPoint:textPoint withFont:SMALL_FONT];
+	textPoint = CGPointMake(UI_LINE_TEXT_X, yPos + UI_LINE_TEXT_SUB_DY);
+	[[self dateStringFromTime:time withFormat:@"MMM dd"] drawAtPoint:textPoint withFont:UI_SMALL_FONT];
     
     UIGraphicsPopContext();
 }
 
 - (void)drawHourTextForTime:(NSTimeInterval)time inContext:(CGContextRef)context {
     float yPos = [self yPosFromTime:time];
-    CGPoint textPoint = CGPointMake(LINE_TEXT_X, yPos + LINE_TEXT_DY);
+    CGPoint textPoint = CGPointMake(UI_LINE_TEXT_X, yPos + UI_LINE_TEXT_DY);
     NSString *hourString = [self dateStringFromTime:time withFormat:@"h"];
     NSString *ampmString = [[self dateStringFromTime:time withFormat:@"a"] substringToIndex:1];
-    CGSize hourStringSize = [hourString sizeWithFont:MEDIUM_BOLD_FONT];
+    CGSize hourStringSize = [hourString sizeWithFont:UI_MEDIUM_BOLD_FONT];
     
     UIGraphicsPushContext(context);
-    CGContextSetRGBStrokeColor(context, TEXT_COLOR);
-    CGContextSetRGBFillColor(context, TEXT_COLOR);
+    CGContextSetRGBStrokeColor(context, UI_TEXT_COLOR);
+    CGContextSetRGBFillColor(context, UI_TEXT_COLOR);
     CGContextSetShouldAntialias(context, YES);
     
-    [hourString drawAtPoint:textPoint withFont:MEDIUM_BOLD_FONT];
-    [ampmString drawAtPoint:CGPointMake(textPoint.x + hourStringSize.width, textPoint.y) withFont:MEDIUM_LIGHT_FONT];
+    [hourString drawAtPoint:textPoint withFont:UI_MEDIUM_BOLD_FONT];
+    [ampmString drawAtPoint:CGPointMake(textPoint.x + hourStringSize.width, textPoint.y) withFont:UI_MEDIUM_LIGHT_FONT];
     
     UIGraphicsPopContext();
 }
