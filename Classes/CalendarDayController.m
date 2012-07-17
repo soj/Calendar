@@ -125,6 +125,7 @@
     [self unsetActiveEventBlock];
     
     _activeEventBlock = event;
+    [_activeEventBlock setIsActive:YES];
     [_activeEventBlock addGestureRecognizer:_eventBlockPan];
 }
 
@@ -139,6 +140,7 @@
         }
         
         [block removeGestureRecognizer:_eventBlockPan];
+        [block setIsActive:NO];
         
         if (![_delegate eventIsValid:block.eventId]) {
             [self deleteEventBlock:block];

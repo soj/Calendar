@@ -16,6 +16,7 @@
         
         _timeLinesLayer = [_sublayerDelegate makeLayerWithName:@"Timelines"];
         _timeLinesLayer.frame = CGRectMake(0, -DAY_TOP_OFFSET, self.frame.size.width, self.frame.size.height);
+        _timeLinesLayer.bounds = self.bounds;
         _timeLinesLayer.opacity = 0;
         [self.layer addSublayer:_timeLinesLayer];
 	}
@@ -192,7 +193,7 @@
 #pragma mark -
 #pragma mark Draw Delegates
 
-- (void)drawTimeLinesLayer:(CALayer*)layer inContext:(CGContextRef)context {
+- (void)drawTimelinesLayer:(CALayer*)layer inContext:(CGContextRef)context {
     [self drawDayLine:_startTime shortened:NO inContext:context];
     
     for (int time = _startTime + SECONDS_PER_HOUR; time < _startTime + SECONDS_PER_DAY; time += SECONDS_PER_HOUR) {

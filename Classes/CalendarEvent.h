@@ -8,7 +8,7 @@
 #define EVENT_DX			75.0
 #define RAIL_COLOR_WIDTH    20.0
 #define RIGHT_RAIL_WIDTH	5.0
-#define DEPTH_BORDER_WIDTH  10.0
+#define DEPTH_BORDER_WIDTH  7.0
 #define DEPTH_BORDER_DARKEN_MULTIPLIER 0.8
 
 #define BORDER_PADDING_X	10.0
@@ -52,6 +52,8 @@
 - (void)setFocus;
 - (void)resignFocus;
 - (BOOL)hasFocus;
+
+- (void)setIsActive:(BOOL)isActive;
 
 - (void)setTitle:(NSString*)title;
 - (void)setColor:(UIColor*)color;

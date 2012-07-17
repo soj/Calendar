@@ -25,6 +25,8 @@
         
         _depthLayer = [_sublayerDelegate makeLayerWithName:@"Depth"];
         [_depthLayer setNeedsDisplayOnBoundsChange:YES];
+        [_depthLayer setHidden:YES];
+        [self disableAnimationsOnLayer:_depthLayer];
         
         [self.layer addSublayer:_boxLayer];
         [self.layer addSublayer:_depthLayer];
@@ -49,8 +51,7 @@
 - (void)reframeLayers {
     [_boxLayer setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
     [_railLayer setFrame:CGRectMake(self.frame.size.width - RAIL_COLOR_WIDTH, 0, RAIL_COLOR_WIDTH, self.frame.size.height)];
-    [_depthLayer setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-    [_depthLayer setBounds:CGRectMake(_depthLayer.bounds.origin.x, _depthLayer.bounds.origin.y, _depthLayer.frame.size.width + 10, _depthLayer.frame.size.height + 10)];
+    [_depthLayer setFrame:CGRectMake(0, 0, self.frame.size.width + DEPTH_BORDER_WIDTH, self.frame.size.height + DEPTH_BORDER_WIDTH)];
 }
 
 - (void)disableAnimationsOnLayer:(CALayer*)layer {
@@ -74,7 +75,7 @@
 }
 
 - (void)setIsActive:(BOOL)isActive {
-    [_depthLayer setHidden:isActive];
+    [_depthLayer setHidden:!isActive];
 }
 
 - (void)setColor:(UIColor*)color {
@@ -82,6 +83,7 @@
     _boxLayer.borderColor = [_baseColor CGColor];
     _railLayer.backgroundColor = [_baseColor CGColor];
     [self setNeedsDisplay];
+    [_depthLayer setNeedsDisplay];
 }
 
 - (void)setTitle:(NSString*)title {
@@ -156,15 +158,26 @@
 #pragma mark Drawing
 
 - (void)drawDepthLayer:(CALayer*)layer inContext:(CGContextRef)context {
-    CGPoint lines[] = {
+    CGPoint rightLines[] = {
         CGPointMake(self.frame.size.width, 0),
         CGPointMake(self.frame.size.width + DEPTH_BORDER_WIDTH, DEPTH_BORDER_WIDTH),
         CGPointMake(self.frame.size.width + DEPTH_BORDER_WIDTH, self.frame.size.height + DEPTH_BORDER_WIDTH),
         CGPointMake(self.frame.size.width, self.frame.size.height),
         CGPointMake(self.frame.size.width, 0)
     };
-    CGContextAddLines(context, lines, 5);
+    CGContextAddLines(context, rightLines, 5);
     CGContextSetFillColorWithColor(context, [[_baseColor colorByDarkeningColor:DEPTH_BORDER_DARKEN_MULTIPLIER] CGColor]);
+    CGContextFillPath(context);
+    
+    CGPoint bottomLines[] = {
+        CGPointMake(self.frame.size.width, self.frame.size.height),
+        CGPointMake(self.frame.size.width + DEPTH_BORDER_WIDTH, self.frame.size.height + DEPTH_BORDER_WIDTH),
+        CGPointMake(DEPTH_BORDER_WIDTH, self.frame.size.height + DEPTH_BORDER_WIDTH),
+        CGPointMake(0, self.frame.size.height),
+        CGPointMake(self.frame.size.width, self.frame.size.height)
+    };
+    CGContextAddLines(context, bottomLines, 5);
+    CGContextSetFillColorWithColor(context, [_baseColor CGColor]);
     CGContextFillPath(context);
 }
 
