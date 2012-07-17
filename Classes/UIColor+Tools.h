@@ -4,5 +4,6 @@
 
 @interface UIColor (Tools)
 - (UIColor*)colorByDarkeningColor:(CGFloat)colorMultiplier;
+- (UIColor*)colorByChangingAlphaTo:(CGFloat)alpha;
 + (UIColor*)colorForIndex:(NSInteger)idx;
 @end

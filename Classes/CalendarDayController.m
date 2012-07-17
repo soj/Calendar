@@ -126,7 +126,7 @@
     
     _activeEventBlock = event;
     [_activeEventBlock setIsActive:YES];
-    [self.view bringSubviewToFront:_activeEventBlock];
+    [_calendarDay bringSubviewToFront:_activeEventBlock];
     [_activeEventBlock addGestureRecognizer:_eventBlockPan];
 }
 
@@ -231,6 +231,7 @@
 - (void)resizeEventBlock:(CalendarEvent*)eventBlock startTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
     CalendarEvent *thatBlock = [self boundaryBlockBeforeTime:eventBlock.endTime];
     if (thatBlock && (time < thatBlock.endTime || forceLink)) {
+        NSAssert([CalendarMath timesIntersectS1:eventBlock.startTime e1:eventBlock.endTime s2:thatBlock.startTime e2:thatBlock.endTime], @"Blocks should not be overlapping!");
         [self resizeEventBlock:thatBlock endTime:time forceLink:NO];
         _dragType = kDragLinkedStartTime;
         if (thatBlock.size <= 0) {
@@ -244,6 +245,7 @@
 - (void)resizeEventBlock:(CalendarEvent*)eventBlock endTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
     CalendarEvent *thatBlock = [self boundaryBlockAfterTime:eventBlock.startTime];
     if (thatBlock && (time > thatBlock.startTime || forceLink)) {
+         NSAssert([CalendarMath timesIntersectS1:eventBlock.startTime e1:eventBlock.endTime s2:thatBlock.startTime e2:thatBlock.endTime], @"Blocks should not be overlapping!");
         [self resizeEventBlock:thatBlock startTime:time forceLink:NO];
         _dragType = kDragLinkedEndTime;
         if (thatBlock.size <= 0) {

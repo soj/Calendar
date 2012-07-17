@@ -9,20 +9,22 @@
 #define UI_RIGHT_PADDING        5.0
 
 #define UI_BOX_BORDER_WIDTH     1.0
-#define UI_RAIL_COLOR_WIDTH     20.0
+#define UI_RAIL_COLOR_WIDTH     22.0
 #define UI_DEPTH_BORDER_WIDTH   7.0
 #define UI_DEPTH_BORDER_HEIGHT  5.0
+
+#define UI_BOX_BG_ALPHA         0.1
 #define UI_DEPTH_BORDER_DARKEN  0.8
 
 #define UI_BORDER_PADDING_X     10.0
-#define UI_BORDER_PADDING_Y     5.0
+#define UI_BORDER_PADDING_Y     7.0
 #define UI_BORDER_MARGIN_Y      2.0
 
-#define UI_NAME_FIELD_HEIGHT    30.0f
+#define UI_NAME_FIELD_HEIGHT    35.0f
 
 #define UI_EVENT_BG_COLOR       [UIColor colorWithRed:0.98 green:0.98 blue:0.98 alpha:1.0]
 #define UI_NAME_COLOR           [UIColor colorWithRed:0.059 green:0.059 blue:0.059 alpha:1.0]
-#define UI_NAME_FONT            [UIFont fontWithName:@"Helvetica-Light" size:25.0f]
+#define UI_NAME_FONT            [UIFont fontWithName:@"Helvetica-Light" size:26.0f]
 
 @class CalendarEvent;
 

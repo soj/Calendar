@@ -14,10 +14,11 @@
     
     if (self) {
         _delegate = delegate;
+        
+        self.layer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
 
         _boxLayer = [_sublayerDelegate makeLayerWithName:@"Box"];
         _boxLayer.borderWidth = UI_BOX_BORDER_WIDTH;
-        _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
         [self disableAnimationsOnLayer:_boxLayer];
         
         _railLayer = [_sublayerDelegate makeLayerWithName:@"Rail"];
@@ -63,12 +64,23 @@
 - (void)setIsActive:(BOOL)isActive {
     _isActive = isActive;
     [_depthLayer setHidden:!_isActive];
+    
+    if (!_isActive) {
+        _boxLayer.backgroundColor = [[_baseColor colorByChangingAlphaTo:UI_BOX_BG_ALPHA] CGColor];
+    } else {
+        _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
+    }
 }
 
 - (void)setColor:(UIColor*)color {
     _baseColor = color;
     _boxLayer.borderColor = [_baseColor CGColor];
     _railLayer.backgroundColor = [_baseColor CGColor];
+    
+    if (!_isActive) {
+        _boxLayer.backgroundColor = [[_baseColor colorByChangingAlphaTo:UI_BOX_BG_ALPHA] CGColor];
+    }
+    
     [self setNeedsDisplay];
     [_depthLayer setNeedsDisplay];
 }
@@ -94,25 +106,24 @@
 
 - (void)resizeTextFields {
     [_nameField setFrame:CGRectMake(UI_BORDER_PADDING_X, UI_BORDER_PADDING_Y,
-                                    [self frame].size.width - UI_BORDER_PADDING_X * 2,
+                                    [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
                                     UI_NAME_FIELD_HEIGHT)];
 }
 
 - (CGRect)reframe {
     int width = ([[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING);
     return CGRectMake(UI_EVENT_DX,
-                      [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)],
+                      [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + UI_BORDER_MARGIN_Y,
                       width,
-                      [[CalendarMath getInstance] pixelsPerHour] * (_endTime - _startTime) / SECONDS_PER_HOUR);
+                      [[CalendarMath getInstance] pixelsPerHour] * (_endTime - _startTime) / SECONDS_PER_HOUR - UI_BORDER_MARGIN_Y * 2);
 }
 
 - (void)reframeLayers {
-    [_boxLayer setFrame:CGRectMake(0, UI_BORDER_MARGIN_Y, self.frame.size.width,
-                                   self.frame.size.height - UI_BORDER_MARGIN_Y * 2)];
-    [_railLayer setFrame:CGRectMake(self.frame.size.width - UI_RAIL_COLOR_WIDTH, UI_BORDER_MARGIN_Y,
-                                    UI_RAIL_COLOR_WIDTH, self.frame.size.height - UI_BORDER_MARGIN_Y * 2)];
-    [_depthLayer setFrame:CGRectMake(0, UI_BORDER_MARGIN_Y, self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
-                                     self.frame.size.height + UI_DEPTH_BORDER_HEIGHT - UI_BORDER_MARGIN_Y * 2)];
+    [_boxLayer setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+    [_railLayer setFrame:CGRectMake(self.frame.size.width - UI_RAIL_COLOR_WIDTH, 0,
+                                    UI_RAIL_COLOR_WIDTH, self.frame.size.height)];
+    [_depthLayer setFrame:CGRectMake(0, 0, self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
+                                     self.frame.size.height + UI_DEPTH_BORDER_HEIGHT)];
 }
 
 - (void)disableAnimationsOnLayer:(CALayer*)layer {

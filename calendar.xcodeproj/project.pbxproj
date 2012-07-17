@@ -37,6 +37,7 @@
 		52B1642C15B0179300269D10 /* Background.png in Resources */ = {isa = PBXBuildFile; fileRef = 52B1642B15B0179300269D10 /* Background.png */; };
 		52B1642E15B23DDA00269D10 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52B1642D15B23DD900269D10 /* QuartzCore.framework */; };
 		52B1643115B247BC00269D10 /* LayerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B1643015B247BC00269D10 /* LayerDelegate.m */; };
+		52B1643315B55FBD00269D10 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52B1643215B55FBC00269D10 /* Accounts.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -89,6 +90,7 @@
 		52B1642D15B23DD900269D10 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		52B1642F15B247BB00269D10 /* LayerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayerDelegate.h; sourceTree = "<group>"; };
 		52B1643015B247BC00269D10 /* LayerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LayerDelegate.m; sourceTree = "<group>"; };
+		52B1643215B55FBC00269D10 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
 		8D1107310486CEB800E47090 /* calendar-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "calendar-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -97,6 +99,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52B1643315B55FBD00269D10 /* Accounts.framework in Frameworks */,
 				52B1642E15B23DDA00269D10 /* QuartzCore.framework in Frameworks */,
 				1D60589F0D05DD5A006BFB54 /* Foundation.framework in Frameworks */,
 				1DF5F4E00D08C38300B7A737 /* UIKit.framework in Frameworks */,
@@ -188,6 +191,7 @@
 		29B97314FDCFA39411CA2CEA /* CustomTemplate */ = {
 			isa = PBXGroup;
 			children = (
+				52B1643215B55FBC00269D10 /* Accounts.framework */,
 				52B1642D15B23DD900269D10 /* QuartzCore.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
