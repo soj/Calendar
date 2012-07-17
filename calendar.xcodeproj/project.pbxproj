@@ -14,7 +14,6 @@
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		28D7ACF80DDB3853001CB0EB /* CalendarDayController.m in Sources */ = {isa = PBXBuildFile; fileRef = 28D7ACF70DDB3853001CB0EB /* CalendarDayController.m */; };
 		29247E6915905B8000B12926 /* Event.m in Sources */ = {isa = PBXBuildFile; fileRef = 29247E6815905B8000B12926 /* Event.m */; };
-		292CB6F3158F081C006367C4 /* ShadowedTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = 292CB6F2158F081C006367C4 /* ShadowedTextField.m */; };
 		292CB7B9158F1328006367C4 /* CalendarDayController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 292CB7B6158F1328006367C4 /* CalendarDayController.xib */; };
 		292CB7BA158F1328006367C4 /* CategoryChooserCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 292CB7B7158F1328006367C4 /* CategoryChooserCell.xib */; };
 		292CB7BB158F1328006367C4 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 292CB7B8158F1328006367C4 /* MainWindow.xib */; };
@@ -51,8 +50,6 @@
 		28D7ACF70DDB3853001CB0EB /* CalendarDayController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CalendarDayController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		29247E6715905B8000B12926 /* Event.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Event.h; sourceTree = "<group>"; };
 		29247E6815905B8000B12926 /* Event.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Event.m; sourceTree = "<group>"; };
-		292CB6F1158F081C006367C4 /* ShadowedTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShadowedTextField.h; sourceTree = "<group>"; };
-		292CB6F2158F081C006367C4 /* ShadowedTextField.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShadowedTextField.m; sourceTree = "<group>"; };
 		292CB7B6158F1328006367C4 /* CalendarDayController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CalendarDayController.xib; path = Classes/CalendarDayController.xib; sourceTree = "<group>"; };
 		292CB7B7158F1328006367C4 /* CategoryChooserCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = CategoryChooserCell.xib; path = Classes/CategoryChooserCell.xib; sourceTree = "<group>"; };
 		292CB7B8158F1328006367C4 /* MainWindow.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = MainWindow.xib; path = Classes/MainWindow.xib; sourceTree = "<group>"; };
@@ -143,8 +140,6 @@
 				52529D7B15A57DD4009D5468 /* CalendarSubEvent.m */,
 				29C1CF7B158EBEBF00842914 /* CategoryChooserCell.h */,
 				29C1CF7C158EBEBF00842914 /* CategoryChooserCell.m */,
-				292CB6F1158F081C006367C4 /* ShadowedTextField.h */,
-				292CB6F2158F081C006367C4 /* ShadowedTextField.m */,
 				52B1642F15B247BB00269D10 /* LayerDelegate.h */,
 				52B1643015B247BC00269D10 /* LayerDelegate.m */,
 			);
@@ -331,7 +326,6 @@
 				29C1CF63158EAE7E00842914 /* CategoryChooserController.m in Sources */,
 				29C1CF7D158EBEBF00842914 /* CategoryChooserCell.m in Sources */,
 				29C1CFD1158ED93600842914 /* Category.m in Sources */,
-				292CB6F3158F081C006367C4 /* ShadowedTextField.m in Sources */,
 				29247E6915905B8000B12926 /* Event.m in Sources */,
 				5232E36D159BE4CE000AE3BC /* CalendarMath.m in Sources */,
 				52529D7915A51889009D5468 /* UIColor+Tools.m in Sources */,

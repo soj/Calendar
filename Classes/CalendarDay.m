@@ -14,17 +14,10 @@
 		bounds.size.height = bounds.size.height + DAY_TOP_OFFSET;
 		[self setBounds:bounds];
         
-        _sublayerDelegate = [[LayerDelegate alloc] initWithView:self];
-        
-        _timeLinesLayer = [CALayer layer];
-        _timeLinesLayer.name = @"TimeLines";
-        _timeLinesLayer.delegate = _sublayerDelegate;
+        _timeLinesLayer = [_sublayerDelegate makeLayerWithName:@"Timelines"];
         _timeLinesLayer.frame = CGRectMake(0, -DAY_TOP_OFFSET, self.frame.size.width, self.frame.size.height);
-        _timeLinesLayer.bounds = self.bounds;
-        _timeLinesLayer.contentsScale = self.layer.contentsScale;
         _timeLinesLayer.opacity = 0;
         [self.layer addSublayer:_timeLinesLayer];
-        [_timeLinesLayer setNeedsDisplay];
 	}
 	
 	return self;

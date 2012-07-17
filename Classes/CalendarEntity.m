@@ -5,14 +5,17 @@
 @synthesize startTime=_startTime, endTime=_endTime;
 
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime endTime:(NSTimeInterval)endTime {
-	self = [super init];
 	
-    _baseTime = baseTime;
-	[self setStartTime:startTime];
-	[self setEndTime:endTime];
-    
-    [self setFrame:[self reframe]];
-	[self setBackgroundColor:[UIColor clearColor]];
+    if (self = [super init]) {	
+        _sublayerDelegate = [[LayerDelegate alloc] initWithView:self];
+        
+        _baseTime = baseTime;
+        [self setStartTime:startTime];
+        [self setEndTime:endTime];
+        
+        [self setFrame:[self reframe]];
+        [self setBackgroundColor:[UIColor clearColor]];
+    }
     
 	return self;
 }

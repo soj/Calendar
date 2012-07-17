@@ -18,4 +18,15 @@
     }
 }
 
+- (CALayer*)makeLayerWithName:(NSString*)name {
+    CALayer *newLayer = [CALayer layer];
+    newLayer.name = @"Box";
+    newLayer.delegate = self;
+    newLayer.frame = CGRectMake(0, 0, _view.frame.size.width, _view.frame.size.height);
+    newLayer.bounds = _view.bounds;
+    newLayer.contentsScale = _view.layer.contentsScale;
+    [newLayer setNeedsDisplay];
+    return newLayer;
+}
+
 @end

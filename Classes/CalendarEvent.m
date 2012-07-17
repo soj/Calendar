@@ -9,34 +9,78 @@
 @synthesize eventId=_eventId, delegate=_delegate, hasFocus=_hasFocus;
 
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
-               endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {
-    _delegate = delegate;
-    
+               endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {    
     self = [super initWithBaseTime:baseTime startTime:startTime endTime:endTime];
     
-    _nameField = [[ShadowedTextField alloc] init];
-    [_nameField setDelegate:self];
-    [_nameField setEnabled:NO];
-    
-    [self resizeTextFields];
-	
-	[self addSubview:_nameField];
-	
+    if (self) {
+        _delegate = delegate;
+
+        _boxLayer = [_sublayerDelegate makeLayerWithName:@"Box"];
+        _boxLayer.borderWidth = 2.0f;
+        _boxLayer.backgroundColor = [EVENT_BG_COLOR CGColor];
+        [self disableAnimationsOnLayer:_boxLayer];
+        
+        _railLayer = [_sublayerDelegate makeLayerWithName:@"Rail"];
+        [self disableAnimationsOnLayer:_railLayer];
+        
+        _depthLayer = [_sublayerDelegate makeLayerWithName:@"Depth"];
+        [_depthLayer setNeedsDisplayOnBoundsChange:YES];
+        
+        [self.layer addSublayer:_boxLayer];
+        [self.layer addSublayer:_depthLayer];
+        [self.layer addSublayer:_railLayer];
+        
+        _nameField = [[UITextField alloc] init];
+        [_nameField setFont:NAME_FONT];
+        [_nameField setTextColor:NAME_COLOR];
+        [_nameField setReturnKeyType:UIReturnKeyDone];
+        [_nameField setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
+        [_nameField setDelegate:self];
+        [_nameField setEnabled:NO];
+        [self addSubview:_nameField];
+        
+        [self resizeTextFields];
+        [self reframeLayers];
+    }
+		
 	return self;
+}
+
+- (void)reframeLayers {
+    [_boxLayer setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+    [_railLayer setFrame:CGRectMake(self.frame.size.width - RAIL_COLOR_WIDTH, 0, RAIL_COLOR_WIDTH, self.frame.size.height)];
+    [_depthLayer setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
+    [_depthLayer setBounds:CGRectMake(_depthLayer.bounds.origin.x, _depthLayer.bounds.origin.y, _depthLayer.frame.size.width + 10, _depthLayer.frame.size.height + 10)];
+}
+
+- (void)disableAnimationsOnLayer:(CALayer*)layer {
+    NSMutableDictionary *disableAnims = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
+                                         [NSNull null], @"bounds",
+                                         [NSNull null], @"position",
+                                         nil];
+    layer.actions = disableAnims;
 }
 
 - (void)setStartTime:(NSTimeInterval)startTime {
 	[super setStartTime:startTime];
     [self setFrame:[self reframe]];
+    [self reframeLayers];
 }
 
 - (void)setEndTime:(NSTimeInterval)endTime {
 	[super setEndTime:endTime];
     [self setFrame:[self reframe]];
+    [self reframeLayers];
+}
+
+- (void)setIsActive:(BOOL)isActive {
+    [_depthLayer setHidden:isActive];
 }
 
 - (void)setColor:(UIColor*)color {
     _baseColor = color;
+    _boxLayer.borderColor = [_baseColor CGColor];
+    _railLayer.backgroundColor = [_baseColor CGColor];
     [self setNeedsDisplay];
 }
 
@@ -59,12 +103,11 @@
 - (void)resizeTextFields {
     [_nameField setFrame:CGRectMake(BORDER_PADDING_X, BORDER_PADDING_Y,
                                     [self frame].size.width - BORDER_PADDING_X * 2,
-                                    TEXT_FIELD_HEIGHT)];
+                                    NAME_FIELD_HEIGHT)];
 }
 
 - (CGRect)reframe {
     int width = ([[CalendarMath getInstance] dayWidth] - EVENT_DX - RIGHT_RAIL_WIDTH);
-    
     return CGRectMake(EVENT_DX,
                       [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)],
                       width,
@@ -112,49 +155,22 @@
 #pragma mark -
 #pragma mark Drawing
 
-- (void)drawInContext:(CGContextRef)context {
-	// Set the rectangle area
-    float height = [[CalendarMath getInstance] timeOffsetToPixel:(_endTime - _startTime)];
-	float width = [self frame].size.width;
-	CGRect eventRect = CGRectMake(0, 0, width, height);
-	CGContextSaveGState(context);
-	CGContextClipToRect(context, eventRect);
-	
-	// Draw the grandient background
-	CGColorSpaceRef space = CGColorSpaceCreateDeviceRGB();
-	CGColorRef startColor = CGColorCreate(space, CGColorGetComponents([_baseColor CGColor]));
-	CGColorRef endColor = CGColorCreate(space, CGColorGetComponents([[_baseColor colorByDarkeningColor:BG_GRADIENT_DARKEN] CGColor]));
-	NSArray *colors = [NSArray arrayWithObjects:(__bridge_transfer id)startColor, (__bridge_transfer id)endColor, nil];
-	CGFloat locations[] = {0, 1};
-	CGGradientRef gradient = CGGradientCreateWithColors(space, (__bridge_retained CFArrayRef)colors, locations);
-	CGPoint startPoint = CGPointMake([UIScreen mainScreen].bounds.size.width, 0);
-	CGPoint endPoint = CGPointMake([UIScreen mainScreen].bounds.size.width, height);
-	CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
-	CGColorSpaceRelease(space);
-
-	// Draw the border
-	CGContextSetRGBStrokeColor(context, BORDER_COLOR);
-	CGContextSetLineWidth(context, 1.0);
-    CGContextMoveToPoint(context, 0, 0);
-    CGPoint borderPoints[] = {
-        CGPointMake(width, 0),
-        CGPointMake(width, height),
-        CGPointMake(0, height),
-        CGPointMake(0, 0)
+- (void)drawDepthLayer:(CALayer*)layer inContext:(CGContextRef)context {
+    CGPoint lines[] = {
+        CGPointMake(self.frame.size.width, 0),
+        CGPointMake(self.frame.size.width + DEPTH_BORDER_WIDTH, DEPTH_BORDER_WIDTH),
+        CGPointMake(self.frame.size.width + DEPTH_BORDER_WIDTH, self.frame.size.height + DEPTH_BORDER_WIDTH),
+        CGPointMake(self.frame.size.width, self.frame.size.height),
+        CGPointMake(self.frame.size.width, 0)
     };
-    CGContextAddLines(context, borderPoints, sizeof(borderPoints)/sizeof(borderPoints[0]));
-    CGContextStrokePath(context);
-	
-	// Draw the top highlight
-	CGContextSetBlendMode(context, kCGBlendModeOverlay);
-	CGContextSetLineWidth(context, 2.0);
-	CGContextSetRGBStrokeColor(context, 1, 1, 1, 0.3);
-	CGContextMoveToPoint(context, 0, 0);
-	CGContextAddLineToPoint(context, width, 0);
-	CGContextStrokePath(context);
-    
-	CGContextSetBlendMode(context, kCGBlendModeNormal);
-	CGContextRestoreGState(context);
+    CGContextAddLines(context, lines, 5);
+    CGContextSetFillColorWithColor(context, [[_baseColor colorByDarkeningColor:DEPTH_BORDER_DARKEN_MULTIPLIER] CGColor]);
+    CGContextFillPath(context);
+}
+
+- (void)setNeedsDisplay {
+    [super setNeedsDisplay];
+    [_boxLayer setNeedsDisplay];
 }
 
 @end

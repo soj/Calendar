@@ -25,9 +25,7 @@
 
 
 @interface CalendarDay : CalendarEntity {
-    CALayer *_timeLinesLayer;
-    LayerDelegate *_sublayerDelegate;
-    
+    CALayer *_timeLinesLayer;    
 	NSTimeInterval _currentTime;
 }
 

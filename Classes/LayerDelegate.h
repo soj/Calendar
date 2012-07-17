@@ -6,5 +6,6 @@
 }
 
 - (id)initWithView:(UIView*)view;
+- (CALayer*)makeLayerWithName:(NSString*)name;
 
 @end
