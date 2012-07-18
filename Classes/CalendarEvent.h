@@ -26,7 +26,7 @@
 #define UI_NAME_COLOR           [UIColor colorWithRed:0.059 green:0.059 blue:0.059 alpha:1.0]
 #define UI_NAME_FONT            [UIFont fontWithName:@"Helvetica-Light" size:26.0f]
 
-#define UI_ANIM_DURATION_RAISE  0.2
+#define UI_ANIM_DURATION_RAISE  0.15
 
 @class CalendarEvent;
 
@@ -41,6 +41,7 @@
     CALayer *_boxLayer;
     CALayer *_railLayer;
     CALayer *_depthLayer;
+    CAShapeLayer *_depthMask;
 
     BOOL _hasFocus;
     BOOL _isActive;

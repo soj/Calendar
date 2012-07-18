@@ -31,10 +31,20 @@
         [_depthLayer setHidden:YES];
         [self disableAnimationsOnLayer:_depthLayer];
         
+        _depthMask = [CAShapeLayer layer];
+        _depthMask.fillColor = [[UIColor blackColor] CGColor];
+        _depthMask.frame = CGRectMake(UI_DEPTH_BORDER_WIDTH, UI_DEPTH_BORDER_HEIGHT,
+                                      self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
+                                      self.frame.size.height + UI_DEPTH_BORDER_HEIGHT);
+        _depthMask.path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, _depthMask.frame.size.width,
+                                                                      _depthMask.frame.size.height)].CGPath;
+        [self disableAnimationsOnLayer:_depthMask];
+        
         [self.layer addSublayer:_depthLayer];
         [self.layer addSublayer:_boxLayer];
         [self.layer addSublayer:_railLayer];
-        
+        _depthLayer.mask = _depthMask;
+
         _nameField = [[UITextField alloc] init];
         [_nameField setFont:UI_NAME_FONT];
         [_nameField setTextColor:UI_NAME_COLOR];
@@ -75,6 +85,7 @@
         
         [self animateOffsetToInactivePosition:_boxLayer];
         [self animateOffsetToInactivePosition:_railLayer];
+        [self animateOffsetToInactivePosition:_depthMask];
         [self animateOffsetToInactivePosition:_nameField.layer];
     } else {
         _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
@@ -82,6 +93,7 @@
         
         [self animateOffsetToActivePosition:_boxLayer];
         [self animateOffsetToActivePosition:_railLayer];
+        [self animateOffsetToActivePosition:_depthMask];
         [self animateOffsetToActivePosition:_nameField.layer];
     }
 }
@@ -142,6 +154,12 @@
                                      self.frame.size.width, self.frame.size.height)];
     [_depthLayer setBounds:CGRectMake(0, 0, _depthLayer.frame.size.width + UI_DEPTH_BORDER_WIDTH,
                                       _depthLayer.frame.size.height + UI_DEPTH_BORDER_HEIGHT)];
+    
+    _depthMask.frame = CGRectMake(_depthMask.frame.origin.x, _depthMask.frame.origin.y,
+                                  self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
+                                  self.frame.size.height + UI_DEPTH_BORDER_HEIGHT);
+    _depthMask.path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, _depthMask.frame.size.width,
+                                                                  _depthMask.frame.size.height)].CGPath;
 }
 
 - (void)animateOffsetOfLayer:(CALayer*)layer to:(CGPoint)pos {
