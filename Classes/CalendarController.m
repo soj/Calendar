@@ -1,7 +1,5 @@
 #import "CalendarController.h"
 #import "CalendarMath.h"
-#import <Twitter/Twitter.h>
-#import <Accounts/Accounts.h>
 
 @implementation CalendarController
 

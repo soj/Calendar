@@ -122,6 +122,8 @@
 }
 
 - (void)setActiveEventBlock:(CalendarEvent*)event {
+    if (event == _activeEventBlock) return;
+    
     [self unsetActiveEventBlock];
     
     _activeEventBlock = event;
@@ -231,7 +233,7 @@
 - (void)resizeEventBlock:(CalendarEvent*)eventBlock startTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
     CalendarEvent *thatBlock = [self boundaryBlockBeforeTime:eventBlock.endTime];
     if (thatBlock && (time < thatBlock.endTime || forceLink)) {
-        NSAssert([CalendarMath timesIntersectS1:eventBlock.startTime e1:eventBlock.endTime s2:thatBlock.startTime e2:thatBlock.endTime], @"Blocks should not be overlapping!");
+        // TODO: Assert here to avoid infinite loops
         [self resizeEventBlock:thatBlock endTime:time forceLink:NO];
         _dragType = kDragLinkedStartTime;
         if (thatBlock.size <= 0) {
@@ -245,7 +247,7 @@
 - (void)resizeEventBlock:(CalendarEvent*)eventBlock endTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
     CalendarEvent *thatBlock = [self boundaryBlockAfterTime:eventBlock.startTime];
     if (thatBlock && (time > thatBlock.startTime || forceLink)) {
-         NSAssert([CalendarMath timesIntersectS1:eventBlock.startTime e1:eventBlock.endTime s2:thatBlock.startTime e2:thatBlock.endTime], @"Blocks should not be overlapping!");
+        // TODO: Assert here to avoid infinite loops
         [self resizeEventBlock:thatBlock startTime:time forceLink:NO];
         _dragType = kDragLinkedEndTime;
         if (thatBlock.size <= 0) {

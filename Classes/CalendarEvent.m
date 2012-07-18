@@ -22,6 +22,8 @@
         [self disableAnimationsOnLayer:_boxLayer];
         
         _railLayer = [_sublayerDelegate makeLayerWithName:@"Rail"];
+        _railLayer.frame = CGRectMake(_boxLayer.frame.size.width - UI_RAIL_COLOR_WIDTH, 0,
+                                      UI_RAIL_COLOR_WIDTH, self.frame.size.height);
         [self disableAnimationsOnLayer:_railLayer];
         
         _depthLayer = [_sublayerDelegate makeLayerWithName:@"Depth"];
@@ -29,8 +31,8 @@
         [_depthLayer setHidden:YES];
         [self disableAnimationsOnLayer:_depthLayer];
         
-        [self.layer addSublayer:_boxLayer];
         [self.layer addSublayer:_depthLayer];
+        [self.layer addSublayer:_boxLayer];
         [self.layer addSublayer:_railLayer];
         
         _nameField = [[UITextField alloc] init];
@@ -62,13 +64,25 @@
 }
 
 - (void)setIsActive:(BOOL)isActive {
+    if (isActive == _isActive) return;
+    
     _isActive = isActive;
     [_depthLayer setHidden:!_isActive];
     
     if (!_isActive) {
         _boxLayer.backgroundColor = [[_baseColor colorByChangingAlphaTo:UI_BOX_BG_ALPHA] CGColor];
+        _railLayer.opacity = 1.0;
+        
+        [self animateOffsetToInactivePosition:_boxLayer];
+        [self animateOffsetToInactivePosition:_railLayer];
+        [self animateOffsetToInactivePosition:_nameField.layer];
     } else {
         _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
+        _railLayer.opacity = 0.0;
+        
+        [self animateOffsetToActivePosition:_boxLayer];
+        [self animateOffsetToActivePosition:_railLayer];
+        [self animateOffsetToActivePosition:_nameField.layer];
     }
 }
 
@@ -111,19 +125,45 @@
 }
 
 - (CGRect)reframe {
-    int width = ([[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING);
-    return CGRectMake(UI_EVENT_DX,
-                      [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + UI_BORDER_MARGIN_Y,
-                      width,
-                      [[CalendarMath getInstance] pixelsPerHour] * (_endTime - _startTime) / SECONDS_PER_HOUR - UI_BORDER_MARGIN_Y * 2);
+    NSTimeInterval length = _endTime - _startTime;
+    float y = [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + UI_BORDER_MARGIN_Y;
+    float width = ([[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING);
+    float height =  [[CalendarMath getInstance] pixelsPerHour] * length / SECONDS_PER_HOUR - UI_BORDER_MARGIN_Y * 2;
+    return CGRectMake(UI_EVENT_DX, y, width, height);
 }
 
 - (void)reframeLayers {
-    [_boxLayer setFrame:CGRectMake(0, 0, self.frame.size.width, self.frame.size.height)];
-    [_railLayer setFrame:CGRectMake(self.frame.size.width - UI_RAIL_COLOR_WIDTH, 0,
+    [_boxLayer setFrame:CGRectMake(_boxLayer.frame.origin.x, _boxLayer.frame.origin.y,
+                                   _boxLayer.frame.size.width, self.frame.size.height)];
+    [_railLayer setFrame:CGRectMake(_railLayer.frame.origin.x, _railLayer.frame.origin.y,
                                     UI_RAIL_COLOR_WIDTH, self.frame.size.height)];
-    [_depthLayer setFrame:CGRectMake(0, 0, self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
-                                     self.frame.size.height + UI_DEPTH_BORDER_HEIGHT)];
+    
+    [_depthLayer setFrame:CGRectMake(-UI_DEPTH_BORDER_WIDTH/2, -UI_DEPTH_BORDER_HEIGHT/2,
+                                     self.frame.size.width, self.frame.size.height)];
+    [_depthLayer setBounds:CGRectMake(0, 0, _depthLayer.frame.size.width + UI_DEPTH_BORDER_WIDTH,
+                                      _depthLayer.frame.size.height + UI_DEPTH_BORDER_HEIGHT)];
+}
+
+- (void)animateOffsetOfLayer:(CALayer*)layer to:(CGPoint)pos {
+    CABasicAnimation *moveBox = [CABasicAnimation animationWithKeyPath:@"position"];
+    moveBox.fromValue = [NSValue valueWithCGPoint:layer.position];
+    moveBox.toValue = [NSValue valueWithCGPoint:pos];
+    moveBox.duration = UI_ANIM_DURATION_RAISE;
+    moveBox.fillMode = kCAFillModeForwards;
+    [layer setPosition:pos];
+    [layer addAnimation:moveBox forKey:@"activeInactive"];
+}
+
+- (void)animateOffsetToActivePosition:(CALayer*)layer {
+    CGPoint newPos = CGPointMake(layer.position.x - UI_DEPTH_BORDER_WIDTH,
+                                 layer.position.y - UI_DEPTH_BORDER_HEIGHT);
+    [self animateOffsetOfLayer:layer to:newPos];
+}
+
+- (void)animateOffsetToInactivePosition:(CALayer*)layer {
+    CGPoint newPos = CGPointMake(layer.position.x + UI_DEPTH_BORDER_WIDTH,
+                                 layer.position.y + UI_DEPTH_BORDER_HEIGHT);
+    [self animateOffsetOfLayer:layer to:newPos];
 }
 
 - (void)disableAnimationsOnLayer:(CALayer*)layer {
@@ -177,22 +217,22 @@
 
 - (void)drawDepthLayer:(CALayer*)layer inContext:(CGContextRef)context {
     CGPoint rightLines[] = {
-        CGPointMake(_boxLayer.bounds.size.width, 0),
+        CGPointMake(layer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, 0),
         CGPointMake(layer.bounds.size.width, UI_DEPTH_BORDER_HEIGHT),
         CGPointMake(layer.bounds.size.width, layer.bounds.size.height),
-        CGPointMake(_boxLayer.bounds.size.width, _boxLayer.bounds.size.height),
-        CGPointMake(_boxLayer.bounds.size.width, 0)
+        CGPointMake(layer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT),
+        CGPointMake(layer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, 0)
     };
     CGContextAddLines(context, rightLines, 5);
     CGContextSetFillColorWithColor(context, [[_baseColor colorByDarkeningColor:UI_DEPTH_BORDER_DARKEN] CGColor]);
     CGContextFillPath(context);
     
     CGPoint bottomLines[] = {
-        CGPointMake(_boxLayer.frame.size.width, _boxLayer.frame.size.height),
-        CGPointMake(layer.frame.size.width, layer.frame.size.height),
-        CGPointMake(UI_DEPTH_BORDER_WIDTH, layer.frame.size.height),
-        CGPointMake(0, _boxLayer.frame.size.height),
-        CGPointMake(_boxLayer.frame.size.width, _boxLayer.frame.size.height)
+        CGPointMake(layer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT),
+        CGPointMake(layer.bounds.size.width, layer.bounds.size.height),
+        CGPointMake(UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height),
+        CGPointMake(0, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT),
+        CGPointMake(layer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT)
     };
     CGContextAddLines(context, bottomLines, 5);
     CGContextSetFillColorWithColor(context, [_baseColor CGColor]);
