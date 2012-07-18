@@ -14,6 +14,8 @@
 + (Category*)categoryByIdentifier:(NSString*)identifier;
 + (Category*)uncategorized;
 
++ (UIColor*)nextColor;
+
 - (id)initWithName:(NSString*)name andColor:(UIColor*)color;
 - (id)initAndRegisterWithName:(NSString*)name andColor:(UIColor*)color;
 

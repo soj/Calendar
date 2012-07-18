@@ -28,12 +28,11 @@
         
         _depthLayer = [_sublayerDelegate makeLayerWithName:@"Depth"];
         [_depthLayer setNeedsDisplayOnBoundsChange:YES];
-        [_depthLayer setHidden:YES];
         [self disableAnimationsOnLayer:_depthLayer];
         
         _depthMask = [CAShapeLayer layer];
         _depthMask.fillColor = [[UIColor blackColor] CGColor];
-        _depthMask.frame = CGRectMake(UI_DEPTH_BORDER_WIDTH, UI_DEPTH_BORDER_HEIGHT,
+        _depthMask.frame = CGRectMake(UI_DEPTH_BORDER_WIDTH, UI_DEPTH_BORDER_HEIGHT + UI_BOX_BORDER_WIDTH,
                                       self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
                                       self.frame.size.height + UI_DEPTH_BORDER_HEIGHT);
         _depthMask.path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, _depthMask.frame.size.width,
@@ -77,11 +76,10 @@
     if (isActive == _isActive) return;
     
     _isActive = isActive;
-    [_depthLayer setHidden:!_isActive];
     
     if (!_isActive) {
-        _boxLayer.backgroundColor = [[_baseColor colorByChangingAlphaTo:UI_BOX_BG_ALPHA] CGColor];
-        _railLayer.opacity = 1.0;
+//        _boxLayer.backgroundColor = [[_baseColor colorByChangingAlphaTo:UI_BOX_BG_ALPHA] CGColor];
+        [self animateAlphaOfLayer:_railLayer to:1.0];
         
         [self animateOffsetToInactivePosition:_boxLayer];
         [self animateOffsetToInactivePosition:_railLayer];
@@ -89,7 +87,7 @@
         [self animateOffsetToInactivePosition:_nameField.layer];
     } else {
         _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
-        _railLayer.opacity = 0.0;
+        [self animateAlphaOfLayer:_railLayer to:0];
         
         [self animateOffsetToActivePosition:_boxLayer];
         [self animateOffsetToActivePosition:_railLayer];
@@ -160,6 +158,17 @@
                                   self.frame.size.height + UI_DEPTH_BORDER_HEIGHT);
     _depthMask.path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, _depthMask.frame.size.width,
                                                                   _depthMask.frame.size.height)].CGPath;
+}
+
+- (void)animateAlphaOfLayer:(CALayer*)layer to:(float)alpha {
+    CABasicAnimation *fadeIn = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    fadeIn.fromValue = [NSNumber numberWithFloat:layer.opacity];
+    fadeIn.toValue = [NSNumber numberWithFloat:alpha];
+    fadeIn.duration = UI_ANIM_DURATION_RAISE;
+    fadeIn.removedOnCompletion = NO;
+    fadeIn.fillMode = kCAFillModeForwards;
+    layer.opacity = alpha;
+    [layer addAnimation:fadeIn forKey:@"opacity"];
 }
 
 - (void)animateOffsetOfLayer:(CALayer*)layer to:(CGPoint)pos {

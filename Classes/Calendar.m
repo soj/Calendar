@@ -25,9 +25,10 @@
 
 - (NSArray*)defaultCategories {
     return [[NSArray alloc] initWithObjects:
-            [[Category alloc] initAndRegisterWithName:@"Social" andColor:[UIColor orangeColor]],
-            [[Category alloc] initAndRegisterWithName:@"Health" andColor:[UIColor purpleColor]],
-            [[Category alloc] initAndRegisterWithName:@"Waste of Time" andColor:[UIColor greenColor]],
+            [[Category alloc] initAndRegisterWithName:@"Social" andColor:[Category nextColor]],
+            [[Category alloc] initAndRegisterWithName:@"Health" andColor:[Category nextColor]],
+            [[Category alloc] initAndRegisterWithName:@"Waste of Time" andColor:[Category nextColor]],
+            [[Category alloc] initAndRegisterWithName:@"Work" andColor:[Category nextColor]],
             nil];
 }
 

@@ -101,7 +101,7 @@
     UILocalNotification *notif = [[UILocalNotification alloc] init];
     notif.fireDate = [NSDate dateWithTimeIntervalSinceReferenceDate:event.startTime];
     notif.alertBody = event.title;
-    notif.soundName = nil;
+    notif.soundName = UILocalNotificationDefaultSoundName;
     
     NSDictionary *infoDict = [NSDictionary dictionaryWithObjectsAndKeys:event.identifier, @"eventIdentifier", [NSNumber numberWithFloat:event.startTime], @"eventStartTime", nil];
     notif.userInfo = infoDict;
