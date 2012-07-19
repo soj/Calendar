@@ -18,7 +18,6 @@
     
     _multitaskIndex = index;
     [self setFrame:[self reframe]];
-    [self resizeTextFields];
 }
 
 - (CGRect)reframe {

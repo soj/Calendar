@@ -84,6 +84,4 @@ typedef enum {
 - (void)highlightArea:(HighlightArea)area;
 - (void)unhighlight;
 
-- (void)resizeTextFields;
-
 @end

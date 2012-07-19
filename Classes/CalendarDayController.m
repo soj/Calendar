@@ -420,9 +420,13 @@
 
 - (void)handleLongPressOnEventBlock:(UILongPressGestureRecognizer*)recognizer {    
     if ([recognizer view] != _activeEventBlock) {
-        float yLoc = [recognizer locationInView:recognizer.view].y;        
         [self setActiveEventBlock:(CalendarEvent*)recognizer.view];
-        [self beginDragForYPosInActiveEventBlock:yLoc];
+    }
+    if (recognizer.state == UIGestureRecognizerStateBegan) {
+        float yLoc = [recognizer locationInView:recognizer.view].y;
+        if (![self beginDragForYPosInActiveEventBlock:yLoc]) {
+            [recognizer cancel];
+        }
     }
     [self handlePanOrLongPressOnEventBlock:recognizer];
 }
@@ -470,10 +474,6 @@
         }
     }
     return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return (gestureRecognizer.view == otherGestureRecognizer.view && gestureRecognizer.view.class == CalendarEvent.class);
 }
 
 #pragma mark -
