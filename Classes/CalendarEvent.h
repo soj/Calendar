@@ -7,6 +7,7 @@
 
 #define UI_EVENT_DX             75.0
 #define UI_RIGHT_PADDING        5.0
+#define UI_EDGE_DRAG_PIXELS         30.0f
 
 #define UI_BOX_BORDER_WIDTH     1.0
 #define UI_RAIL_COLOR_WIDTH     22.0
@@ -35,14 +36,22 @@
 - (void)calendarEvent:(CalendarEvent*)event didChangeTitle:(NSString*)title;
 @end
 
+typedef enum {
+    kHighlightTop,
+    kHighlightBottom,
+    kHighlightAll
+} HighlightArea;
+
 @interface CalendarEvent : CalendarEntity <UITextFieldDelegate> {
     id<CalendarEventDelegate> _delegate;
     
     CALayer *_boxLayer;
+    CALayer *_highlightLayer;
     CALayer *_railLayer;
     CALayer *_depthLayer;
     CAShapeLayer *_depthMask;
 
+    HighlightArea _highlightArea;
     BOOL _hasFocus;
     BOOL _isActive;
     
@@ -67,6 +76,9 @@
 
 - (void)setTitle:(NSString*)title;
 - (void)setColor:(UIColor*)color;
+
+- (void)highlightArea:(HighlightArea)area;
+- (void)unhighlight;
 
 - (void)resizeTextFields;
 

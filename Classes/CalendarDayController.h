@@ -6,8 +6,6 @@
 #define MIN_EVENT_TIME_INTERVAL     SECONDS_PER_HOUR / 2
 #define FINGER_TAP_TIME_OFFSET      SECONDS_PER_MINUTE * 15
 
-#define UI_EDGE_DRAG_PIXELS         30.0f
-
 typedef enum {
     kDragStartTime,
     kDragEndTime,

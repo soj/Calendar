@@ -216,16 +216,19 @@
     if (y < UI_EDGE_DRAG_PIXELS) {
         _dragEventTimeOffset = [[CalendarMath getInstance] pixelToTimeOffset:y];
         _dragType = kDragStartTime;
+        [_activeEventBlock highlightArea:kHighlightTop];
     } else if (y > _activeEventBlock.frame.size.height - UI_EDGE_DRAG_PIXELS) {
         NSTimeInterval eventLength = _activeEventBlock.endTime - _activeEventBlock.startTime;
         _dragEventTimeOffset = eventLength - [[CalendarMath getInstance] pixelToTimeOffset:y];
         _dragType = kDragEndTime;
+        [_activeEventBlock highlightArea:kHighlightBottom];
     } else {
         if (![self isTimeVisible:_activeEventBlock.endTime] && ![self isTimeVisible:_activeEventBlock.startTime]) {
             return NO;
         }
         _dragEventTimeOffset = [[CalendarMath getInstance] pixelToTimeOffset:y];
         _dragType = kDragBoth;
+        [_activeEventBlock highlightArea:kHighlightAll];
     }
     return YES;
 }
@@ -424,6 +427,7 @@
             [self commitEventBlockTimes:_activeEventBlock];
             [self commitEventBlockTimes:[self boundaryBlockAfterTime:_activeEventBlock.startTime]];
             [_calendarDay fadeOutTimeLines];
+            [_activeEventBlock unhighlight];
             break;
         }
         default:

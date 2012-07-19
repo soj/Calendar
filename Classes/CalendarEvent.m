@@ -20,6 +20,11 @@
         _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
         [self disableAnimationsOnLayer:_boxLayer];
         
+        _highlightLayer = [_sublayerDelegate makeLayerWithName:@"Highlight"];
+        [_highlightLayer setNeedsDisplayOnBoundsChange:YES];
+        [self disableAnimationsOnLayer:_highlightLayer];
+        _highlightLayer.hidden = YES;
+
         _railLayer = [_sublayerDelegate makeLayerWithName:@"Rail"];
         _railLayer.frame = CGRectMake(_boxLayer.frame.size.width - UI_RAIL_COLOR_WIDTH, 0,
                                       UI_RAIL_COLOR_WIDTH, self.frame.size.height);
@@ -41,6 +46,7 @@
         
         [self.layer addSublayer:_depthLayer];
         [self.layer addSublayer:_boxLayer];
+        [self.layer addSublayer:_highlightLayer];
         [self.layer addSublayer:_railLayer];
         _depthLayer.mask = _depthMask;
 
@@ -84,6 +90,7 @@
         [self animateAlphaOfLayer:_railLayer to:1.0];
         
         [self animateOffsetToInactivePosition:_boxLayer];
+        [self animateOffsetToInactivePosition:_highlightLayer];
         [self animateOffsetToInactivePosition:_railLayer];
         [self animateOffsetToInactivePosition:_depthMask];
         [self animateOffsetToInactivePosition:_nameField.layer];
@@ -95,6 +102,7 @@
         [self animateAlphaOfLayer:_railLayer to:0];
         
         [self animateOffsetToActivePosition:_boxLayer];
+        [self animateOffsetToActivePosition:_highlightLayer];
         [self animateOffsetToActivePosition:_railLayer];
         [self animateOffsetToActivePosition:_depthMask];
         [self animateOffsetToActivePosition:_nameField.layer];
@@ -131,6 +139,17 @@
     [_nameField setEnabled:NO];
 }
 
+- (void)highlightArea:(HighlightArea)area {
+    _highlightArea = area;
+    [_highlightLayer setNeedsDisplay];
+    _highlightLayer.hidden = NO;
+}
+
+- (void)unhighlight {
+    _highlightLayer.hidden = YES;
+}
+
+
 #pragma mark -
 #pragma mark Framing Helpers
 
@@ -151,6 +170,9 @@
 - (void)reframeLayers {
     [_boxLayer setFrame:CGRectMake(_boxLayer.frame.origin.x, _boxLayer.frame.origin.y,
                                    _boxLayer.frame.size.width, self.frame.size.height)];
+    
+    _highlightLayer.frame = _boxLayer.frame;
+    
     [_railLayer setFrame:CGRectMake(_railLayer.frame.origin.x, _railLayer.frame.origin.y,
                                     UI_RAIL_COLOR_WIDTH, self.frame.size.height)];
     
@@ -277,6 +299,42 @@
     };
     CGContextAddLines(context, bottomLines, 5);
     CGContextSetFillColorWithColor(context, [_baseColor CGColor]);
+    CGContextFillPath(context);
+}
+
+- (void)drawUpperHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
+    
+}
+
+- (void)drawLowerHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
+    
+}
+
+- (void)drawHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
+    CGColorRef fill = [UIColor colorForFadeBetweenFirstColor:_baseColor
+                                                 secondColor:UI_EVENT_BG_COLOR
+                                                     atRatio:UI_BOX_BG_WHITENESS].CGColor;
+    CGContextSetFillColorWithColor(context, fill);
+
+    CGRect highlight;
+    switch (_highlightArea) {
+        case kHighlightBottom: {
+            highlight = CGRectMake(0, layer.frame.size.height - UI_EDGE_DRAG_PIXELS,
+                                   layer.frame.size.width, UI_EDGE_DRAG_PIXELS);
+            break;
+        }
+        case kHighlightTop: {
+            highlight = CGRectMake(0, 0, layer.frame.size.width, UI_EDGE_DRAG_PIXELS);
+            break;
+        }
+        case kHighlightAll: {
+            highlight = CGRectMake(0, 0, layer.frame.size.width, layer.frame.size.height);
+            break;
+        }
+    }
+    
+    highlight = CGRectInset(highlight, UI_BOX_BORDER_WIDTH * 2, UI_BOX_BORDER_WIDTH * 2);
+    CGContextAddRect(context, highlight);
     CGContextFillPath(context);
 }
 
