@@ -340,6 +340,34 @@
     CGContextSetStrokeColorWithColor(context, _baseColor.CGColor);
     CGContextSetLineWidth(context, UI_HIGHLIGHT_WIDTH);
 
+    CGRect highlight;
+    float highlightHeight = UI_HIGHLIGHT_PADDING + UI_HIGHLIGHT_SIZE;
+    
+    switch (_highlightArea) {
+        case kHighlightTop: {
+            highlight = CGRectMake(UI_BOX_BORDER_WIDTH, UI_BOX_BORDER_WIDTH,
+                                   layer.frame.size.width - UI_BOX_BORDER_WIDTH * 2, highlightHeight);                                                                                                                             
+            break;
+        }
+        case kHighlightBottom: {
+            highlight = CGRectMake(UI_BOX_BORDER_WIDTH, layer.frame.size.height - highlightHeight - UI_BOX_BORDER_WIDTH,
+                                   layer.frame.size.width - UI_BOX_BORDER_WIDTH * 2, highlightHeight);
+            break;
+        }
+        case kHighlightAll: {
+            highlight = CGRectMake(0, 0, layer.frame.size.width, layer.frame.size.height);
+            highlight = CGRectInset(highlight, UI_BOX_BORDER_WIDTH * 2, UI_BOX_BORDER_WIDTH * 2);                                                                                                                          
+            break;
+        }
+    }
+    
+    CGColorRef fill = [UIColor colorForFadeBetweenFirstColor:_baseColor
+                                                 secondColor:UI_EVENT_BG_COLOR
+                                                     atRatio:UI_BOX_BG_WHITENESS].CGColor;                                                                                                                         
+    CGContextSetFillColorWithColor(context, fill);
+    CGContextAddRect(context, highlight);                                                                                                                                                                          
+    CGContextFillPath(context);
+    
     switch (_highlightArea) {
         case kHighlightTop: {
             [self drawUpperHighlightLayer:layer inContext:context];

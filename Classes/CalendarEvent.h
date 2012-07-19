@@ -22,7 +22,7 @@
 #define UI_DEPTH_BORDER_DARKEN  0.8
 
 #define UI_BORDER_PADDING_X     10.0
-#define UI_BORDER_PADDING_Y     7.0
+#define UI_BORDER_PADDING_Y     5.0
 #define UI_BORDER_MARGIN_Y      2.0
 
 #define UI_NAME_FIELD_HEIGHT    35.0f
