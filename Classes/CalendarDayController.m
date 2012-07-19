@@ -130,6 +130,7 @@
     [_activeEventBlock setIsActive:YES];
     [_calendarDay bringSubviewToFront:_activeEventBlock];
     [_activeEventBlock addGestureRecognizer:_eventBlockPan];
+    [_activeEventBlock addGestureRecognizer:_eventBlockLongPress];
 }
 
 - (void)unsetActiveEventBlock {
@@ -213,6 +214,10 @@
 #pragma mark Event Block Movement
 
 - (BOOL)beginDragForYPosInActiveEventBlock:(CGFloat)y {
+    if (y < UI_EDGE_DRAG_PIXELS && y > _activeEventBlock.frame.size.height - UI_EDGE_DRAG_PIXELS) {
+        y = roundf(y / _activeEventBlock.frame.size.height);
+    }
+    
     if (y < UI_EDGE_DRAG_PIXELS) {
         _dragEventTimeOffset = [[CalendarMath getInstance] pixelToTimeOffset:y];
         _dragType = kDragStartTime;
@@ -309,6 +314,10 @@
     _eventBlockPan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanOnEventBlock:)];
     _eventBlockPan.cancelsTouchesInView = NO;
     _eventBlockPan.delegate = self;
+
+    // Note: This is intentional, long press is handled by pan gesture recognizer for convenience
+    _eventBlockLongPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanOnEventBlock:)];
+    _eventBlockLongPress.delegate = self;
 }
 
 - (void)handleTap:(UITapGestureRecognizer*)recognizer {
@@ -342,7 +351,7 @@
 }
 
 - (void)handleTapOnEventBlock:(UITapGestureRecognizer*)recognizer {
-    if ([recognizer view] == _activeEventBlock) {
+    if ([recognizer view] == _activeEventBlock) {        
         if (![_activeEventBlock hasFocus]) {
             [self scrollToEntity:_activeEventBlock];
             [_activeEventBlock setFocus];
@@ -407,7 +416,7 @@
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan: {
             [_calendarDay fadeInTimeLines];
-            break;
+            // Fall through
         }
         case UIGestureRecognizerStateChanged: {
             float loc = [recognizer locationInView:_calendarDay].y;
@@ -439,7 +448,7 @@
 #pragma mark UIGestureRecognizerDelegate Methods
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)recognizer {
-    if (recognizer == _eventBlockPan) {
+    if (recognizer == _eventBlockPan || recognizer == _eventBlockLongPress) {
         if (![self beginDragForYPosInActiveEventBlock:[recognizer locationInView:_activeEventBlock].y]) {
             return NO;
         }
