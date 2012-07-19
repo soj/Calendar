@@ -59,7 +59,10 @@
         [_nameField setEnabled:NO];
         [self addSubview:_nameField];
         
-        [self resizeTextFields];
+        [_nameField setFrame:CGRectMake(UI_BORDER_PADDING_X, UI_BORDER_PADDING_Y,
+                                        [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
+                                        MIN(UI_NAME_FIELD_HEIGHT, self.frame.size.height))];
+        
         [self reframeLayers];
         [self setIsActive:NO];
     }
@@ -152,21 +155,19 @@
 #pragma mark -
 #pragma mark Framing Helpers
 
-- (void)resizeTextFields {
-    [_nameField setFrame:CGRectMake(UI_BORDER_PADDING_X, UI_BORDER_PADDING_Y,
-                                    [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
-                                    UI_NAME_FIELD_HEIGHT)];
-}
-
 - (CGRect)reframe {
     NSTimeInterval length = _endTime - _startTime;
     float y = [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + UI_BORDER_MARGIN_Y;
     float width = ([[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING);
     float height =  [[CalendarMath getInstance] pixelsPerHour] * length / SECONDS_PER_HOUR - UI_BORDER_MARGIN_Y * 2;
-    return CGRectMake(UI_EVENT_DX, y, width, height);
+    return CGRectMake(UI_EVENT_DX, y, MAX(width, 0), MAX(height, 0));
 }
 
 - (void)reframeLayers {
+    [_nameField setFrame:CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
+                                    [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
+                                    MIN(UI_NAME_FIELD_HEIGHT, MAX(self.frame.size.height - UI_BORDER_PADDING_Y * 2, 0)))];
+    
     [_boxLayer setFrame:CGRectMake(_boxLayer.frame.origin.x, _boxLayer.frame.origin.y,
                                    _boxLayer.frame.size.width, self.frame.size.height)];
     

@@ -223,7 +223,7 @@
 
 - (BOOL)beginDragForYPosInActiveEventBlock:(CGFloat)y {
     if (y < UI_EDGE_DRAG_PIXELS && y > _activeEventBlock.frame.size.height - UI_EDGE_DRAG_PIXELS) {
-        y = roundf(y / _activeEventBlock.frame.size.height);
+        y = roundf(y / _activeEventBlock.frame.size.height) * _activeEventBlock.frame.size.height;
     }
     
     if (y < UI_EDGE_DRAG_PIXELS) {
@@ -257,7 +257,7 @@
             _dragType = kDragStartTime;
         }
     }
-    eventBlock.startTime = time;
+    eventBlock.startTime = time - _dragEventTimeOffset;
 }
 
 - (void)resizeEventBlock:(CalendarEvent*)eventBlock endTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
@@ -271,7 +271,7 @@
             _dragType = kDragEndTime;
         }
     }
-    eventBlock.endTime = time;
+    eventBlock.endTime = time + _dragEventTimeOffset;
 }
 
 - (void)dragActiveEventBlockTo:(NSTimeInterval)time {
@@ -440,8 +440,7 @@
             if (_dragType == kDragBoth) {
                 [self dragActiveEventBlockTo:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)];
             } else if (_dragType == kDragStartTime || _dragType == kDragLinkedStartTime) {
-                [self resizeEventBlock:_activeEventBlock startTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)
-                             forceLink:(_dragType == kDragLinkedStartTime)];
+                [self resizeEventBlock:_activeEventBlock startTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime) forceLink:(_dragType == kDragLinkedStartTime)];
             } else {
                 [self resizeEventBlock:_activeEventBlock endTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)
                              forceLink:(_dragType == kDragLinkedEndTime)];
@@ -474,7 +473,7 @@
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
+    return (gestureRecognizer.view == otherGestureRecognizer.view && gestureRecognizer.view.class == CalendarEvent.class);
 }
 
 #pragma mark -
