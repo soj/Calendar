@@ -223,7 +223,7 @@
         _dragType = kDragEndTime;
         [_activeEventBlock highlightArea:kHighlightBottom];
     } else {
-        if (![self isTimeVisible:_activeEventBlock.endTime] && ![self isTimeVisible:_activeEventBlock.startTime]) {
+        if (![self isTimeVisible:_activeEventBlock.endTime] || ![self isTimeVisible:_activeEventBlock.startTime]) {
             return NO;
         }
         _dragEventTimeOffset = [[CalendarMath getInstance] pixelToTimeOffset:y];

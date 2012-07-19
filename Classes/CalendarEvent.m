@@ -146,9 +146,8 @@
 }
 
 - (void)unhighlight {
-    _highlightLayer.hidden = YES;
+    [self performSelector:@selector(hideHighlightLayer) withObject:self afterDelay:0.1];
 }
-
 
 #pragma mark -
 #pragma mark Framing Helpers
@@ -194,6 +193,10 @@
 
 - (void)hideDepthLayer {
     _depthLayer.hidden = YES;
+}
+
+- (void)hideHighlightLayer {
+    _highlightLayer.hidden = YES;
 }
 
 - (void)animateAlphaOfLayer:(CALayer*)layer to:(float)alpha {
@@ -303,39 +306,55 @@
 }
 
 - (void)drawUpperHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
-    
+    CGPoint points[] = {
+        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_SIZE, UI_HIGHLIGHT_PADDING),
+        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_PADDING),
+        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_SIZE + UI_HIGHLIGHT_PADDING)
+    };
+    CGContextAddLines(context, points, 3);
+    CGContextStrokePath(context);
 }
 
 - (void)drawLowerHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
+    CGPoint pointsLeft[] = {
+        CGPointMake(UI_HIGHLIGHT_PADDING, layer.frame.size.height - UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_SIZE),
+        CGPointMake(UI_HIGHLIGHT_PADDING, layer.frame.size.height - UI_HIGHLIGHT_PADDING),
+        CGPointMake(UI_HIGHLIGHT_PADDING + UI_HIGHLIGHT_SIZE, layer.frame.size.height - UI_HIGHLIGHT_PADDING)
+    };
+    CGContextAddLines(context, pointsLeft, 3);
+    CGContextStrokePath(context);
     
+    CGPoint pointsRight[] = {
+        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_SIZE,
+                    layer.frame.size.height - UI_HIGHLIGHT_PADDING),
+        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING,
+                    layer.frame.size.height - UI_HIGHLIGHT_PADDING),
+        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING,
+                    layer.frame.size.height - UI_HIGHLIGHT_SIZE - UI_HIGHLIGHT_PADDING)
+    };
+    CGContextAddLines(context, pointsRight, 3);
+    CGContextStrokePath(context);
 }
 
 - (void)drawHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
-    CGColorRef fill = [UIColor colorForFadeBetweenFirstColor:_baseColor
-                                                 secondColor:UI_EVENT_BG_COLOR
-                                                     atRatio:UI_BOX_BG_WHITENESS].CGColor;
-    CGContextSetFillColorWithColor(context, fill);
+    CGContextSetStrokeColorWithColor(context, _baseColor.CGColor);
+    CGContextSetLineWidth(context, UI_HIGHLIGHT_WIDTH);
 
-    CGRect highlight;
     switch (_highlightArea) {
-        case kHighlightBottom: {
-            highlight = CGRectMake(0, layer.frame.size.height - UI_EDGE_DRAG_PIXELS,
-                                   layer.frame.size.width, UI_EDGE_DRAG_PIXELS);
+        case kHighlightTop: {
+            [self drawUpperHighlightLayer:layer inContext:context];
             break;
         }
-        case kHighlightTop: {
-            highlight = CGRectMake(0, 0, layer.frame.size.width, UI_EDGE_DRAG_PIXELS);
+        case kHighlightBottom: {
+            [self drawLowerHighlightLayer:layer inContext:context];
             break;
         }
         case kHighlightAll: {
-            highlight = CGRectMake(0, 0, layer.frame.size.width, layer.frame.size.height);
+            [self drawUpperHighlightLayer:layer inContext:context];
+            [self drawLowerHighlightLayer:layer inContext:context];
             break;
         }
     }
-    
-    highlight = CGRectInset(highlight, UI_BOX_BORDER_WIDTH * 2, UI_BOX_BORDER_WIDTH * 2);
-    CGContextAddRect(context, highlight);
-    CGContextFillPath(context);
 }
 
 - (void)setNeedsDisplay {

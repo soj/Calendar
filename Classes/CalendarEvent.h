@@ -7,7 +7,11 @@
 
 #define UI_EVENT_DX             75.0
 #define UI_RIGHT_PADDING        5.0
-#define UI_EDGE_DRAG_PIXELS         30.0f
+#define UI_EDGE_DRAG_PIXELS     30.0f
+
+#define UI_HIGHLIGHT_SIZE       20.0
+#define UI_HIGHLIGHT_WIDTH      UI_BOX_BORDER_WIDTH
+#define UI_HIGHLIGHT_PADDING    UI_BORDER_PADDING_X
 
 #define UI_BOX_BORDER_WIDTH     1.0
 #define UI_RAIL_COLOR_WIDTH     22.0
