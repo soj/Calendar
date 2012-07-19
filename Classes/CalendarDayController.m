@@ -99,15 +99,19 @@
     else return _startTime + SECONDS_PER_DAY;
 }
 
-- (BOOL)isTimeEmptyBetween:(NSTimeInterval)time and:(NSTimeInterval)endTime {
+- (CalendarEvent*)eventBlockBetween:(NSTimeInterval)time and:(NSTimeInterval)endTime {
     NSEnumerator *e = [_eventBlocks objectEnumerator];
 	CalendarEvent *thatEvent;
     while (thatEvent = [e nextObject]) {
         if ([CalendarMath timesIntersectS1:time e1:endTime s2:thatEvent.startTime e2:thatEvent.endTime]) {
-            return NO;
+            return thatEvent;
         }
     }
-    return YES;
+    return nil;
+}
+
+- (BOOL)isTimeEmptyBetween:(NSTimeInterval)time and:(NSTimeInterval)endTime {
+    return [self eventBlockBetween:time and:endTime] == nil;
 }
 
 #pragma mark -
@@ -144,6 +148,7 @@
         }
         
         [block removeGestureRecognizer:_eventBlockPan];
+        [block removeGestureRecognizer:_eventBlockLongPress];
         [block setIsActive:NO];
         
         if (![_delegate eventIsValid:block.eventId]) {
@@ -159,6 +164,9 @@
     
     UITapGestureRecognizer *eventBlockTap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(handleTapOnEventBlock:)];
     [newBlock addGestureRecognizer:eventBlockTap];
+    
+    UILongPressGestureRecognizer *eventBlockLongPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPressOnEventBlock:)];
+    [newBlock addGestureRecognizer:eventBlockLongPress];
 	
 	[_calendarDay addSubview:newBlock];
 	return newBlock;
@@ -311,12 +319,12 @@
         [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handleLongPress:)];
     [self.view addGestureRecognizer:longPress];
     
-    _eventBlockPan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanOnEventBlock:)];
+    _eventBlockPan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanOrLongPressOnEventBlock:)];
     _eventBlockPan.cancelsTouchesInView = NO;
     _eventBlockPan.delegate = self;
 
-    // Note: This is intentional, long press is handled by pan gesture recognizer for convenience
-    _eventBlockLongPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(handlePanOnEventBlock:)];
+    _eventBlockLongPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self
+                                                                         action:@selector(handlePanOrLongPressOnEventBlock:)];
     _eventBlockLongPress.delegate = self;
 }
 
@@ -410,8 +418,17 @@
     }
 }
 
-- (void)handlePanOnEventBlock:(UIPanGestureRecognizer*)recognizer {
-    NSAssert(_activeEventBlock == [recognizer view], @"Only the active event block may receive gestures");
+- (void)handleLongPressOnEventBlock:(UILongPressGestureRecognizer*)recognizer {    
+    if ([recognizer view] != _activeEventBlock) {
+        float yLoc = [recognizer locationInView:recognizer.view].y;        
+        [self setActiveEventBlock:(CalendarEvent*)recognizer.view];
+        [self beginDragForYPosInActiveEventBlock:yLoc];
+    }
+    [self handlePanOrLongPressOnEventBlock:recognizer];
+}
+
+- (void)handlePanOrLongPressOnEventBlock:(UIGestureRecognizer*)recognizer {
+    NSAssert(_activeEventBlock == [recognizer view], @"Only the active event block may receive this gesture");
 
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan: {
@@ -453,6 +470,10 @@
             return NO;
         }
     }
+    return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
     return YES;
 }
 
