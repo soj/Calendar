@@ -28,6 +28,7 @@
         _depthLayer = [_sublayerDelegate makeLayerWithName:@"Depth"];
         [_depthLayer setNeedsDisplayOnBoundsChange:YES];
         [self disableAnimationsOnLayer:_depthLayer];
+        _depthLayer.hidden = YES;
         
         _depthMask = [CAShapeLayer layer];
         _depthMask.fillColor = [[UIColor blackColor] CGColor];
@@ -80,15 +81,17 @@
     if (!_isActive) {
         _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor secondColor:UI_EVENT_BG_COLOR
                                                                    atRatio:UI_BOX_BG_WHITENESS].CGColor;
-
         [self animateAlphaOfLayer:_railLayer to:1.0];
         
         [self animateOffsetToInactivePosition:_boxLayer];
         [self animateOffsetToInactivePosition:_railLayer];
         [self animateOffsetToInactivePosition:_depthMask];
         [self animateOffsetToInactivePosition:_nameField.layer];
+        
+        [self performSelector:@selector(hideDepthLayer) withObject:self afterDelay:UI_ANIM_DURATION_RAISE];
     } else {
         _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
+        [self showDepthLayer];
         [self animateAlphaOfLayer:_railLayer to:0];
         
         [self animateOffsetToActivePosition:_boxLayer];
@@ -161,6 +164,14 @@
                                   self.frame.size.height + UI_DEPTH_BORDER_HEIGHT);
     _depthMask.path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, _depthMask.frame.size.width,
                                                                   _depthMask.frame.size.height)].CGPath;
+}
+
+- (void)showDepthLayer {
+    _depthLayer.hidden = NO;
+}
+
+- (void)hideDepthLayer {
+    _depthLayer.hidden = YES;
 }
 
 - (void)animateAlphaOfLayer:(CALayer*)layer to:(float)alpha {
