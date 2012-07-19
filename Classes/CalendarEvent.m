@@ -15,10 +15,9 @@
     if (self) {
         _delegate = delegate;
         
-        self.layer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
-
         _boxLayer = [_sublayerDelegate makeLayerWithName:@"Box"];
         _boxLayer.borderWidth = UI_BOX_BORDER_WIDTH;
+        _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
         [self disableAnimationsOnLayer:_boxLayer];
         
         _railLayer = [_sublayerDelegate makeLayerWithName:@"Rail"];
@@ -55,6 +54,7 @@
         
         [self resizeTextFields];
         [self reframeLayers];
+        [self setIsActive:NO];
     }
 		
 	return self;
@@ -78,7 +78,9 @@
     _isActive = isActive;
     
     if (!_isActive) {
-//        _boxLayer.backgroundColor = [[_baseColor colorByChangingAlphaTo:UI_BOX_BG_ALPHA] CGColor];
+        _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor secondColor:UI_EVENT_BG_COLOR
+                                                                   atRatio:UI_BOX_BG_WHITENESS].CGColor;
+
         [self animateAlphaOfLayer:_railLayer to:1.0];
         
         [self animateOffsetToInactivePosition:_boxLayer];
@@ -102,7 +104,8 @@
     _railLayer.backgroundColor = [_baseColor CGColor];
     
     if (!_isActive) {
-        _boxLayer.backgroundColor = [[_baseColor colorByChangingAlphaTo:UI_BOX_BG_ALPHA] CGColor];
+        _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor secondColor:UI_EVENT_BG_COLOR
+                                                                   atRatio:UI_BOX_BG_WHITENESS].CGColor;
     }
     
     [self setNeedsDisplay];

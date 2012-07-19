@@ -13,7 +13,7 @@
 #define UI_DEPTH_BORDER_WIDTH   7.0
 #define UI_DEPTH_BORDER_HEIGHT  5.0
 
-#define UI_BOX_BG_ALPHA         0.1
+#define UI_BOX_BG_WHITENESS     0.95
 #define UI_DEPTH_BORDER_DARKEN  0.8
 
 #define UI_BORDER_PADDING_X     10.0

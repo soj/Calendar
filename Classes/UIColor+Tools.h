@@ -5,4 +5,5 @@
 @interface UIColor (Tools)
 - (UIColor*)colorByDarkeningColor:(CGFloat)colorMultiplier;
 - (UIColor*)colorByChangingAlphaTo:(CGFloat)alpha;
++ (UIColor*)colorForFadeBetweenFirstColor:(UIColor *)firstColor secondColor:(UIColor *)secondColor atRatio:(CGFloat)ratio;
 @end
