@@ -224,17 +224,19 @@
 #pragma mark Event Block Movement
 
 - (BOOL)beginDragForYPosInActiveEventBlock:(CGFloat)y {
+    int forceDragEnd = false;
     if (y < UI_EDGE_DRAG_PIXELS && y > _activeEventBlock.frame.size.height - UI_EDGE_DRAG_PIXELS) {
-        y = roundf(y / _activeEventBlock.frame.size.height) * _activeEventBlock.frame.size.height;
+        forceDragEnd = roundf(y / _activeEventBlock.frame.size.height);
     }
     
-    if (y < UI_EDGE_DRAG_PIXELS) {
+    if (y < UI_EDGE_DRAG_PIXELS && !forceDragEnd) {
         _dragEventTimeOffset = [[CalendarMath getInstance] pixelToTimeOffset:y];
         _dragType = kDragStartTime;
         [_activeEventBlock highlightArea:kHighlightTop];
     } else if (y > _activeEventBlock.frame.size.height - UI_EDGE_DRAG_PIXELS) {
         NSTimeInterval eventLength = _activeEventBlock.endTime - _activeEventBlock.startTime;
-        _dragEventTimeOffset = eventLength - [[CalendarMath getInstance] pixelToTimeOffset:y];
+        // magical 2 minute "don't overshoot" factor may be due to depth layer
+        _dragEventTimeOffset = eventLength - [[CalendarMath getInstance] pixelToTimeOffset:y] - SECONDS_PER_MINUTE * 2;
         _dragType = kDragEndTime;
         [_activeEventBlock highlightArea:kHighlightBottom];
     } else {
