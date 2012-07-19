@@ -308,9 +308,9 @@
 
 - (void)drawUpperHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
     CGPoint points[] = {
-        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_SIZE, UI_HIGHLIGHT_PADDING),
+        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_LINE_SIZE, UI_HIGHLIGHT_PADDING),
         CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_PADDING),
-        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_SIZE + UI_HIGHLIGHT_PADDING)
+        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_LINE_SIZE + UI_HIGHLIGHT_PADDING)
     };
     CGContextAddLines(context, points, 3);
     CGContextStrokePath(context);
@@ -318,23 +318,45 @@
 
 - (void)drawLowerHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
     CGPoint pointsLeft[] = {
-        CGPointMake(UI_HIGHLIGHT_PADDING, layer.frame.size.height - UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_SIZE),
+        CGPointMake(UI_HIGHLIGHT_PADDING, layer.frame.size.height - UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_LINE_SIZE),
         CGPointMake(UI_HIGHLIGHT_PADDING, layer.frame.size.height - UI_HIGHLIGHT_PADDING),
-        CGPointMake(UI_HIGHLIGHT_PADDING + UI_HIGHLIGHT_SIZE, layer.frame.size.height - UI_HIGHLIGHT_PADDING)
+        CGPointMake(UI_HIGHLIGHT_PADDING + UI_HIGHLIGHT_LINE_SIZE, layer.frame.size.height - UI_HIGHLIGHT_PADDING)
     };
     CGContextAddLines(context, pointsLeft, 3);
     CGContextStrokePath(context);
     
     CGPoint pointsRight[] = {
-        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_SIZE,
+        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_LINE_SIZE,
                     layer.frame.size.height - UI_HIGHLIGHT_PADDING),
         CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING,
                     layer.frame.size.height - UI_HIGHLIGHT_PADDING),
         CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING,
-                    layer.frame.size.height - UI_HIGHLIGHT_SIZE - UI_HIGHLIGHT_PADDING)
+                    layer.frame.size.height - UI_HIGHLIGHT_LINE_SIZE - UI_HIGHLIGHT_PADDING)
     };
     CGContextAddLines(context, pointsRight, 3);
     CGContextStrokePath(context);
+}
+
+- (void)drawHighlightGradientInRect:(CGRect)rect withColors:(NSArray*)colors andLocations:(CGFloat[])locations
+                          inContext:(CGContextRef)context {
+    // Create a gradient from white to red
+    CGColorSpaceRef baseSpace = CGColorSpaceCreateDeviceRGB();
+    CGGradientRef gradient = CGGradientCreateWithColors(baseSpace, (__bridge CFArrayRef)colors, locations);
+    CGColorSpaceRelease(baseSpace), baseSpace = NULL;
+        
+    CGContextSaveGState(context);
+    CGContextAddRect(context, rect);
+    CGContextClip(context);
+    
+    CGPoint startPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMinY(rect));
+    CGPoint endPoint = CGPointMake(CGRectGetMidX(rect), CGRectGetMaxY(rect));
+    
+    CGContextDrawLinearGradient(context, gradient, startPoint, endPoint, 0);
+    CGGradientRelease(gradient), gradient = NULL;
+    
+    CGContextRestoreGState(context);
+    
+    CGContextDrawPath(context, kCGPathStroke);
 }
 
 - (void)drawHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
@@ -342,33 +364,38 @@
     CGContextSetLineWidth(context, UI_HIGHLIGHT_WIDTH);
 
     CGRect highlight;
-    float highlightHeight = UI_HIGHLIGHT_PADDING + UI_HIGHLIGHT_SIZE;
+    float highlightHeight = UI_HIGHLIGHT_PADDING + UI_HIGHLIGHT_GRAD_SIZE;
     
+    CGColorRef fill = [UIColor colorForFadeBetweenFirstColor:_baseColor
+                                                 secondColor:UI_EVENT_BG_COLOR
+                                                     atRatio:UI_BOX_BG_WHITENESS].CGColor;
+    NSArray *colors;
     switch (_highlightArea) {
         case kHighlightTop: {
             highlight = CGRectMake(UI_BOX_BORDER_WIDTH, UI_BOX_BORDER_WIDTH,
-                                   layer.frame.size.width - UI_BOX_BORDER_WIDTH * 2, highlightHeight);                                                                                                                             
+                                   layer.frame.size.width - UI_BOX_BORDER_WIDTH * 2, highlightHeight);
+            colors = [NSArray arrayWithObjects:(__bridge id)fill, (id)UI_EVENT_BG_COLOR.CGColor, nil];
+            CGFloat locations[] = {0.3, 1};
+            [self drawHighlightGradientInRect:highlight withColors:colors andLocations:locations inContext:context];
             break;
         }
         case kHighlightBottom: {
             highlight = CGRectMake(UI_BOX_BORDER_WIDTH, layer.frame.size.height - highlightHeight - UI_BOX_BORDER_WIDTH,
                                    layer.frame.size.width - UI_BOX_BORDER_WIDTH * 2, highlightHeight);
+            CGFloat locations[] = {0, 0.7};
+            colors = [NSArray arrayWithObjects:(id)UI_EVENT_BG_COLOR.CGColor, (__bridge id)fill, nil];
+            [self drawHighlightGradientInRect:highlight withColors:colors andLocations:locations inContext:context];
             break;
         }
         case kHighlightAll: {
             highlight = CGRectMake(0, 0, layer.frame.size.width, layer.frame.size.height);
-            highlight = CGRectInset(highlight, UI_BOX_BORDER_WIDTH * 2, UI_BOX_BORDER_WIDTH * 2);                                                                                                                          
+            highlight = CGRectInset(highlight, UI_BOX_BORDER_WIDTH * 2, UI_BOX_BORDER_WIDTH * 2);
+            CGContextSetFillColorWithColor(context, fill);
+            CGContextFillRect(context, highlight);
             break;
         }
     }
-    
-    CGColorRef fill = [UIColor colorForFadeBetweenFirstColor:_baseColor
-                                                 secondColor:UI_EVENT_BG_COLOR
-                                                     atRatio:UI_BOX_BG_WHITENESS].CGColor;                                                                                                                         
-    CGContextSetFillColorWithColor(context, fill);
-    CGContextAddRect(context, highlight);                                                                                                                                                                          
-    CGContextFillPath(context);
-    
+        
     switch (_highlightArea) {
         case kHighlightTop: {
             [self drawUpperHighlightLayer:layer inContext:context];

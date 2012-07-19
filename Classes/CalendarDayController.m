@@ -173,7 +173,9 @@
 }
 
 - (CalendarEvent*)createEventBlockWithExistingEvent:(Event*)event {
-    CalendarEvent *newBlock = [self createEventBlockWithStartTime:[event startTime] endTime:[event endTime]];
+    NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:event.startTime];
+    NSTimeInterval endTime = [CalendarMath roundTimeToGranularity:event.endTime];
+    CalendarEvent *newBlock = [self createEventBlockWithStartTime:startTime endTime:endTime];
     [newBlock setTitle:[event title]];
     [newBlock setEventId:[event identifier]];
     [newBlock setColor:[[event category] color]];
@@ -248,8 +250,7 @@
 
 - (void)resizeEventBlock:(CalendarEvent*)eventBlock startTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
     CalendarEvent *thatBlock = [self boundaryBlockBeforeTime:eventBlock.endTime];
-    if (thatBlock && (time < thatBlock.endTime || forceLink)) {
-        // TODO: Assert here to avoid infinite loops
+    if (thatBlock && thatBlock != _activeEventBlock && (time < thatBlock.endTime || forceLink)) {
         [self resizeEventBlock:thatBlock endTime:time forceLink:NO];
         _dragType = kDragLinkedStartTime;
         if (thatBlock.size <= 0) {
@@ -257,13 +258,12 @@
             _dragType = kDragStartTime;
         }
     }
-    eventBlock.startTime = time - _dragEventTimeOffset;
+    eventBlock.startTime = time;
 }
 
 - (void)resizeEventBlock:(CalendarEvent*)eventBlock endTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
     CalendarEvent *thatBlock = [self boundaryBlockAfterTime:eventBlock.startTime];
-    if (thatBlock && (time > thatBlock.startTime || forceLink)) {
-        // TODO: Assert here to avoid infinite loops
+    if (thatBlock && thatBlock != _activeEventBlock && (time > thatBlock.startTime || forceLink)) {
         [self resizeEventBlock:thatBlock startTime:time forceLink:NO];
         _dragType = kDragLinkedEndTime;
         if (thatBlock.size <= 0) {
@@ -271,7 +271,7 @@
             _dragType = kDragEndTime;
         }
     }
-    eventBlock.endTime = time + _dragEventTimeOffset;
+    eventBlock.endTime = time;
 }
 
 - (void)dragActiveEventBlockTo:(NSTimeInterval)time {
@@ -444,9 +444,9 @@
             if (_dragType == kDragBoth) {
                 [self dragActiveEventBlockTo:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)];
             } else if (_dragType == kDragStartTime || _dragType == kDragLinkedStartTime) {
-                [self resizeEventBlock:_activeEventBlock startTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime) forceLink:(_dragType == kDragLinkedStartTime)];
+                [self resizeEventBlock:_activeEventBlock startTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime - _dragEventTimeOffset) forceLink:(_dragType == kDragLinkedStartTime)];
             } else {
-                [self resizeEventBlock:_activeEventBlock endTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)
+                [self resizeEventBlock:_activeEventBlock endTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime + _dragEventTimeOffset)
                              forceLink:(_dragType == kDragLinkedEndTime)];
             }
             break;
