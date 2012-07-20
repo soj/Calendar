@@ -273,7 +273,9 @@
 
 - (void)textFieldDidEndEditing:(UITextField*)textField {
     if (textField == _nameField) {
-        [_delegate calendarEvent:self didChangeTitle:[textField text]];   
+        NSString *trimmed = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        textField.text = trimmed;
+        [_delegate calendarEvent:self didChangeTitle:trimmed];
     }
     
     [self endHackToStopAutoScrollOnTextField:textField];
