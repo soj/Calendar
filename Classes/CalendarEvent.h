@@ -47,7 +47,7 @@ typedef enum {
     kHighlightAll
 } HighlightArea;
 
-@interface CalendarEvent : CalendarEntity <UITextFieldDelegate> {
+@interface CalendarEvent : CalendarEntity <UITextViewDelegate> {
     id<CalendarEventDelegate> _delegate;
     
     CALayer *_boxLayer;
@@ -61,7 +61,7 @@ typedef enum {
     BOOL _isActive;
     
 	NSString *_eventId;
-	UITextField *_nameField;
+	UITextView *_nameField;
 
     UIColor *_baseColor;
 }

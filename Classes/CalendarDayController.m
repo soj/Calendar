@@ -374,7 +374,7 @@
     }
 }
 
-- (void)handleLongPress:(UILongPressGestureRecognizer*)recognizer {	
+- (void)handleLongPress:(UILongPressGestureRecognizer*)recognizer {
 	float yLoc = [recognizer locationInView:_calendarDay].y;
     
     switch (recognizer.state) {

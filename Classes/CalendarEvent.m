@@ -50,13 +50,15 @@
         [self.layer addSublayer:_railLayer];
         _depthLayer.mask = _depthMask;
 
-        _nameField = [[UITextField alloc] init];
+        _nameField = [[UITextView alloc] init];
         [_nameField setFont:UI_NAME_FONT];
         [_nameField setTextColor:UI_NAME_COLOR];
         [_nameField setReturnKeyType:UIReturnKeyDone];
-        [_nameField setContentVerticalAlignment:UIControlContentVerticalAlignmentTop];
         [_nameField setDelegate:self];
-        [_nameField setEnabled:NO];
+        [_nameField setEditable:NO];
+        [_nameField setScrollEnabled:NO];
+        [_nameField setBackgroundColor:[UIColor clearColor]];
+        [_nameField setContentInset:UIEdgeInsetsMake(-8,-8,0,0)];
         [self addSubview:_nameField];
         
         [_nameField setFrame:CGRectMake(UI_BORDER_PADDING_X, UI_BORDER_PADDING_Y,
@@ -132,14 +134,14 @@
 
 - (void)setFocus {
     _hasFocus = YES;
-    [_nameField setEnabled:YES];
+    [_nameField setEditable:YES];
 	[_nameField becomeFirstResponder];
 }
 
 - (void)resignFocus {
     _hasFocus = NO;
     [_nameField resignFirstResponder];
-    [_nameField setEnabled:NO];
+    [_nameField setEditable:NO];
 }
 
 - (void)highlightArea:(HighlightArea)area {
@@ -166,7 +168,7 @@
 - (void)reframeLayers {
     [_nameField setFrame:CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
                                     [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
-                                    MIN(UI_NAME_FIELD_HEIGHT, MAX(self.frame.size.height - UI_BORDER_PADDING_Y * 2, 0)))];
+                                    MAX(UI_NAME_FIELD_HEIGHT, self.frame.size.height - UI_BORDER_PADDING_Y * 2))];
     
     [_boxLayer setFrame:CGRectMake(_boxLayer.frame.origin.x, _boxLayer.frame.origin.y,
                                    _boxLayer.frame.size.width, self.frame.size.height)];
@@ -244,41 +246,46 @@
 #pragma mark -
 #pragma mark UITextFieldDelegate Methods
 
-- (void)beginHackToStopAutoScrollOnTextField:(UITextField*)textField {
-    UIScrollView *wrap = [[UIScrollView alloc] initWithFrame:textField.frame];
-    [textField.superview addSubview:wrap];
-    CGRect frame = textField.frame;
-    textField.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
-    [wrap addSubview:textField];
+- (void)beginHackToStopAutoScrollOnTextField:(UITextView*)textView {
+    UIScrollView *wrap = [[UIScrollView alloc] initWithFrame:textView.frame];
+    [textView.superview addSubview:wrap];
+    CGRect frame = textView.frame;
+    textView.frame = CGRectMake(0, 0, frame.size.width, frame.size.height);
+    [wrap addSubview:textView];
 }
 
-- (void)endHackToStopAutoScrollOnTextField:(UITextField*)textField {
-    UIScrollView *wrap = (UIScrollView*)textField.superview;
-    [wrap.superview addSubview:textField];
-    CGRect frame = textField.frame;
-    textField.frame = CGRectMake(wrap.frame.origin.x, wrap.frame.origin.y, frame.size.width, frame.size.height);
+- (void)endHackToStopAutoScrollOnTextField:(UITextView*)textView {
+    UIScrollView *wrap = (UIScrollView*)textView.superview;
+    [wrap.superview addSubview:textView];
+    CGRect frame = textView.frame;
+    textView.frame = CGRectMake(wrap.frame.origin.x, wrap.frame.origin.y, frame.size.width, frame.size.height);
     [wrap removeFromSuperview];
 }
 
-- (void)textFieldDidBeginEditing:(UITextField*)textField {
-    [self beginHackToStopAutoScrollOnTextField:textField];
+- (void)textViewDidBeginEditing:(UITextView*)textView {
+    [self beginHackToStopAutoScrollOnTextField:textView];
 }
 
-- (BOOL)textFieldShouldReturn:(UITextField*)textField {
-	[_nameField resignFirstResponder];
-    [_nameField setEnabled:NO];
-	[_delegate showCategoryChooser];
-	return YES;
-}
-
-- (void)textFieldDidEndEditing:(UITextField*)textField {
-    if (textField == _nameField) {
-        NSString *trimmed = [textField.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-        textField.text = trimmed;
+- (void)textViewDidEndEditing:(UITextView*)textView {
+    if (textView == _nameField) {
+        NSString *trimmed = [textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+        textView.text = trimmed;
         [_delegate calendarEvent:self didChangeTitle:trimmed];
+        
+        [_nameField resignFirstResponder];
+        [_nameField setEditable:NO];
+        [_delegate showCategoryChooser];
     }
     
-    [self endHackToStopAutoScrollOnTextField:textField];
+    [self endHackToStopAutoScrollOnTextField:textView];
+}
+
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+    if (textView == _nameField && [text isEqualToString:@"\n"]) {
+        [textView resignFirstResponder];
+        return NO;
+    }
+    return YES;
 }
 
 #pragma mark -
