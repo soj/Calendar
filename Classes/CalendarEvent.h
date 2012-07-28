@@ -55,6 +55,7 @@ typedef enum {
     CALayer *_railLayer;
     CALayer *_depthLayer;
     CAShapeLayer *_depthMask;
+    CAShapeLayer *_categoryLayer;
 
     HighlightArea _highlightArea;
     BOOL _hasFocus;
