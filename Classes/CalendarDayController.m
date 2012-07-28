@@ -264,7 +264,8 @@
 
 - (void)resizeEventBlock:(CalendarEvent*)eventBlock startTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
     if (eventBlock == _activeEventBlock) {
-        if (time > eventBlock.endTime) {
+        if ((time + _dragEventTimeOffset) > eventBlock.endTime) {
+            _dragEventTimeOffset = (time + _dragEventTimeOffset) - eventBlock.endTime;
             [self beginDraggingEventBlockEndTime:eventBlock];
             [self resizeEventBlock:eventBlock endTime:time forceLink:forceLink];
             return;
@@ -286,7 +287,8 @@
 
 - (void)resizeEventBlock:(CalendarEvent*)eventBlock endTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
     if (eventBlock == _activeEventBlock) {
-        if (time < eventBlock.startTime) {
+        if ((time - _dragEventTimeOffset) < eventBlock.startTime) {
+            _dragEventTimeOffset = eventBlock.startTime - (time - _dragEventTimeOffset);
             [self beginDraggingEventBlockStartTime:eventBlock];
             [self resizeEventBlock:eventBlock startTime:time forceLink:forceLink];
             return;
