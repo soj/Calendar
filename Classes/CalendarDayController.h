@@ -34,6 +34,7 @@ typedef enum {
 	NSMutableSet *_eventBlocks;
     
     UIPanGestureRecognizer *_eventBlockPan;
+    UIPanGestureRecognizer *_eventBlockHorizontalPan;
     UILongPressGestureRecognizer *_eventBlockLongPress;
 	
 	NSTimeInterval _startTime;

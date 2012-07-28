@@ -134,6 +134,7 @@
     [_activeEventBlock setIsActive:YES];
     [_calendarDay bringSubviewToFront:_activeEventBlock];
     [_activeEventBlock addGestureRecognizer:_eventBlockPan];
+    [_activeEventBlock addGestureRecognizer:_eventBlockHorizontalPan];
     [_activeEventBlock addGestureRecognizer:_eventBlockLongPress];
 }
 
@@ -148,6 +149,7 @@
         }
         
         [block removeGestureRecognizer:_eventBlockPan];
+        [block removeGestureRecognizer:_eventBlockHorizontalPan];
         [block removeGestureRecognizer:_eventBlockLongPress];
         [block setIsActive:NO];
         
@@ -367,6 +369,10 @@
     _eventBlockPan.cancelsTouchesInView = NO;
     _eventBlockPan.delegate = self;
 
+    _eventBlockHorizontalPan = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(handleHorizontalPanOnEventBlock:)];
+    _eventBlockHorizontalPan.cancelsTouchesInView = NO;
+    _eventBlockHorizontalPan.delegate = self;
+    
     _eventBlockLongPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                          action:@selector(handlePanOrLongPressOnEventBlock:)];
     _eventBlockLongPress.delegate = self;
@@ -427,7 +433,7 @@
                 [self setActiveEventBlock:new];
                 [self scrollToEntity:_activeEventBlock];
                 [_calendarDay fadeInTimeLines];
-                [self beginDragForYPosInActiveEventBlock:[recognizer locationInView:_activeEventBlock].y];
+                [self beginDragForYPosInActiveEventBlock:_activeEventBlock.frame.size.height];
             } else {
                 [recognizer cancel];
                 break;
@@ -493,10 +499,32 @@
     }
 }
 
+- (void)handleHorizontalPanOnEventBlock:(UIGestureRecognizer*)recognizer {
+    NSAssert(_activeEventBlock == [recognizer view], @"Only the active event block may receive this gesture");
+    float xLoc = [recognizer locationInView:_calendarDay].x;
+    
+    switch (recognizer.state) {
+        case UIGestureRecognizerStateBegan: {
+        }
+        case UIGestureRecognizerStateChanged: {
+        }
+        case UIGestureRecognizerStateEnded: {
+        }
+        default:
+            break;
+    }
+}
+
 #pragma mark -
 #pragma mark UIGestureRecognizerDelegate Methods
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)recognizer {
+    CGPoint translation = [_eventBlockHorizontalPan translationInView:_activeEventBlock];
+    if ((recognizer == _eventBlockHorizontalPan && fabs(translation.y) >= fabs(translation.x)) ||
+        (recognizer == _eventBlockPan && fabs(translation.x) > fabs(translation.y))) {
+        return NO;
+    }
+    
     if (recognizer == _eventBlockPan || recognizer == _eventBlockLongPress) {
         if (![self beginDragForYPosInActiveEventBlock:[recognizer locationInView:_activeEventBlock].y]) {
             return NO;
