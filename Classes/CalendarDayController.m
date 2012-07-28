@@ -145,7 +145,6 @@
 
         if (block.hasFocus) {
             [block resignFocus];
-            [_delegate dismissCategoryChooser];
         }
         
         [block removeGestureRecognizer:_eventBlockPan];
@@ -181,6 +180,9 @@
     [newBlock setTitle:[event title]];
     [newBlock setEventId:[event identifier]];
     [newBlock setColor:[[event category] color]];
+    if ([event category] != [Category uncategorized]) {
+        [newBlock setHasCategory:YES];
+    }
     return newBlock;
 }
 
@@ -214,7 +216,6 @@
 - (void)deleteEventBlock:(CalendarEvent*)event {
     if (event == _activeEventBlock) {
         [self unsetActiveEventBlock];
-        [_delegate dismissCategoryChooser];
     }
     
     [_delegate deleteEvent:event.eventId];
@@ -390,7 +391,6 @@
     } else {
         if (_activeEventBlock && [_activeEventBlock hasFocus]) {
             if ([_delegate eventIsValid:_activeEventBlock.eventId]) {
-                [_delegate dismissCategoryChooser];
                 [_activeEventBlock resignFocus];
             } else {
                 [self deleteEventBlock:_activeEventBlock];
@@ -400,7 +400,7 @@
             if ((new = [self createNewEventWithStartTime:startTime])) {
                 [self setActiveEventBlock:new];
                 [self scrollToEntity:_activeEventBlock];
-                [_activeEventBlock setFocus];
+                [_activeEventBlock setNameFocus];
             } else {
                 [recognizer cancel];
             }
@@ -411,12 +411,12 @@
 - (void)handleTapOnEventBlock:(UITapGestureRecognizer*)recognizer {
     CGPoint pt = [recognizer locationInView:_activeEventBlock];
     if ([recognizer view] == _activeEventBlock) {
-        if (![_activeEventBlock hasFocus] && [_activeEventBlock pointInsideTextView:pt]) {
-            [self scrollToEntity:_activeEventBlock];
-            [_activeEventBlock setFocus];
+        if ([_activeEventBlock pointInsideTextView:pt]) {
+            [_activeEventBlock setNameFocus];
+        } else if ([_activeEventBlock pointInsideCatView:pt]) {
+            [_activeEventBlock setCategoryFocus];
         } else if ([_activeEventBlock hasFocus]) {
             [_activeEventBlock resignFocus];
-            [_delegate dismissCategoryChooser];
         }
     } else {
         [self setActiveEventBlock:(CalendarEvent*)[recognizer view]];
@@ -450,7 +450,7 @@
             [self commitEventBlockTimes:_activeEventBlock];
             [self commitEventBlockTimes:[self boundaryBlockAfterTime:_activeEventBlock.startTime]];
             [self scrollToEntity:_activeEventBlock];
-            [_activeEventBlock setFocus];
+            [_activeEventBlock setNameFocus];
             [_calendarDay fadeOutTimeLines];
             [_activeEventBlock unhighlight];
             break;
@@ -548,6 +548,10 @@
     [_delegate showCategoryChooserWithDelegate:self];
 }
 
+- (void)dismissCategoryChooser {
+    [_delegate dismissCategoryChooser];
+}
+
 - (void)calendarEvent:(CalendarEvent*)event didChangeTitle:(NSString*)title {
     NSAssert([event eventId] != NULL, @"CalendarEvent does not have an identifier");
     [_delegate updateEvent:[event eventId] title:title];
@@ -559,6 +563,7 @@
 - (void)categoryChooser:(CategoryChooserController*)chooser didSelectCategory:(Category*)cat {
     [_delegate updateEvent:[_activeEventBlock eventId] category:cat];
     [_activeEventBlock setColor:[cat color]];
+    [_activeEventBlock setHasCategory:YES];
     [_activeEventBlock resignFocus];
 }
 

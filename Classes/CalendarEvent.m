@@ -6,7 +6,7 @@
 
 @implementation CalendarEvent
 
-@synthesize eventId=_eventId, delegate=_delegate, hasFocus=_hasFocus;
+@synthesize eventId=_eventId, delegate=_delegate, hasFocus=_hasFocus, hasCategory=_hasCategory;
 
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
                endTime:(NSTimeInterval)endTime andDelegate:(id)delegate {    
@@ -152,16 +152,22 @@
     [_nameField setText:title];
 }
 
-- (void)setFocus {
+- (void)setNameFocus {
     _hasFocus = YES;
     [_nameField setEditable:YES];
 	[_nameField becomeFirstResponder];
+}
+
+- (void)setCategoryFocus {
+    _hasFocus = YES;
+    [_delegate showCategoryChooser];
 }
 
 - (void)resignFocus {
     _hasFocus = NO;
     [_nameField resignFirstResponder];
     [_nameField setEditable:NO];
+    [_delegate dismissCategoryChooser];
 }
 
 - (void)highlightArea:(HighlightArea)area {
@@ -214,6 +220,10 @@
     CGRect rect = CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
                              _nameField.contentSize.width, _nameField.contentSize.height);
     return CGRectContainsPoint(rect, pt);
+}
+
+- (BOOL)pointInsideCatView:(CGPoint)pt {
+    return CGRectContainsPoint(_categoryLayer.frame, pt);
 }
 
 - (void)showDepthLayer {
@@ -300,7 +310,10 @@
         
         [_nameField resignFirstResponder];
         [_nameField setEditable:NO];
-        [_delegate showCategoryChooser];
+        
+        if (!_hasCategory) {
+            [_delegate showCategoryChooser];
+        }
     }
     
     [self endHackToStopAutoScrollOnTextField:textView];

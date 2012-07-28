@@ -38,6 +38,7 @@
 
 @protocol CalendarEventDelegate
 - (void)showCategoryChooser;
+- (void)dismissCategoryChooser;
 - (void)calendarEvent:(CalendarEvent*)event didChangeTitle:(NSString*)title;
 @end
 
@@ -60,6 +61,7 @@ typedef enum {
     HighlightArea _highlightArea;
     BOOL _hasFocus;
     BOOL _isActive;
+    BOOL _hasCategory;
     
 	NSString *_eventId;
 	UITextView *_nameField;
@@ -70,12 +72,16 @@ typedef enum {
 @property (strong) id delegate;
 @property (nonatomic, strong) NSString *eventId;
 @property BOOL hasFocus;
+@property BOOL hasCategory;
 
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
                endTime:(NSTimeInterval)endTime andDelegate:(id<CalendarEventDelegate>)delegate;
 
 - (BOOL)pointInsideTextView:(CGPoint)pt;
-- (void)setFocus;
+- (BOOL)pointInsideCatView:(CGPoint)pt;
+
+- (void)setNameFocus;
+- (void)setCategoryFocus;
 - (void)resignFocus;
 - (BOOL)hasFocus;
 
