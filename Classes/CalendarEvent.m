@@ -168,7 +168,7 @@
 - (void)reframeLayers {
     [_nameField setFrame:CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
                                     [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
-                                    MAX(UI_NAME_FIELD_HEIGHT, self.frame.size.height - UI_BORDER_PADDING_Y * 2))];
+                                    self.frame.size.height - UI_BORDER_PADDING_Y * 2)];
     
     [_boxLayer setFrame:CGRectMake(_boxLayer.frame.origin.x, _boxLayer.frame.origin.y,
                                    _boxLayer.frame.size.width, self.frame.size.height)];

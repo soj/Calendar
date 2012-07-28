@@ -223,6 +223,21 @@
 #pragma mark -
 #pragma mark Event Block Movement
 
+- (void)beginDraggingEventBlockStartTime:(CalendarEvent*)eventBlock {
+    _dragType = kDragStartTime;
+    [_activeEventBlock highlightArea:kHighlightTop];
+}
+
+- (void)beginDraggingEventBlockEndTime:(CalendarEvent*)eventBlock {
+    _dragType = kDragEndTime;
+    [_activeEventBlock highlightArea:kHighlightBottom];
+}
+
+- (void)beginDraggingEventBlock:(CalendarEvent*)eventBlock {
+    _dragType = kDragBoth;
+    [_activeEventBlock highlightArea:kHighlightAll];
+}
+
 - (BOOL)beginDragForYPosInActiveEventBlock:(CGFloat)y {
     int forceDragEnd = false;
     if (y < UI_EDGE_DRAG_PIXELS && y > _activeEventBlock.frame.size.height - UI_EDGE_DRAG_PIXELS) {
@@ -231,26 +246,32 @@
     
     if (y < UI_EDGE_DRAG_PIXELS && !forceDragEnd) {
         _dragEventTimeOffset = [[CalendarMath getInstance] pixelToTimeOffset:y];
-        _dragType = kDragStartTime;
-        [_activeEventBlock highlightArea:kHighlightTop];
+        [self beginDraggingEventBlockStartTime:_activeEventBlock];
     } else if (y > _activeEventBlock.frame.size.height - UI_EDGE_DRAG_PIXELS) {
         NSTimeInterval eventLength = _activeEventBlock.endTime - _activeEventBlock.startTime;
         // magical 2 minute "don't overshoot" factor may be due to depth layer
         _dragEventTimeOffset = eventLength - [[CalendarMath getInstance] pixelToTimeOffset:y] - SECONDS_PER_MINUTE * 2;
-        _dragType = kDragEndTime;
-        [_activeEventBlock highlightArea:kHighlightBottom];
+        [self beginDraggingEventBlockEndTime:_activeEventBlock];
     } else {
         if (![self isTimeVisible:_activeEventBlock.endTime] || ![self isTimeVisible:_activeEventBlock.startTime]) {
             return NO;
         }
         _dragEventTimeOffset = [[CalendarMath getInstance] pixelToTimeOffset:y];
-        _dragType = kDragBoth;
-        [_activeEventBlock highlightArea:kHighlightAll];
+        [self beginDraggingEventBlock:_activeEventBlock];
     }
     return YES;
 }
 
 - (void)resizeEventBlock:(CalendarEvent*)eventBlock startTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
+    if (eventBlock == _activeEventBlock) {
+        if (time > eventBlock.endTime) {
+            [self beginDraggingEventBlockEndTime:eventBlock];
+            [self resizeEventBlock:eventBlock endTime:time forceLink:forceLink];
+            return;
+        }
+        time = MIN(time, eventBlock.endTime - MIN_EVENT_TIME_INTERVAL);
+    }
+    
     CalendarEvent *thatBlock = [self boundaryBlockBeforeTime:eventBlock.endTime];
     if (thatBlock && thatBlock != _activeEventBlock && (time < thatBlock.endTime || forceLink)) {
         [self resizeEventBlock:thatBlock endTime:time forceLink:NO];
@@ -264,6 +285,15 @@
 }
 
 - (void)resizeEventBlock:(CalendarEvent*)eventBlock endTime:(NSTimeInterval)time forceLink:(BOOL)forceLink {
+    if (eventBlock == _activeEventBlock) {
+        if (time < eventBlock.startTime) {
+            [self beginDraggingEventBlockStartTime:eventBlock];
+            [self resizeEventBlock:eventBlock startTime:time forceLink:forceLink];
+            return;
+        }
+        time = MAX(time, eventBlock.startTime + MIN_EVENT_TIME_INTERVAL);
+    }
+    
     CalendarEvent *thatBlock = [self boundaryBlockAfterTime:eventBlock.startTime];
     if (thatBlock && thatBlock != _activeEventBlock && (time > thatBlock.startTime || forceLink)) {
         [self resizeEventBlock:thatBlock startTime:time forceLink:NO];
@@ -293,6 +323,16 @@
     
     _activeEventBlock.startTime = newStartTime;
     _activeEventBlock.endTime = newEndTime;
+}
+
+- (void)continueActiveEventBlockDragWithTimeOffset:(NSTimeInterval)timeOffset {
+    if (_dragType == kDragBoth) {
+        [self dragActiveEventBlockTo:(timeOffset + _startTime)];
+    } else if (_dragType == kDragStartTime || _dragType == kDragLinkedStartTime) {
+        [self resizeEventBlock:_activeEventBlock startTime:(timeOffset + _startTime - _dragEventTimeOffset) forceLink:(_dragType == kDragLinkedStartTime)];
+    } else {
+        [self resizeEventBlock:_activeEventBlock endTime:(timeOffset + _startTime + _dragEventTimeOffset) forceLink:(_dragType == kDragLinkedEndTime)];
+    }
 }
 
 - (void)commitEventBlockTimes:(CalendarEvent*)event {
@@ -385,6 +425,7 @@
                 [self setActiveEventBlock:new];
                 [self scrollToEntity:_activeEventBlock];
                 [_calendarDay fadeInTimeLines];
+                [self beginDragForYPosInActiveEventBlock:[recognizer locationInView:_activeEventBlock].y];
             } else {
                 [recognizer cancel];
                 break;
@@ -392,19 +433,8 @@
             // Fall through
         }
         case UIGestureRecognizerStateChanged: {
-            if (!_activeEventBlock) return;
-            NSTimeInterval dragTime = _startTime + [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
-            if (dragTime < _activeEventBlock.startTime || (dragTime < _activeEventBlock.endTime && _dragType == kDragStartTime)) {
-                _activeEventBlock.startTime = dragTime;
-                _activeEventBlock.startTime = MIN(_activeEventBlock.startTime, _activeEventBlock.endTime - MIN_EVENT_TIME_INTERVAL);
-                _activeEventBlock.startTime = MAX(_activeEventBlock.startTime, [self boundaryBeforeTime:_activeEventBlock.endTime]);   
-                _dragType = kDragStartTime;
-            } else if (dragTime > _activeEventBlock.endTime || _dragType == kDragEndTime) {
-                _activeEventBlock.endTime = dragTime;
-                _activeEventBlock.endTime = MAX(_activeEventBlock.endTime, _activeEventBlock.startTime + MIN_EVENT_TIME_INTERVAL);
-                _activeEventBlock.endTime = MIN(_activeEventBlock.endTime, [self boundaryAfterTime:_activeEventBlock.startTime]);
-                _dragType = kDragEndTime;
-            }
+            NSTimeInterval timeOffset = [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
+            [self continueActiveEventBlockDragWithTimeOffset:timeOffset];
             break;
         }
         case UIGestureRecognizerStateEnded: {
@@ -413,6 +443,7 @@
             [self scrollToEntity:_activeEventBlock];
             [_activeEventBlock setFocus];
             [_calendarDay fadeOutTimeLines];
+            [_activeEventBlock unhighlight];
             break;
         }
         default:
@@ -435,6 +466,7 @@
 
 - (void)handlePanOrLongPressOnEventBlock:(UIGestureRecognizer*)recognizer {
     NSAssert(_activeEventBlock == [recognizer view], @"Only the active event block may receive this gesture");
+    float yLoc = [recognizer locationInView:_calendarDay].y;
 
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan: {
@@ -442,15 +474,8 @@
             // Fall through
         }
         case UIGestureRecognizerStateChanged: {
-            float loc = [recognizer locationInView:_calendarDay].y;
-            if (_dragType == kDragBoth) {
-                [self dragActiveEventBlockTo:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime)];
-            } else if (_dragType == kDragStartTime || _dragType == kDragLinkedStartTime) {
-                [self resizeEventBlock:_activeEventBlock startTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime - _dragEventTimeOffset) forceLink:(_dragType == kDragLinkedStartTime)];
-            } else {
-                [self resizeEventBlock:_activeEventBlock endTime:([[CalendarMath getInstance] pixelToTimeOffset:loc] + _startTime + _dragEventTimeOffset)
-                             forceLink:(_dragType == kDragLinkedEndTime)];
-            }
+            NSTimeInterval timeOffset = [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
+            [self continueActiveEventBlockDragWithTimeOffset:timeOffset];
             break;
         }
         case UIGestureRecognizerStateEnded: {
