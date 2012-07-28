@@ -135,7 +135,6 @@
 - (void)setFocus {
     _hasFocus = YES;
     [_nameField setEditable:YES];
-    [_nameField setUserInteractionEnabled:YES];
 	[_nameField becomeFirstResponder];
 }
 
@@ -143,7 +142,6 @@
     _hasFocus = NO;
     [_nameField resignFirstResponder];
     [_nameField setEditable:NO];
-    [_nameField setUserInteractionEnabled:NO];
 }
 
 - (void)highlightArea:(HighlightArea)area {
@@ -190,6 +188,12 @@
                                   self.frame.size.height + UI_DEPTH_BORDER_HEIGHT);
     _depthMask.path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, _depthMask.frame.size.width,
                                                                   _depthMask.frame.size.height)].CGPath;
+}
+
+- (BOOL)pointInsideTextView:(CGPoint)pt {
+    CGRect rect = CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
+                             _nameField.contentSize.width, _nameField.contentSize.height);
+    return CGRectContainsPoint(rect, pt);
 }
 
 - (void)showDepthLayer {

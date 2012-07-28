@@ -409,11 +409,12 @@
 }
 
 - (void)handleTapOnEventBlock:(UITapGestureRecognizer*)recognizer {
-    if ([recognizer view] == _activeEventBlock) {        
-        if (![_activeEventBlock hasFocus]) {
+    CGPoint pt = [recognizer locationInView:_activeEventBlock];
+    if ([recognizer view] == _activeEventBlock) {
+        if (![_activeEventBlock hasFocus] && [_activeEventBlock pointInsideTextView:pt]) {
             [self scrollToEntity:_activeEventBlock];
             [_activeEventBlock setFocus];
-        } else {
+        } else if ([_activeEventBlock hasFocus]) {
             [_activeEventBlock resignFocus];
             [_delegate dismissCategoryChooser];
         }

@@ -73,6 +73,7 @@ typedef enum {
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
                endTime:(NSTimeInterval)endTime andDelegate:(id<CalendarEventDelegate>)delegate;
 
+- (BOOL)pointInsideTextView:(CGPoint)pt;
 - (void)setFocus;
 - (void)resignFocus;
 - (BOOL)hasFocus;
