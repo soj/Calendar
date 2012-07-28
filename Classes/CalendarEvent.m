@@ -135,6 +135,7 @@
 - (void)setFocus {
     _hasFocus = YES;
     [_nameField setEditable:YES];
+    [_nameField setUserInteractionEnabled:YES];
 	[_nameField becomeFirstResponder];
 }
 
@@ -142,6 +143,7 @@
     _hasFocus = NO;
     [_nameField resignFirstResponder];
     [_nameField setEditable:NO];
+    [_nameField setUserInteractionEnabled:NO];
 }
 
 - (void)highlightArea:(HighlightArea)area {
