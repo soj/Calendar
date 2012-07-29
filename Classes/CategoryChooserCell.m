@@ -4,7 +4,7 @@
 
 @implementation CategoryChooserCell
 
-@synthesize categoryName=_categoryName, colorView=_colorView, nameEntry=_nameEntry;
+@synthesize categoryName=_categoryName, colorView=_colorView, nameEntry=_nameEntry, border=_border;
 
 - (id)initWithFrame:(CGRect)frame {
     
@@ -33,8 +33,14 @@
 
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated {
     [super setSelected:selected animated:animated];
-	
     _colorView.backgroundColor = _color;
+    _border.backgroundColor = BORDER_COLOR;
+}
+
+- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated {
+    [super setHighlighted:highlighted animated:animated];
+    _colorView.backgroundColor = _color;
+    _border.backgroundColor = BORDER_COLOR;
 }
 
 @end

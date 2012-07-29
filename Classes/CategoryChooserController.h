@@ -3,6 +3,8 @@
 #import "CategoryChooserCell.h"
 #import "Category.h"
 
+#define UI_CHOOSER_ANIM_DURATION    0.3
+
 @class CategoryChooserController;
 
 @protocol CategoryChooserDelegate
@@ -22,5 +24,7 @@
 @property (nonatomic, strong) IBOutlet UITableView *categoryTableView;
 
 - (id)initWithDelegate:(id<CategoryChooserDelegate>)delegate;
+- (void)animateIn;
+- (void)animateOut;
 
 @end

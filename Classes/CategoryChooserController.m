@@ -1,3 +1,5 @@
+#import <QuartzCore/QuartzCore.h>
+
 #import "CategoryChooserController.h"
 #import "Category.h"
 
@@ -16,6 +18,8 @@
                                                      name:UIKeyboardDidShowNotification object:nil];
         [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiKeyboardDidHide:)
                                                      name:UIKeyboardDidHideNotification object:nil];
+        
+        self.view.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height, self.view.frame.size.width, self.view.frame.size.height);
 	}
     
 	return self;
@@ -24,6 +28,32 @@
 - (void)viewDidLoad {
     _categoryTableView.delegate = self;
     [_categoryTableView flashScrollIndicators];
+}
+
+- (void)animateIn {
+    CGPoint endPos = CGPointMake(self.view.layer.position.x, self.view.layer.position.y - self.view.layer.bounds.size.height);
+    
+    CABasicAnimation *shiftUp = [CABasicAnimation animationWithKeyPath:@"position"];
+    shiftUp.fromValue = [NSValue valueWithCGPoint:self.view.layer.position];
+    shiftUp.toValue = [NSValue valueWithCGPoint:endPos];
+    shiftUp.duration = UI_CHOOSER_ANIM_DURATION;
+    shiftUp.removedOnCompletion = NO;
+    shiftUp.fillMode = kCAFillModeForwards;
+    self.view.layer.position = endPos;
+    [self.view.layer addAnimation:shiftUp forKey:@"positionUp"];
+}
+
+- (void)animateOut {
+    CGPoint endPos = CGPointMake(self.view.layer.position.x, self.view.layer.position.y + self.view.layer.bounds.size.height);
+    
+    CABasicAnimation *shiftDown = [CABasicAnimation animationWithKeyPath:@"position"];
+    shiftDown.fromValue = [NSValue valueWithCGPoint:self.view.layer.position];
+    shiftDown.toValue = [NSValue valueWithCGPoint:endPos];
+    shiftDown.duration = UI_CHOOSER_ANIM_DURATION;
+    shiftDown.removedOnCompletion = NO;
+    shiftDown.fillMode = kCAFillModeForwards;
+    shiftDown.delegate = self;
+    [self.view.layer addAnimation:shiftDown forKey:@"positionDown"];
 }
 
 - (void)sortCategories {
@@ -62,6 +92,10 @@
                                  frame.origin.y + keyboardFrame.size.height,
                                  frame.size.width, frame.size.height);
     [self.view setFrame:newFrame];
+}
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
+    [self.view removeFromSuperview];
 }
 
 #pragma mark -
@@ -110,7 +144,6 @@
 
 - (void)tableView:(UITableView*)tableView didSelectRowAtIndexPath:(NSIndexPath*)indexPath {
     [_delegate categoryChooser:self didSelectCategory:[_categories objectAtIndex:indexPath.row]];
-    [self.view removeFromSuperview];
 }
 
 #pragma mark -
@@ -123,7 +156,6 @@
     
     [_categoryTableView reloadData];
     [textField resignFirstResponder];
-    [self.view removeFromSuperview];
     return YES;
 }
 

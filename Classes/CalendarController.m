@@ -119,16 +119,17 @@
     CGRect screen = [[UIScreen mainScreen] bounds];
     CGRect frame = catController.view.frame;
     CGRect newFrame = CGRectMake(frame.origin.x, 
-                                screen.size.height - frame.size.height,
+                                screen.size.height,
                                 frame.size.width, frame.size.height);
     [catController.view setFrame:newFrame];
     
     _catController = catController;
+    [_catController animateIn];
 }
 
 - (void)dismissCategoryChooser {
     if (_catController != nil && [_catController.view superview] != nil) {
-        [_catController.view removeFromSuperview];
+        [_catController animateOut];
     }
 }
 

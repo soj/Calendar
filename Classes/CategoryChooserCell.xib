@@ -48,9 +48,10 @@
 						<reference key="NSWindow"/>
 						<reference key="NSNextKeyView" ref="969623418"/>
 						<object class="NSColor" key="IBUIBackgroundColor">
-							<int key="NSColorSpace">1</int>
-							<bytes key="NSRGB">MC42IDAuNiAwLjYgMC42AA</bytes>
+							<int key="NSColorSpace">3</int>
+							<bytes key="NSWhite">MC4wNSAwLjA1AA</bytes>
 						</object>
+						<float key="IBUIAlpha">0.05000000074505806</float>
 						<string key="targetRuntimeIdentifier">IBCocoaTouchFramework</string>
 					</object>
 					<object class="IBUIView" id="969623418">
@@ -75,7 +76,7 @@
 						<string key="NSFrame">{{65, 10}, {243, 29}}</string>
 						<reference key="NSSuperview" ref="191373211"/>
 						<reference key="NSWindow"/>
-						<reference key="NSNextKeyView" ref="1014490366"/>
+						<reference key="NSNextKeyView" ref="334776674"/>
 						<bool key="IBUIOpaque">NO</bool>
 						<bool key="IBUIClipsSubviews">YES</bool>
 						<int key="IBUIContentMode">7</int>
@@ -134,7 +135,7 @@
 						<reference key="IBUIFontDescription" ref="970512492"/>
 						<reference key="IBUIFont" ref="956662400"/>
 					</object>
-					<object class="IBUIView" id="1014490366">
+					<object class="IBUIView" id="334776674">
 						<reference key="NSNextResponder" ref="191373211"/>
 						<int key="NSvFlags">292</int>
 						<string key="NSFrame">{{0, 49}, {320, 1}}</string>
@@ -193,6 +194,14 @@
 					</object>
 					<int key="connectionID">7</int>
 				</object>
+				<object class="IBConnectionRecord">
+					<object class="IBCocoaTouchOutletConnection" key="connection">
+						<string key="label">border</string>
+						<reference key="source" ref="191373211"/>
+						<reference key="destination" ref="334776674"/>
+					</object>
+					<int key="connectionID">17</int>
+				</object>
 			</object>
 			<object class="IBMutableOrderedSet" key="objectRecords">
 				<object class="NSArray" key="orderedObjects">
@@ -214,7 +223,7 @@
 							<reference ref="969623418"/>
 							<reference ref="320323966"/>
 							<reference ref="308219390"/>
-							<reference ref="1014490366"/>
+							<reference ref="334776674"/>
 						</object>
 						<reference key="parent" ref="0"/>
 					</object>
@@ -249,7 +258,7 @@
 					</object>
 					<object class="IBObjectRecord">
 						<int key="objectID">16</int>
-						<reference key="object" ref="1014490366"/>
+						<reference key="object" ref="334776674"/>
 						<reference key="parent" ref="191373211"/>
 					</object>
 					<object class="IBObjectRecord">
@@ -300,7 +309,7 @@
 				<reference key="dict.values" ref="0"/>
 			</object>
 			<nil key="sourceID"/>
-			<int key="maxID">16</int>
+			<int key="maxID">17</int>
 		</object>
 		<object class="IBClassDescriber" key="IBDocument.Classes">
 			<object class="NSMutableArray" key="referencedPartialClassDescriptions">
@@ -312,12 +321,14 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>border</string>
 							<string>categoryName</string>
 							<string>colorView</string>
 							<string>nameEntry</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>UIView</string>
 							<string>UILabel</string>
 							<string>UIView</string>
 							<string>UITextField</string>
@@ -327,12 +338,17 @@
 						<bool key="EncodedWithXMLCoder">YES</bool>
 						<object class="NSArray" key="dict.sortedKeys">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<string>border</string>
 							<string>categoryName</string>
 							<string>colorView</string>
 							<string>nameEntry</string>
 						</object>
 						<object class="NSArray" key="dict.values">
 							<bool key="EncodedWithXMLCoder">YES</bool>
+							<object class="IBToOneOutletInfo">
+								<string key="name">border</string>
+								<string key="candidateClassName">UIView</string>
+							</object>
 							<object class="IBToOneOutletInfo">
 								<string key="name">categoryName</string>
 								<string key="candidateClassName">UILabel</string>
