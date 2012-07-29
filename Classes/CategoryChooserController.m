@@ -23,6 +23,7 @@
 
 - (void)viewDidLoad {
     _categoryTableView.delegate = self;
+    [_categoryTableView flashScrollIndicators];
 }
 
 - (void)sortCategories {
