@@ -44,6 +44,20 @@
 	[_calendarDay setNeedsDisplay];
 }
 
+- (BOOL)isTimeVisible:(NSTimeInterval)time {
+    if (time < _startTime || time > _startTime + SECONDS_PER_DAY) {
+        return NO;
+    }
+    
+    float pixelOffset = [(UIScrollView*)self.view contentOffset].y - UI_DAY_TOP_OFFSET;
+    NSTimeInterval topVisible = [[CalendarMath getInstance] pixelToTimeOffset:pixelOffset] + _startTime;
+    NSTimeInterval bottomVisible = topVisible + [[CalendarMath getInstance] pixelToTimeOffset:self.view.frame.size.height];
+    return time >= topVisible && time <= bottomVisible;
+}
+
+#pragma mark -
+#pragma mark Autoscroll Animations
+
 - (void)scrollToEntity:(CalendarEntity*)ent {
     [self scrollToTime:ent.startTime];
 }
@@ -55,15 +69,11 @@
     [(UIScrollView*)self.view setContentOffset:CGPointMake(0, top) animated:YES];
 }
 
-- (BOOL)isTimeVisible:(NSTimeInterval)time {
-    if (time < _startTime || time > _startTime + SECONDS_PER_DAY) {
-        return NO;
-    }
-    
-    float pixelOffset = [(UIScrollView*)self.view contentOffset].y - UI_DAY_TOP_OFFSET;
-    NSTimeInterval topVisible = [[CalendarMath getInstance] pixelToTimeOffset:pixelOffset] + _startTime;
-    NSTimeInterval bottomVisible = topVisible + [[CalendarMath getInstance] pixelToTimeOffset:self.view.frame.size.height];
-    return time >= topVisible && time <= bottomVisible;
+- (void)uiKeyboardWillShow:(NSNotification*)notification {
+    // TODO: Adjust scroll to keep target visible
+} 
+
+- (void)uiKeyboardWillHide:(NSNotification*)notification {
 }
 
 #pragma mark -

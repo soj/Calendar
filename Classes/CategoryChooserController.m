@@ -54,7 +54,7 @@
                          self.view.layer.position = endPos;
                      }
                      completion:NULL
-     ];
+    ];
 }
 
 - (void)animateOut {    
@@ -68,16 +68,15 @@
                          self.view.layer.position = endPos;
                      }
                      completion:NULL
-     ];
+    ];
 }
 
 - (void)uiKeyboardWillShow:(NSNotification*)notification {
     NSDictionary* userInfo = [notification userInfo];
     CGRect keyboardFrame;
     [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardFrame];
-    CGRect newFrame = CGRectMake(self.view.frame.origin.x,
-                                 self.view.frame.origin.y - keyboardFrame.size.height,
-                                 self.view.frame.size.width, self.view.frame.size.height);
+    CGPoint endPos = CGPointMake(self.view.layer.position.x,
+                                 self.view.layer.position.y - keyboardFrame.size.height);
     
     UIViewAnimationCurve animationCurve;
     [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
@@ -87,7 +86,7 @@
     
     [UIView animateWithDuration:animDur
                     animations:^{
-                        self.view.frame = newFrame;
+                        self.view.layer.position = endPos;
                     }
     ];
     
@@ -100,10 +99,8 @@
     NSDictionary* userInfo = [notification userInfo];
     CGRect keyboardFrame;
     [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardFrame];
-    CGRect frame = self.view.frame;
-    CGRect newFrame = CGRectMake(frame.origin.x,
-                                 frame.origin.y + keyboardFrame.size.height,
-                                 frame.size.width, frame.size.height);
+    CGPoint endPos = CGPointMake(self.view.layer.position.x,
+                                 self.view.layer.position.y + keyboardFrame.size.height);
     
     UIViewAnimationCurve animationCurve;
     [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
@@ -114,9 +111,9 @@
     [self.view.layer removeAllAnimations];
     [UIView animateWithDuration:animDur
                      animations:^{
-                         self.view.frame = newFrame;
+                         self.view.layer.position = endPos;
                      }
-     ];
+    ];
     
     _keyboardOffset = NO;
 }
