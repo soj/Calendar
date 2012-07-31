@@ -50,6 +50,8 @@
 
 - (void)scrollToTime:(NSTimeInterval)time {
     CGFloat top = [[CalendarMath getInstance] timeOffsetToPixel:(time - _startTime)];
+    top = MAX(0, top);
+    top = MIN(_calendarDay.frame.size.height - [UIScreen mainScreen].bounds.size.height, top);
     [(UIScrollView*)self.view setContentOffset:CGPointMake(0, top) animated:YES];
 }
 

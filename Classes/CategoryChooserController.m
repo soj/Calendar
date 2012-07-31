@@ -14,10 +14,10 @@
 		_delegate = delegate;
         [self sortCategories];
         
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiKeyboardDidShow:)
-                                                     name:UIKeyboardDidShowNotification object:nil];
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiKeyboardDidHide:)
-                                                     name:UIKeyboardDidHideNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiKeyboardWillShow:)
+                                                     name:UIKeyboardWillShowNotification object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(uiKeyboardWillHide:)
+                                                     name:UIKeyboardWillHideNotification object:nil];
         
         self.view.frame = CGRectMake(0, [UIScreen mainScreen].bounds.size.height, self.view.frame.size.width, self.view.frame.size.height);
 	}
@@ -44,6 +44,8 @@
 }
 
 - (void)animateOut {
+    if (_animatingOut) return;
+    
     CGPoint endPos = CGPointMake(self.view.layer.position.x, self.view.layer.position.y + self.view.layer.bounds.size.height);
     
     CABasicAnimation *shiftDown = [CABasicAnimation animationWithKeyPath:@"position"];
@@ -64,38 +66,64 @@
     }];
 }
 
-- (void)uiKeyboardDidShow:(NSNotification*)notification {
+- (void)uiKeyboardWillShow:(NSNotification*)notification {
     // Note: When you animate this, use UIKeyboardAnimationDurationUserInfoKey, UIKeyboardAnimationCurveUserInfoKey and UIKeyboardFrameBeginUserInfoKey
     
-    NSDictionary* keyboardInfo = [notification userInfo];
-    NSValue* keyboardFrameEnd = [keyboardInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
-    CGRect keyboardFrame = [keyboardFrameEnd CGRectValue];
+    [self.view.layer removeAllAnimations];
     
-    CGRect frame = self.view.frame;
-    CGRect newFrame = CGRectMake(frame.origin.x, 
-                                 frame.origin.y - keyboardFrame.size.height,
-                                 frame.size.width, frame.size.height);
-    [self.view setFrame:newFrame];
+    NSDictionary* userInfo = [notification userInfo];
+    NSTimeInterval animationDuration;
+    UIViewAnimationCurve animationCurve;
+    CGRect keyboardFrame;
+    [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
+    [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
+    [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardFrame];
+    [UIView beginAnimations:nil context:nil];
+    [UIView setAnimationDuration:animationDuration];
+    [UIView setAnimationCurve:animationCurve];
+    [self.view setFrame:CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y - keyboardFrame.size.height,
+                                   self.view.frame.size.width, self.view.frame.size.height)];
+    [UIView commitAnimations];
     
     _keyboardOffset = YES;
 }
 
-- (void)uiKeyboardDidHide:(NSNotification*)notification {
+- (void)uiKeyboardWillHide:(NSNotification*)notification {
     if (!_keyboardOffset) return;
     
-    NSDictionary* keyboardInfo = [notification userInfo];
-    NSValue* keyboardFrameBegin = [keyboardInfo valueForKey:UIKeyboardFrameBeginUserInfoKey];
-    CGRect keyboardFrame = [keyboardFrameBegin CGRectValue];
+    [self.view.layer removeAllAnimations];
     
-    CGRect frame = self.view.frame;
-    CGRect newFrame = CGRectMake(frame.origin.x, 
-                                 frame.origin.y + keyboardFrame.size.height,
-                                 frame.size.width, frame.size.height);
-    [self.view setFrame:newFrame];
+    NSDictionary* userInfo = [notification userInfo];
+    NSTimeInterval animationDuration;
+    UIViewAnimationCurve animationCurve;
+    CGRect keyboardFrame;
+    [[userInfo objectForKey:UIKeyboardAnimationCurveUserInfoKey] getValue:&animationCurve];
+    [[userInfo objectForKey:UIKeyboardAnimationDurationUserInfoKey] getValue:&animationDuration];
+    [[userInfo objectForKey:UIKeyboardFrameEndUserInfoKey] getValue:&keyboardFrame];
+    [UIView beginAnimations:@"wut" context:nil];
+    [UIView setAnimationDuration:animationDuration];
+    [UIView setAnimationCurve:animationCurve];
+    [UIView setAnimationDelegate:self];
+    [UIView setAnimationDidStopSelector: @selector(animationDidStop:finished:context:)];
+    [self.view setFrame:CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y + keyboardFrame.size.height,
+                                   self.view.frame.size.width, self.view.frame.size.height)];
+    [UIView commitAnimations];
+    
+    _animatingOut = YES;
+    _keyboardOffset = NO;
 }
 
 - (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag {
-    [self.view removeFromSuperview];
+    if (!_animatingOut) {
+        [self.view removeFromSuperview];
+    }
+}
+
+- (void)animationDidStop:(NSString *)animationID finished:(NSNumber *)finished context:(void *)context {
+    if ([animationID isEqualToString:@"wut"] && _animatingOut) {
+        _animatingOut = NO;
+        [self animateOut];
+    }
 }
 
 #pragma mark -
@@ -150,12 +178,13 @@
 #pragma mark UITextField Delegate
 
 - (BOOL)textFieldShouldReturn:(UITextField*)textField {
+    [textField resignFirstResponder]; // Do this first to animate correctly
+    
     Category *newCat = [[Category alloc] initAndRegisterWithName:textField.text andColor:[_activeCell color]];
     [_delegate categoryChooser:self didSelectCategory:newCat];
     [self sortCategories];
     
     [_categoryTableView reloadData];
-    [textField resignFirstResponder];
     return YES;
 }
 

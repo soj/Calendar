@@ -170,7 +170,7 @@
 
 - (BOOL)eventIsValid:(NSString*)eventId {
     Event *e = [_calendar eventWithId:eventId];
-    return !([e.title isEqualToString:DEFAULT_EVENT_TITLE] || [e.title isEqualToString:@""]);
+    return !(e.title == NULL || [e.title isEqualToString:DEFAULT_EVENT_TITLE] || [e.title isEqualToString:@""]);
 }
 
 #pragma mark -
