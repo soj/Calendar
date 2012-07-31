@@ -3,7 +3,7 @@
 #import "CategoryChooserCell.h"
 #import "Category.h"
 
-#define UI_CHOOSER_ANIM_DURATION    0.3
+#define UI_CHOOSER_ANIM_DURATION    0.2
 
 @class CategoryChooserController;
 
@@ -19,7 +19,6 @@
     CategoryChooserCell *_activeCell;
     
     BOOL _keyboardOffset;
-    BOOL _animatingOut;
 }
 
 @property (nonatomic, strong) IBOutlet UITableView *categoryTableView;
