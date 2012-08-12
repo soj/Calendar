@@ -512,14 +512,19 @@
     }
 }
 
-- (void)handleHorizontalPanOnEventBlock:(UIGestureRecognizer*)recognizer {
+- (void)handleHorizontalPanOnEventBlock:(UIPanGestureRecognizer*)recognizer {
     NSAssert(_activeEventBlock == [recognizer view], @"Only the active event block may receive this gesture");
-    float xLoc = [recognizer locationInView:_calendarDay].x;
+    float dX = [recognizer translationInView:_calendarDay].x;
     
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan: {
         }
         case UIGestureRecognizerStateChanged: {
+            [_activeEventBlock setDeletionProgress:dX];
+            if (_activeEventBlock.frame.size.width < UI_DELETION_WIDTH) {
+                [self deleteEventBlock:_activeEventBlock];
+            }
+            break;
         }
         case UIGestureRecognizerStateEnded: {
         }

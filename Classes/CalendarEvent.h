@@ -8,6 +8,7 @@
 #define UI_EVENT_DX             75.0
 #define UI_RIGHT_PADDING        5.0
 #define UI_EDGE_DRAG_PIXELS     35.0f
+#define UI_DELETION_WIDTH       50.0
 
 #define UI_HIGHLIGHT_LINE_SIZE  20.0
 #define UI_HIGHLIGHT_HEIGHT     25.0
@@ -67,6 +68,8 @@ typedef enum {
 	UITextView *_nameField;
 
     UIColor *_baseColor;
+    
+    float _deletionProgress;
 }
 
 @property (strong) id delegate;
@@ -79,6 +82,8 @@ typedef enum {
 
 - (BOOL)pointInsideTextView:(CGPoint)pt;
 - (BOOL)pointInsideCatView:(CGPoint)pt;
+
+- (void)setDeletionProgress:(float)dX;
 
 - (void)setNameFocus;
 - (void)setCategoryFocus;

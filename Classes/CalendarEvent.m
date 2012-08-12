@@ -99,7 +99,8 @@
     _isActive = isActive;
     
     if (!_isActive) {
-        _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor secondColor:UI_EVENT_BG_COLOR
+        _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor
+                                                               secondColor:UI_EVENT_BG_COLOR
                                                                    atRatio:UI_BOX_BG_WHITENESS].CGColor;
         [self animateAlphaOfLayer:_railLayer to:1.0];
         [self animateAlphaOfLayer:_categoryLayer to:0];
@@ -110,7 +111,8 @@
         [self animateOffsetToInactivePosition:_depthMask];
         [self animateOffsetToInactivePosition:_categoryLayer];
         
-        CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x + UI_DEPTH_BORDER_WIDTH - UI_HIGHLIGHT_HEIGHT - UI_BORDER_PADDING_X,
+        CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x + UI_DEPTH_BORDER_WIDTH -
+                                           UI_HIGHLIGHT_HEIGHT - UI_BORDER_PADDING_X,
                                            _nameField.layer.position.y + UI_DEPTH_BORDER_HEIGHT);
         [self animateOffsetOfLayer:_nameField.layer to:nameFieldPos];
         
@@ -127,7 +129,8 @@
         [self animateOffsetToActivePosition:_depthMask];
         [self animateOffsetToActivePosition:_categoryLayer];
         
-        CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x - UI_DEPTH_BORDER_WIDTH + UI_HIGHLIGHT_HEIGHT + UI_BORDER_PADDING_X,
+        CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x - UI_DEPTH_BORDER_WIDTH +
+                                           UI_HIGHLIGHT_HEIGHT + UI_BORDER_PADDING_X,
                                            _nameField.layer.position.y - UI_DEPTH_BORDER_HEIGHT);
         [self animateOffsetOfLayer:_nameField.layer to:nameFieldPos];
     }
@@ -140,7 +143,8 @@
     _categoryLayer.fillColor = [_baseColor CGColor];
     
     if (!_isActive) {
-        _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor secondColor:UI_EVENT_BG_COLOR
+        _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor
+                                                               secondColor:UI_EVENT_BG_COLOR
                                                                    atRatio:UI_BOX_BG_WHITENESS].CGColor;
     }
     
@@ -185,10 +189,11 @@
 
 - (CGRect)reframe {
     NSTimeInterval length = _endTime - _startTime;
+    float x = UI_EVENT_DX + _deletionProgress;
     float y = [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + UI_BORDER_MARGIN_Y;
-    float width = ([[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING);
+    float width = ([[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING - _deletionProgress);
     float height =  [[CalendarMath getInstance] pixelsPerHour] * length / SECONDS_PER_HOUR - UI_BORDER_MARGIN_Y * 2;
-    return CGRectMake(UI_EVENT_DX, y, MAX(width, 0), MAX(height, 0));
+    return CGRectMake(x, y, MAX(width, 0), MAX(height, 0));
 }
 
 - (void)reframeLayers {
@@ -197,7 +202,7 @@
                                     self.frame.size.height - UI_BORDER_PADDING_Y * 2)];
     
     [_boxLayer setFrame:CGRectMake(_boxLayer.frame.origin.x, _boxLayer.frame.origin.y,
-                                   _boxLayer.frame.size.width, self.frame.size.height)];
+                                   self.frame.size.width, self.frame.size.height)];
     
     _highlightLayer.frame = _boxLayer.frame;
     
@@ -214,6 +219,14 @@
                                   self.frame.size.height + UI_DEPTH_BORDER_HEIGHT);
     _depthMask.path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, _depthMask.frame.size.width,
                                                                   _depthMask.frame.size.height)].CGPath;
+}
+
+- (void)setDeletionProgress:(float)dX {
+    if (dX < 0) dX = 0;
+    
+    _deletionProgress = dX;
+    [self setFrame:[self reframe]];
+    [self reframeLayers];
 }
 
 - (BOOL)pointInsideTextView:(CGPoint)pt {
