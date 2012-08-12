@@ -45,12 +45,8 @@
         [self disableAnimationsOnLayer:_depthMask];
         
         _categoryLayer = [CAShapeLayer layer];
-        _categoryLayer.frame = CGRectMake(UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_PADDING,
-                                          UI_HIGHLIGHT_HEIGHT, UI_HIGHLIGHT_HEIGHT);
-        _categoryLayer.path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0,
-                                                                          _categoryLayer.frame.size.width,
-                                                                          _categoryLayer.frame.size.height)].CGPath;
-        _categoryLayer.opacity = 0;
+        _categoryLayer.frame = CGRectMake(UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_HEIGHT/2, UI_HIGHLIGHT_PADDING,
+                                          0, UI_HIGHLIGHT_HEIGHT);
         
         [self.layer addSublayer:_depthLayer];
         [self.layer addSublayer:_boxLayer];
@@ -102,14 +98,16 @@
         _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor
                                                                secondColor:UI_EVENT_BG_COLOR
                                                                    atRatio:UI_BOX_BG_WHITENESS].CGColor;
-        [self animateAlphaOfLayer:_railLayer to:1.0];
+        
+        [self animateBoundsOfLayer:_railLayer to:CGRectMake(_boxLayer.frame.size.width - UI_RAIL_COLOR_WIDTH, 0, UI_RAIL_COLOR_WIDTH, self.frame.size.height)];
+        [self animateOffsetOfLayer:_railLayer to:CGPointMake(_railLayer.position.x - UI_RAIL_COLOR_WIDTH/2 + UI_DEPTH_BORDER_WIDTH, _railLayer.position.y + UI_DEPTH_BORDER_HEIGHT)];
+        [self animateBoundsOfLayer:_categoryLayer to:CGRectMake(0, 0, 0, UI_HIGHLIGHT_HEIGHT)];
+        [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x - UI_HIGHLIGHT_HEIGHT + UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y + UI_DEPTH_BORDER_HEIGHT)];
         [self animateAlphaOfLayer:_categoryLayer to:0];
         
         [self animateOffsetToInactivePosition:_boxLayer];
         [self animateOffsetToInactivePosition:_highlightLayer];
-        [self animateOffsetToInactivePosition:_railLayer];
         [self animateOffsetToInactivePosition:_depthMask];
-        [self animateOffsetToInactivePosition:_categoryLayer];
         
         CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x + UI_DEPTH_BORDER_WIDTH -
                                            UI_HIGHLIGHT_HEIGHT - UI_BORDER_PADDING_X,
@@ -120,14 +118,16 @@
     } else {
         _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
         [self showDepthLayer];
-        [self animateAlphaOfLayer:_railLayer to:0];
+        
+        [self animateBoundsOfLayer:_railLayer to:CGRectMake(0, 0, 0, _railLayer.bounds.size.height)];
+        [self animateOffsetOfLayer:_railLayer to:CGPointMake(_railLayer.position.x + UI_RAIL_COLOR_WIDTH/2 - UI_DEPTH_BORDER_WIDTH, _railLayer.position.y - UI_DEPTH_BORDER_HEIGHT)];
+        [self animateBoundsOfLayer:_categoryLayer to:CGRectMake(0, 0, UI_HIGHLIGHT_HEIGHT, UI_HIGHLIGHT_HEIGHT)];
+        [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x + UI_HIGHLIGHT_HEIGHT - UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y - UI_DEPTH_BORDER_HEIGHT)];
         [self animateAlphaOfLayer:_categoryLayer to:1.0];
         
         [self animateOffsetToActivePosition:_boxLayer];
         [self animateOffsetToActivePosition:_highlightLayer];
-        [self animateOffsetToActivePosition:_railLayer];
         [self animateOffsetToActivePosition:_depthMask];
-        [self animateOffsetToActivePosition:_categoryLayer];
         
         CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x - UI_DEPTH_BORDER_WIDTH +
                                            UI_HIGHLIGHT_HEIGHT + UI_BORDER_PADDING_X,
@@ -140,7 +140,7 @@
     _baseColor = color;
     _boxLayer.borderColor = [_baseColor CGColor];
     _railLayer.backgroundColor = [_baseColor CGColor];
-    _categoryLayer.fillColor = [_baseColor CGColor];
+    _categoryLayer.backgroundColor = [_baseColor CGColor];
     
     if (!_isActive) {
         _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor
@@ -159,7 +159,8 @@
 - (void)setNameFocus {
     _hasFocus = YES;
     [_nameField setEditable:YES];
-	[_nameField becomeFirstResponder];
+    
+    [_nameField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:UI_ANIM_DURATION_RAISE];
 }
 
 - (void)setCategoryFocus {
@@ -206,8 +207,9 @@
     
     _highlightLayer.frame = _boxLayer.frame;
     
-    [_railLayer setFrame:CGRectMake(_railLayer.frame.origin.x, _railLayer.frame.origin.y,
-                                    UI_RAIL_COLOR_WIDTH, self.frame.size.height)];
+        [_railLayer removeAllAnimations];
+        [_railLayer setFrame:CGRectMake(_railLayer.frame.origin.x, _railLayer.frame.origin.y,
+                                    _railLayer.frame.size.width, self.frame.size.height)];
     
     [_depthLayer setFrame:CGRectMake(-UI_DEPTH_BORDER_WIDTH/2, -UI_DEPTH_BORDER_HEIGHT/2,
                                      self.frame.size.width, self.frame.size.height)];
@@ -260,6 +262,17 @@
     fadeIn.fillMode = kCAFillModeForwards;
     layer.opacity = alpha;
     [layer addAnimation:fadeIn forKey:@"opacity"];
+}
+
+- (void)animateBoundsOfLayer:(CALayer*)layer to:(CGRect)bounds {
+    CABasicAnimation *resize = [CABasicAnimation animationWithKeyPath:@"bounds"];
+    resize.fromValue = [NSValue valueWithCGRect:layer.bounds];
+    resize.toValue = [NSNumber valueWithCGRect:bounds];
+    resize.duration = UI_ANIM_DURATION_RAISE;
+    resize.removedOnCompletion = NO;
+    resize.fillMode = kCAFillModeForwards;
+    layer.bounds = bounds;
+    [layer addAnimation:resize forKey:@"bounds"];
 }
 
 - (void)animateOffsetOfLayer:(CALayer*)layer to:(CGPoint)pos {
