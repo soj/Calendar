@@ -135,7 +135,7 @@
 }
 
 - (NSArray*)getEventsBetweenStartTime:(NSTimeInterval)startTime andEndTime:(NSTimeInterval)endTime {
-    [self loadEKEventsBetweenStartTime:startTime andEndTime:endTime];
+    //[self loadEKEventsBetweenStartTime:startTime andEndTime:endTime];
     
     NSMutableArray *retEvents = [[NSMutableArray alloc] init];
     NSEnumerator *e = [_events objectEnumerator];
