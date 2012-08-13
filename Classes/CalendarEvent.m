@@ -99,8 +99,8 @@
                                                                secondColor:UI_EVENT_BG_COLOR
                                                                    atRatio:UI_BOX_BG_WHITENESS].CGColor;
         
-        [self animateBoundsOfLayer:_railLayer to:CGRectMake(_boxLayer.frame.size.width - UI_RAIL_COLOR_WIDTH, 0, UI_RAIL_COLOR_WIDTH, self.frame.size.height)];
-        [self animateOffsetOfLayer:_railLayer to:CGPointMake(_railLayer.position.x - UI_RAIL_COLOR_WIDTH/2 + UI_DEPTH_BORDER_WIDTH, _railLayer.position.y + UI_DEPTH_BORDER_HEIGHT)];
+        [self animateAlphaOfLayer:_railLayer to:1.0];
+
         [self animateBoundsOfLayer:_categoryLayer to:CGRectMake(0, 0, 0, UI_HIGHLIGHT_HEIGHT)];
         [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x - UI_HIGHLIGHT_HEIGHT + UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y + UI_DEPTH_BORDER_HEIGHT)];
         [self animateAlphaOfLayer:_categoryLayer to:0];
@@ -108,6 +108,7 @@
         [self animateOffsetToInactivePosition:_boxLayer];
         [self animateOffsetToInactivePosition:_highlightLayer];
         [self animateOffsetToInactivePosition:_depthMask];
+        [self animateOffsetToInactivePosition:_railLayer];
         
         CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x + UI_DEPTH_BORDER_WIDTH -
                                            UI_HIGHLIGHT_HEIGHT - UI_BORDER_PADDING_X,
@@ -119,8 +120,8 @@
         _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
         [self showDepthLayer];
         
-        [self animateBoundsOfLayer:_railLayer to:CGRectMake(0, 0, 0, _railLayer.bounds.size.height)];
-        [self animateOffsetOfLayer:_railLayer to:CGPointMake(_railLayer.position.x + UI_RAIL_COLOR_WIDTH/2 - UI_DEPTH_BORDER_WIDTH, _railLayer.position.y - UI_DEPTH_BORDER_HEIGHT)];
+        [self animateAlphaOfLayer:_railLayer to:0];
+
         [self animateBoundsOfLayer:_categoryLayer to:CGRectMake(0, 0, UI_HIGHLIGHT_HEIGHT, UI_HIGHLIGHT_HEIGHT)];
         [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x + UI_HIGHLIGHT_HEIGHT - UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y - UI_DEPTH_BORDER_HEIGHT)];
         [self animateAlphaOfLayer:_categoryLayer to:1.0];
@@ -128,6 +129,7 @@
         [self animateOffsetToActivePosition:_boxLayer];
         [self animateOffsetToActivePosition:_highlightLayer];
         [self animateOffsetToActivePosition:_depthMask];
+        [self animateOffsetToActivePosition:_railLayer];
         
         CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x - UI_DEPTH_BORDER_WIDTH +
                                            UI_HIGHLIGHT_HEIGHT + UI_BORDER_PADDING_X,
