@@ -45,7 +45,8 @@
         [self disableAnimationsOnLayer:_depthMask];
         
         _categoryLayer = [CAShapeLayer layer];
-        _categoryLayer.frame = CGRectMake(UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_HEIGHT/2, UI_HIGHLIGHT_PADDING,
+        _categoryLayer.anchorPoint = CGPointZero;
+        _categoryLayer.frame = CGRectMake(UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_PADDING,
                                           0, UI_HIGHLIGHT_HEIGHT);
         
         [self.layer addSublayer:_depthLayer];
@@ -80,11 +81,13 @@
 
 - (void)setStartTime:(NSTimeInterval)startTime {
 	[super setStartTime:startTime];
+    [_boxLayer removeAllAnimations];
     [self setFrame:[self reframe]];
 }
 
 - (void)setEndTime:(NSTimeInterval)endTime {
 	[super setEndTime:endTime];
+    [_boxLayer removeAllAnimations];
     [self setFrame:[self reframe]];
 }
 
@@ -101,8 +104,7 @@
         [self animateAlphaOfLayer:_railLayer to:1.0];
 
         [self animateBoundsOfLayer:_categoryLayer to:CGRectMake(0, 0, 0, UI_HIGHLIGHT_HEIGHT)];
-        [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x - UI_HIGHLIGHT_HEIGHT + UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y + UI_DEPTH_BORDER_HEIGHT)];
-        [self animateAlphaOfLayer:_categoryLayer to:0];
+        [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x + UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y + UI_DEPTH_BORDER_HEIGHT)];
         
         [self animateOffsetToInactivePosition:_boxLayer];
         [self animateOffsetToInactivePosition:_highlightLayer];
@@ -122,8 +124,7 @@
         [self animateAlphaOfLayer:_railLayer to:0];
 
         [self animateBoundsOfLayer:_categoryLayer to:CGRectMake(0, 0, UI_HIGHLIGHT_HEIGHT, UI_HIGHLIGHT_HEIGHT)];
-        [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x + UI_HIGHLIGHT_HEIGHT - UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y - UI_DEPTH_BORDER_HEIGHT)];
-        [self animateAlphaOfLayer:_categoryLayer to:1.0];
+        [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x - UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y - UI_DEPTH_BORDER_HEIGHT)];
         
         [self animateOffsetToActivePosition:_boxLayer];
         [self animateOffsetToActivePosition:_highlightLayer];
@@ -213,8 +214,7 @@
     
     _highlightLayer.frame = _boxLayer.frame;
     
-        [_railLayer removeAllAnimations];
-        [_railLayer setFrame:CGRectMake(_railLayer.frame.origin.x, _railLayer.frame.origin.y,
+    [_railLayer setFrame:CGRectMake(_railLayer.frame.origin.x, _railLayer.frame.origin.y,
                                     _railLayer.frame.size.width, self.frame.size.height)];
     
     [_depthLayer setFrame:CGRectMake(-UI_DEPTH_BORDER_WIDTH/2, -UI_DEPTH_BORDER_HEIGHT/2,
@@ -233,6 +233,7 @@
     if (dX < 0) dX = 0;
     
     _deletionProgress = dX;
+    [_boxLayer removeAllAnimations];
     [self setFrame:[self reframe]];
 }
 
