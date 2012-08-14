@@ -239,11 +239,15 @@
 - (void)nullDeletionProgress {
     _deletionProgress = 0;
     
-    [UIView animateWithDuration:0.5
+    [self animateBoundsOfLayer:_boxLayer to:CGRectMake(0, 0,
+                                                       [self reframe].size.width, [self reframe].size.height)];
+    [self animateOffsetOfLayer:_boxLayer to:CGPointMake([self reframe].size.width/2 - UI_DEPTH_BORDER_WIDTH, [self reframe].size.height/2 - UI_DEPTH_BORDER_HEIGHT)];
+    
+    [UIView animateWithDuration:UI_ANIM_DURATION_RAISE
                      animations:^{
                          self.frame = [self reframe];
                      }
-     ];
+    ];
 }
 
 - (BOOL)pointInsideTextView:(CGPoint)pt {
@@ -286,6 +290,7 @@
     resize.duration = UI_ANIM_DURATION_RAISE;
     resize.removedOnCompletion = NO;
     resize.fillMode = kCAFillModeForwards;
+    resize.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     layer.bounds = bounds;
     [layer addAnimation:resize forKey:@"bounds"];
 }
@@ -296,6 +301,7 @@
     moveBox.toValue = [NSValue valueWithCGPoint:pos];
     moveBox.duration = UI_ANIM_DURATION_RAISE;
     moveBox.fillMode = kCAFillModeForwards;
+    moveBox.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     [layer setPosition:pos];
     [layer addAnimation:moveBox forKey:@"activeInactive"];
 }
