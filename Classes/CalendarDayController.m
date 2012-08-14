@@ -388,6 +388,8 @@
     
     _eventBlockLongPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self
                                                                          action:@selector(handlePanOrLongPressOnEventBlock:)];
+    _eventBlockLongPress.minimumPressDuration = 0;
+    _eventBlockLongPress.cancelsTouchesInView = NO;
     _eventBlockLongPress.delegate = self;
 }
 
@@ -518,15 +520,21 @@
     
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan: {
+            // Cancel other gestures to focus on deletion
+            [_eventBlockLongPress cancel];
+            [_eventBlockPan cancel];
+            [_activeEventBlock highlightArea:kHighlightDelete];
         }
         case UIGestureRecognizerStateChanged: {
             [_activeEventBlock setDeletionProgress:dX];
-            if (_activeEventBlock.frame.size.width < UI_DELETION_WIDTH) {
-                [self deleteEventBlock:_activeEventBlock];
-            }
             break;
         }
         case UIGestureRecognizerStateEnded: {
+            if (_activeEventBlock.frame.size.width < UI_DELETION_WIDTH) {
+                [self deleteEventBlock:_activeEventBlock];
+            } else {
+                [_activeEventBlock nullDeletionProgress];
+            }
         }
         default:
             break;
@@ -538,10 +546,17 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)recognizer {
     CGPoint translation = [_eventBlockHorizontalPan translationInView:_activeEventBlock];
-    if ((recognizer == _eventBlockHorizontalPan && fabs(translation.y) >= fabs(translation.x)) ||
-        (recognizer == _eventBlockPan && fabs(translation.x) > fabs(translation.y))) {
+    CGPoint position = [recognizer locationInView:_activeEventBlock];
+    
+    if ((position.x < 50 && recognizer != _eventBlockHorizontalPan) ||
+        (position.x > 50 && recognizer == _eventBlockHorizontalPan)) {
         return NO;
     }
+    
+/*    if ((recognizer == _eventBlockHorizontalPan && fabs(translation.y) >= fabs(translation.x)) ||
+        (recognizer == _eventBlockPan && fabs(translation.x) > fabs(translation.y))) {
+        return NO;
+    }*/
     
     if (recognizer == _eventBlockPan || recognizer == _eventBlockLongPress) {
         if (![self beginDragForYPosInActiveEventBlock:[recognizer locationInView:_activeEventBlock].y]) {
@@ -549,6 +564,13 @@
         }
     }
     return YES;
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+    if ([gestureRecognizer isKindOfClass:[UILongPressGestureRecognizer class]]) {
+        return YES;
+    }
+    return NO;
 }
 
 #pragma mark -

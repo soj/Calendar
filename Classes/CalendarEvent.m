@@ -69,8 +69,9 @@
         [_nameField setFrame:CGRectMake(UI_BORDER_PADDING_X, UI_BORDER_PADDING_Y,
                                         [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
                                         MIN(UI_NAME_FIELD_HEIGHT, self.frame.size.height))];
+        
+        [_nameField setUserInteractionEnabled:NO];
                 
-        [self reframeLayers];
         [self setIsActive:NO];
     }
 		
@@ -80,13 +81,11 @@
 - (void)setStartTime:(NSTimeInterval)startTime {
 	[super setStartTime:startTime];
     [self setFrame:[self reframe]];
-    [self reframeLayers];
 }
 
 - (void)setEndTime:(NSTimeInterval)endTime {
 	[super setEndTime:endTime];
     [self setFrame:[self reframe]];
-    [self reframeLayers];
 }
 
 - (void)setIsActive:(BOOL)isActive {
@@ -160,6 +159,7 @@
 
 - (void)setNameFocus {
     _hasFocus = YES;
+    [_nameField setUserInteractionEnabled:YES];
     [_nameField setEditable:YES];
     
     [_nameField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:UI_ANIM_DURATION_RAISE];
@@ -173,6 +173,7 @@
 - (void)resignFocus {
     _hasFocus = NO;
     [_nameField resignFirstResponder];
+    [_nameField setUserInteractionEnabled:NO];
     [_nameField setEditable:NO];
     [_delegate dismissCategoryChooser];
 }
@@ -192,14 +193,17 @@
 
 - (CGRect)reframe {
     NSTimeInterval length = _endTime - _startTime;
-    float x = UI_EVENT_DX + _deletionProgress;
+    float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
+    float deletionProg = MIN(_deletionProgress, natWidth - UI_DELETION_WIDTH);
+    float x = UI_EVENT_DX + deletionProg;
     float y = [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + UI_BORDER_MARGIN_Y;
-    float width = ([[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING - _deletionProgress);
-    float height =  [[CalendarMath getInstance] pixelsPerHour] * length / SECONDS_PER_HOUR - UI_BORDER_MARGIN_Y * 2;
+    float width = (natWidth - deletionProg);
+    width = MAX(width, UI_DELETION_WIDTH);
+    float height = [[CalendarMath getInstance] pixelsPerHour] * length / SECONDS_PER_HOUR - UI_BORDER_MARGIN_Y * 2;
     return CGRectMake(x, y, MAX(width, 0), MAX(height, 0));
 }
 
-- (void)reframeLayers {
+- (void)layoutSubviews {
     [_nameField setFrame:CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
                                     [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
                                     self.frame.size.height - UI_BORDER_PADDING_Y * 2)];
@@ -230,7 +234,16 @@
     
     _deletionProgress = dX;
     [self setFrame:[self reframe]];
-    [self reframeLayers];
+}
+
+- (void)nullDeletionProgress {
+    _deletionProgress = 0;
+    
+    [UIView animateWithDuration:0.5
+                     animations:^{
+                         self.frame = [self reframe];
+                     }
+     ];
 }
 
 - (BOOL)pointInsideTextView:(CGPoint)pt {

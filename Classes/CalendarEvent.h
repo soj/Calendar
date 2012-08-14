@@ -46,7 +46,8 @@
 typedef enum {
     kHighlightTop,
     kHighlightBottom,
-    kHighlightAll
+    kHighlightAll,
+    kHighlightDelete
 } HighlightArea;
 
 @interface CalendarEvent : CalendarEntity <UITextViewDelegate> {
@@ -84,6 +85,7 @@ typedef enum {
 - (BOOL)pointInsideCatView:(CGPoint)pt;
 
 - (void)setDeletionProgress:(float)dX;
+- (void)nullDeletionProgress;
 
 - (void)setNameFocus;
 - (void)setCategoryFocus;
