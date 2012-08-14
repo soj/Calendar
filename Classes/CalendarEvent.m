@@ -18,6 +18,8 @@
         _boxLayer = [_sublayerDelegate makeLayerWithName:@"Box"];
         _boxLayer.borderWidth = UI_BOX_BORDER_WIDTH;
         _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
+        _boxLayer.anchorPoint = CGPointZero;
+        _boxLayer.position = CGPointZero;
         [self disableAnimationsOnLayer:_boxLayer];
         
         _highlightLayer = [_sublayerDelegate makeLayerWithName:@"Highlight"];
@@ -30,7 +32,7 @@
                                       UI_RAIL_COLOR_WIDTH, self.frame.size.height);
         [self disableAnimationsOnLayer:_railLayer];
         
-        _depthLayer = [_sublayerDelegate makeLayerWithName:@"Depth"];
+        _depthLayer = [_sublayerDelegate makeAnimatableLayerWithName:@"Depth"];
         [_depthLayer setNeedsDisplayOnBoundsChange:YES];
         [self disableAnimationsOnLayer:_depthLayer];
         _depthLayer.hidden = YES;
@@ -140,6 +142,7 @@
 
 - (void)setColor:(UIColor*)color {
     _baseColor = color;
+    _darkenedColor = [_baseColor colorByDarkeningColor:UI_DEPTH_BORDER_DARKEN];
     _boxLayer.borderColor = [_baseColor CGColor];
     _railLayer.backgroundColor = [_baseColor CGColor];
     _categoryLayer.backgroundColor = [_baseColor CGColor];
@@ -221,6 +224,7 @@
                                      self.frame.size.width, self.frame.size.height)];
     [_depthLayer setBounds:CGRectMake(0, 0, _depthLayer.frame.size.width + UI_DEPTH_BORDER_WIDTH,
                                       _depthLayer.frame.size.height + UI_DEPTH_BORDER_HEIGHT)];
+    _depthLayer.customprop = _depthLayer.bounds.size.width;
     
     _depthMask.frame = CGRectMake(_depthMask.frame.origin.x, _depthMask.frame.origin.y,
                                   self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
@@ -234,21 +238,29 @@
     
     _deletionProgress = dX;
     [_boxLayer removeAllAnimations];
+    [_depthLayer removeAllAnimations];
     [self setFrame:[self reframe]];
 }
 
 - (void)nullDeletionProgress {
     _deletionProgress = 0;
     
+    _boxLayer.position = CGPointMake([self reframe].size.width - _boxLayer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, -UI_DEPTH_BORDER_HEIGHT);
+    NSLog(@"%f", _boxLayer.bounds.size.width);
+    [self animateOffsetOfLayer:_boxLayer to:CGPointMake(-UI_DEPTH_BORDER_WIDTH, -UI_DEPTH_BORDER_HEIGHT)];
+    
     [self animateBoundsOfLayer:_boxLayer to:CGRectMake(0, 0,
                                                        [self reframe].size.width, [self reframe].size.height)];
-    [self animateOffsetOfLayer:_boxLayer to:CGPointMake([self reframe].size.width/2 - UI_DEPTH_BORDER_WIDTH, [self reframe].size.height/2 - UI_DEPTH_BORDER_HEIGHT)];
     
-    [UIView animateWithDuration:UI_ANIM_DURATION_RAISE
-                     animations:^{
-                         self.frame = [self reframe];
-                     }
-    ];
+    CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"customprop"];
+    anim.duration = UI_ANIM_DURATION_RAISE;
+    anim.fromValue = [NSNumber numberWithFloat:_depthLayer.customprop];
+    anim.toValue = [NSNumber numberWithFloat:[self reframe].size.width + UI_DEPTH_BORDER_WIDTH];
+    anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    [_depthLayer addAnimation:anim forKey:@"dummy"];
+    _depthLayer.customprop = [self reframe].size.width + UI_DEPTH_BORDER_WIDTH;
+    
+    self.frame = [self reframe];
 }
 
 - (BOOL)pointInsideTextView:(CGPoint)pt {
@@ -379,23 +391,26 @@
 #pragma mark Drawing
 
 - (void)drawDepthLayer:(CALayer*)layer inContext:(CGContextRef)context {
+    float width = ((AnimatableLayer*)layer).customprop;
+    float x = self.frame.size.width + UI_DEPTH_BORDER_WIDTH - width;
+    
     CGPoint rightLines[] = {
-        CGPointMake(layer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, 0),
-        CGPointMake(layer.bounds.size.width, UI_DEPTH_BORDER_HEIGHT),
-        CGPointMake(layer.bounds.size.width, layer.bounds.size.height),
-        CGPointMake(layer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT),
-        CGPointMake(layer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, 0)
+        CGPointMake(x + width - UI_DEPTH_BORDER_WIDTH, 0),
+        CGPointMake(x + width, UI_DEPTH_BORDER_HEIGHT),
+        CGPointMake(x + width, layer.bounds.size.height),
+        CGPointMake(x + width - UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT),
+        CGPointMake(x + width - UI_DEPTH_BORDER_WIDTH, 0),
     };
     CGContextAddLines(context, rightLines, 5);
-    CGContextSetFillColorWithColor(context, [[_baseColor colorByDarkeningColor:UI_DEPTH_BORDER_DARKEN] CGColor]);
+    CGContextSetFillColorWithColor(context, [_darkenedColor CGColor]);
     CGContextFillPath(context);
     
     CGPoint bottomLines[] = {
-        CGPointMake(layer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT),
-        CGPointMake(layer.bounds.size.width, layer.bounds.size.height),
-        CGPointMake(UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height),
-        CGPointMake(0, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT),
-        CGPointMake(layer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT)
+        CGPointMake(x + width - UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT),
+        CGPointMake(x + width, layer.bounds.size.height),
+        CGPointMake(x + UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height),
+        CGPointMake(x, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT),
+        CGPointMake(x + width - UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT)
     };
     CGContextAddLines(context, bottomLines, 5);
     CGContextSetFillColorWithColor(context, [_baseColor CGColor]);

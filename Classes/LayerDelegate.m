@@ -1,5 +1,17 @@
 #import "LayerDelegate.h"
 
+@implementation AnimatableLayer
+
+@synthesize customprop;
+
++ (BOOL)needsDisplayForKey:(NSString *)key{
+    if ([key isEqualToString:@"customprop"])
+        return YES;
+    return [super needsDisplayForKey:key];
+}
+
+@end
+
 @implementation LayerDelegate
 
 - (id)initWithView:(UIView*)view {
@@ -20,6 +32,16 @@
 
 - (CALayer*)makeLayerWithName:(NSString*)name {
     CALayer *newLayer = [CALayer layer];
+    newLayer.name = name;
+    newLayer.delegate = self;
+    newLayer.frame = CGRectMake(0, 0, _view.frame.size.width, _view.frame.size.height);
+    newLayer.contentsScale = _view.layer.contentsScale;
+    [newLayer setNeedsDisplay];
+    return newLayer;
+}
+
+- (AnimatableLayer*)makeAnimatableLayerWithName:(NSString*)name {
+    CALayer *newLayer = [[AnimatableLayer alloc] init];
     newLayer.name = name;
     newLayer.delegate = self;
     newLayer.frame = CGRectMake(0, 0, _view.frame.size.width, _view.frame.size.height);
