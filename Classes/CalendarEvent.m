@@ -198,10 +198,9 @@
 - (CGRect)reframe {
     NSTimeInterval length = _endTime - _startTime;
     float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
-    float deletionProg = MIN(_deletionProgress, natWidth - UI_DELETION_WIDTH);
-    float x = UI_EVENT_DX + deletionProg;
+    float x = UI_EVENT_DX + _deletionProgress;
     float y = [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + UI_BORDER_MARGIN_Y;
-    float width = (natWidth - deletionProg);
+    float width = (natWidth - _deletionProgress);
     width = MAX(width, UI_DELETION_WIDTH);
     float height = [[CalendarMath getInstance] pixelsPerHour] * length / SECONDS_PER_HOUR - UI_BORDER_MARGIN_Y * 2;
     return CGRectMake(x, y, MAX(width, 0), MAX(height, 0));
@@ -236,13 +235,23 @@
 - (void)setDeletionProgress:(float)dX {
     if (dX < 0) dX = 0;
     
-    _deletionProgress = dX;
+    float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
+    _deletionProgress = MIN(dX, natWidth - UI_DELETION_WIDTH);
+    
     [_boxLayer removeAllAnimations];
     [_depthLayer removeAllAnimations];
     [self setFrame:[self reframe]];
 }
 
 - (void)nullDeletionProgress {
+    CGPoint catStartPos = CGPointMake(_deletionProgress + UI_HIGHLIGHT_PADDING - UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y);
+    CABasicAnimation *catAnim = [CABasicAnimation animationWithKeyPath:@"position"];
+    catAnim.duration = UI_ANIM_DURATION_RAISE;
+    catAnim.fromValue = [NSValue valueWithCGPoint:catStartPos];
+    catAnim.toValue = [NSValue valueWithCGPoint:_categoryLayer.position];
+    catAnim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
+    [_categoryLayer addAnimation:catAnim forKey:@"dummy"];
+    
     _deletionProgress = 0;
     
     _boxLayer.position = CGPointMake([self reframe].size.width - _boxLayer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, -UI_DEPTH_BORDER_HEIGHT);
