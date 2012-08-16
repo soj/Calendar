@@ -40,9 +40,10 @@ static NSString *animPropName = @"animValue";
 - (CALayer*)prepareAnimLayer:(CALayer*)layer withName:(NSString*)name {
     layer.name = name;
     layer.delegate = self;
-    layer.frame = CGRectMake(0, 0, _view.frame.size.width, _view.frame.size.height);
     layer.contentsScale = _view.layer.contentsScale;
     layer.anchorPoint = CGPointZero;
+    layer.position = CGPointZero;
+    layer.bounds = CGRectMake(0, 0, _view.frame.size.width, _view.frame.size.height);
     [layer setNeedsDisplay];
     return layer;
 }

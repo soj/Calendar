@@ -18,8 +18,6 @@
         _boxLayer = [_sublayerDelegate makeLayerWithName:@"Box"];
         _boxLayer.borderWidth = UI_BOX_BORDER_WIDTH;
         _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
-        _boxLayer.anchorPoint = CGPointZero;
-        _boxLayer.position = CGPointZero;
         [self disableAnimationsOnLayer:_boxLayer];
         
         _highlightLayer = [_sublayerDelegate makeLayerWithName:@"Highlight"];
