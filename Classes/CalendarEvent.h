@@ -5,6 +5,10 @@
 #import "CategoryChooserController.h"
 #import "LayerDelegate.h"
 
+#import "CalendarEventLayer.h"
+#import "BoxLayer.h"
+#import "DepthLayer.h"
+
 #define UI_EVENT_DX             75.0
 #define UI_RIGHT_PADDING        5.0
 #define UI_EDGE_DRAG_PIXELS     35.0f
@@ -17,8 +21,6 @@
 
 #define UI_BOX_BORDER_WIDTH     1.0
 #define UI_RAIL_COLOR_WIDTH     22.0
-#define UI_DEPTH_BORDER_WIDTH   7.0
-#define UI_DEPTH_BORDER_HEIGHT  5.0
 
 #define UI_BOX_BG_WHITENESS     0.9
 #define UI_DEPTH_BORDER_DARKEN  0.8
@@ -56,13 +58,19 @@ typedef enum {
     kBlockStateDeleting
 } BlockState;
 
+@interface RailLayer : CalendarEventLayer
+@end
+
+@interface DepthMaskLayer : CalendarEventLayer
+@end
+
 @interface CalendarEvent : CalendarEntity <UITextViewDelegate> {
     id<CalendarEventDelegate> _delegate;
     
     CALayer *_boxLayer;
     CALayer *_highlightLayer;
     CALayer *_railLayer;
-    ComplexAnimLayer *_depthLayer;
+    DepthLayer *_depthLayer;
     CAShapeLayer *_depthMask;
     CAShapeLayer *_categoryLayer;
 
@@ -75,7 +83,6 @@ typedef enum {
 	UITextView *_nameField;
 
     UIColor *_baseColor;
-    UIColor *_darkenedColor;
     
     float _deletionProgress;
 }

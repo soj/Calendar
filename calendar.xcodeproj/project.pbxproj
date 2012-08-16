@@ -34,6 +34,10 @@
 		5232E36D159BE4CE000AE3BC /* CalendarMath.m in Sources */ = {isa = PBXBuildFile; fileRef = 5232E36C159BE4CE000AE3BC /* CalendarMath.m */; };
 		52529D7915A51889009D5468 /* UIColor+Tools.m in Sources */ = {isa = PBXBuildFile; fileRef = 52529D7815A51889009D5468 /* UIColor+Tools.m */; };
 		52529D7C15A57DD4009D5468 /* CalendarSubEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 52529D7B15A57DD4009D5468 /* CalendarSubEvent.m */; };
+		52779B5215DD91B10053BFF7 /* LayerAnimationFactory.m in Sources */ = {isa = PBXBuildFile; fileRef = 52779B5115DD91B10053BFF7 /* LayerAnimationFactory.m */; };
+		52779B5715DD94760053BFF7 /* BoxLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52779B5615DD94760053BFF7 /* BoxLayer.m */; };
+		52779B5A15DD949A0053BFF7 /* DepthLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52779B5915DD94990053BFF7 /* DepthLayer.m */; };
+		52779B5D15DD95200053BFF7 /* CalendarEventLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52779B5C15DD95200053BFF7 /* CalendarEventLayer.m */; };
 		52B1642C15B0179300269D10 /* Background.png in Resources */ = {isa = PBXBuildFile; fileRef = 52B1642B15B0179300269D10 /* Background.png */; };
 		52B1642E15B23DDA00269D10 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52B1642D15B23DD900269D10 /* QuartzCore.framework */; };
 		52B1643115B247BC00269D10 /* LayerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B1643015B247BC00269D10 /* LayerDelegate.m */; };
@@ -85,6 +89,14 @@
 		52529D7815A51889009D5468 /* UIColor+Tools.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "UIColor+Tools.m"; path = "Classes/UIColor+Tools.m"; sourceTree = "<group>"; };
 		52529D7A15A57DD3009D5468 /* CalendarSubEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarSubEvent.h; sourceTree = "<group>"; };
 		52529D7B15A57DD4009D5468 /* CalendarSubEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarSubEvent.m; sourceTree = "<group>"; };
+		52779B5015DD91B10053BFF7 /* LayerAnimationFactory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayerAnimationFactory.h; sourceTree = "<group>"; };
+		52779B5115DD91B10053BFF7 /* LayerAnimationFactory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LayerAnimationFactory.m; sourceTree = "<group>"; };
+		52779B5515DD94760053BFF7 /* BoxLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoxLayer.h; sourceTree = "<group>"; };
+		52779B5615DD94760053BFF7 /* BoxLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BoxLayer.m; sourceTree = "<group>"; };
+		52779B5815DD94990053BFF7 /* DepthLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DepthLayer.h; sourceTree = "<group>"; };
+		52779B5915DD94990053BFF7 /* DepthLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DepthLayer.m; sourceTree = "<group>"; };
+		52779B5B15DD95200053BFF7 /* CalendarEventLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarEventLayer.h; sourceTree = "<group>"; };
+		52779B5C15DD95200053BFF7 /* CalendarEventLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarEventLayer.m; sourceTree = "<group>"; };
 		52B1642B15B0179300269D10 /* Background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Background.png; sourceTree = "<group>"; };
 		52B1642D15B23DD900269D10 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		52B1642F15B247BB00269D10 /* LayerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayerDelegate.h; sourceTree = "<group>"; };
@@ -130,18 +142,19 @@
 		2968FE55158D60E100CBB5BE /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				52779B5415DD94550053BFF7 /* CalendarEvent */,
 				299DF98515195A3700958CF4 /* CalendarDay.h */,
 				299DF98615195A3700958CF4 /* CalendarDay.m */,
 				294DCC8A152C16BD00637E0A /* CalendarEntity.h */,
 				294DCC8B152C16BD00637E0A /* CalendarEntity.m */,
-				29D98123151C14BC00B1E158 /* CalendarEvent.h */,
-				29D98124151C14BC00B1E158 /* CalendarEvent.m */,
 				52529D7A15A57DD3009D5468 /* CalendarSubEvent.h */,
 				52529D7B15A57DD4009D5468 /* CalendarSubEvent.m */,
 				29C1CF7B158EBEBF00842914 /* CategoryChooserCell.h */,
 				29C1CF7C158EBEBF00842914 /* CategoryChooserCell.m */,
 				52B1642F15B247BB00269D10 /* LayerDelegate.h */,
 				52B1643015B247BC00269D10 /* LayerDelegate.m */,
+				52779B5015DD91B10053BFF7 /* LayerAnimationFactory.h */,
+				52779B5115DD91B10053BFF7 /* LayerAnimationFactory.m */,
 			);
 			name = Views;
 			sourceTree = "<group>";
@@ -235,6 +248,21 @@
 				2968FE63158D61CD00CBB5BE /* EventKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		52779B5415DD94550053BFF7 /* CalendarEvent */ = {
+			isa = PBXGroup;
+			children = (
+				29D98123151C14BC00B1E158 /* CalendarEvent.h */,
+				29D98124151C14BC00B1E158 /* CalendarEvent.m */,
+				52779B5B15DD95200053BFF7 /* CalendarEventLayer.h */,
+				52779B5C15DD95200053BFF7 /* CalendarEventLayer.m */,
+				52779B5515DD94760053BFF7 /* BoxLayer.h */,
+				52779B5615DD94760053BFF7 /* BoxLayer.m */,
+				52779B5815DD94990053BFF7 /* DepthLayer.h */,
+				52779B5915DD94990053BFF7 /* DepthLayer.m */,
+			);
+			name = CalendarEvent;
 			sourceTree = "<group>";
 		};
 		52B1642A15B0179300269D10 /* Images */ = {
@@ -332,6 +360,10 @@
 				52529D7C15A57DD4009D5468 /* CalendarSubEvent.m in Sources */,
 				5222D78F15A9867000D473A6 /* UIGestureRecognizer+Tools.m in Sources */,
 				52B1643115B247BC00269D10 /* LayerDelegate.m in Sources */,
+				52779B5215DD91B10053BFF7 /* LayerAnimationFactory.m in Sources */,
+				52779B5715DD94760053BFF7 /* BoxLayer.m in Sources */,
+				52779B5A15DD949A0053BFF7 /* DepthLayer.m in Sources */,
+				52779B5D15DD95200053BFF7 /* CalendarEventLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -3,6 +3,13 @@
 #import "CalendarEvent.h"
 #import "Category.h"
 #import "CalendarMath.h"
+#import "LayerAnimationFactory.h"
+
+@implementation RailLayer
+@end
+
+@implementation DepthMaskLayer
+@end
 
 @implementation CalendarEvent
 
@@ -30,10 +37,9 @@
                                       UI_RAIL_COLOR_WIDTH, self.frame.size.height);
         [self disableAnimationsOnLayer:_railLayer];
         
-        _depthLayer = [_sublayerDelegate makeComplexAnimLayerWithName:@"Depth"];
-        [_depthLayer setNeedsDisplayOnBoundsChange:YES];
-        [self disableAnimationsOnLayer:_depthLayer];
-        _depthLayer.hidden = YES;
+        _depthLayer = [[DepthLayer alloc] initWithParent:self.layer];
+        [LayerAnimationFactory animate:_depthLayer toFrame:[_depthLayer defaultFrame]];
+        [self.layer addSublayer:_depthLayer];
         
         _depthMask = [CAShapeLayer layer];
         _depthMask.fillColor = [[UIColor blackColor] CGColor];
@@ -49,7 +55,6 @@
         _categoryLayer.frame = CGRectMake(UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_PADDING,
                                           0, UI_HIGHLIGHT_HEIGHT);
         
-        [self.layer addSublayer:_depthLayer];
         [self.layer addSublayer:_boxLayer];
         [self.layer addSublayer:_highlightLayer];
         [self.layer addSublayer:_railLayer];
@@ -140,7 +145,8 @@
 
 - (void)setColor:(UIColor*)color {
     _baseColor = color;
-    _darkenedColor = [_baseColor colorByDarkeningColor:UI_DEPTH_BORDER_DARKEN];
+    _depthLayer.baseColor = color;
+    _depthLayer.darkenedColor = [color colorByDarkeningColor:UI_DEPTH_BORDER_DARKEN];
     _boxLayer.borderColor = [_baseColor CGColor];
     _railLayer.backgroundColor = [_baseColor CGColor];
     _categoryLayer.backgroundColor = [_baseColor CGColor];
@@ -151,7 +157,7 @@
                                                                    atRatio:UI_BOX_BG_WHITENESS].CGColor;
     }
     
-    [self setNeedsDisplay];
+    [self setNeedsDisplay]; 
     [_depthLayer setNeedsDisplay];
 }
 
@@ -204,21 +210,6 @@
     return CGRectMake(x, y, MAX(width, 0), MAX(height, 0));
 }
 
-- (CGRect)reframeName:(BlockState)state {
-}
-
-- (CGRect)reframeBox:(BlockState)state {
-}
-
-- (CGRect)reframeRail:(BlockState)state {
-}
-
-- (CGRect)reframeDepth:(BlockState)state {
-}
-
-- (CGRect)reframeDepthMask:(BlockState)state {
-}
-
 - (void)layoutSubviews {
     [_nameField setFrame:CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
                                     [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
@@ -236,7 +227,7 @@
                                      self.frame.size.width, self.frame.size.height)];
     [_depthLayer setBounds:CGRectMake(0, 0, _depthLayer.frame.size.width + UI_DEPTH_BORDER_WIDTH,
                                       _depthLayer.frame.size.height + UI_DEPTH_BORDER_HEIGHT)];
-    _depthLayer.animValue = _depthLayer.bounds.size.width;
+    _depthLayer.depthWidth = _depthLayer.bounds.size.width;
     
     _depthMask.frame = CGRectMake(_depthMask.frame.origin.x, _depthMask.frame.origin.y,
                                   self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
@@ -276,11 +267,11 @@
     
     CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:ComplexAnimLayer.animPropName];
     anim.duration = UI_ANIM_DURATION_RAISE;
-    anim.fromValue = [NSNumber numberWithFloat:_depthLayer.animValue];
+    anim.fromValue = [NSNumber numberWithFloat:_depthLayer.depthWidth];
     anim.toValue = [NSNumber numberWithFloat:[self reframe].size.width + UI_DEPTH_BORDER_WIDTH];
     anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     [_depthLayer addAnimation:anim forKey:@"dummy"];
-    _depthLayer.animValue = [self reframe].size.width + UI_DEPTH_BORDER_WIDTH;
+    _depthLayer.depthWidth = [self reframe].size.width + UI_DEPTH_BORDER_WIDTH;
     
     self.frame = [self reframe];
 }
@@ -411,33 +402,6 @@
 
 #pragma mark -
 #pragma mark Drawing
-
-- (void)drawDepthLayer:(ComplexAnimLayer*)layer inContext:(CGContextRef)context {
-    float width = layer.animValue;
-    float x = self.frame.size.width + UI_DEPTH_BORDER_WIDTH - width;
-    
-    CGPoint rightLines[] = {
-        CGPointMake(x + width - UI_DEPTH_BORDER_WIDTH, 0),
-        CGPointMake(x + width, UI_DEPTH_BORDER_HEIGHT),
-        CGPointMake(x + width, layer.bounds.size.height),
-        CGPointMake(x + width - UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT),
-        CGPointMake(x + width - UI_DEPTH_BORDER_WIDTH, 0),
-    };
-    CGContextAddLines(context, rightLines, 5);
-    CGContextSetFillColorWithColor(context, [_darkenedColor CGColor]);
-    CGContextFillPath(context);
-    
-    CGPoint bottomLines[] = {
-        CGPointMake(x + width - UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT),
-        CGPointMake(x + width, layer.bounds.size.height),
-        CGPointMake(x + UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height),
-        CGPointMake(x, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT),
-        CGPointMake(x + width - UI_DEPTH_BORDER_WIDTH, layer.bounds.size.height - UI_DEPTH_BORDER_HEIGHT)
-    };
-    CGContextAddLines(context, bottomLines, 5);
-    CGContextSetFillColorWithColor(context, [_baseColor CGColor]);
-    CGContextFillPath(context);
-}
 
 - (void)drawUpperHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
     CGPoint points[] = {
