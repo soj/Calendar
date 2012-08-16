@@ -50,13 +50,19 @@ typedef enum {
     kHighlightDelete
 } HighlightArea;
 
+typedef enum {
+    kBlockStateNormal,
+    kBlockStateActive,
+    kBlockStateDeleting
+} BlockState;
+
 @interface CalendarEvent : CalendarEntity <UITextViewDelegate> {
     id<CalendarEventDelegate> _delegate;
     
     CALayer *_boxLayer;
     CALayer *_highlightLayer;
     CALayer *_railLayer;
-    AnimatableLayer *_depthLayer;
+    ComplexAnimLayer *_depthLayer;
     CAShapeLayer *_depthMask;
     CAShapeLayer *_categoryLayer;
 

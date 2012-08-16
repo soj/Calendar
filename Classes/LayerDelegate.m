@@ -1,12 +1,19 @@
 #import "LayerDelegate.h"
 
-@implementation AnimatableLayer
+@implementation ComplexAnimLayer
 
-@synthesize customprop;
+@synthesize animValue;
+
+static NSString *animPropName = @"animValue";
+
++ (NSString *)animPropName {
+    return animPropName;
+}
 
 + (BOOL)needsDisplayForKey:(NSString *)key{
-    if ([key isEqualToString:@"customprop"])
+    if ([key isEqualToString:animPropName]) {
         return YES;
+    }
     return [super needsDisplayForKey:key];
 }
 
@@ -30,23 +37,24 @@
     }
 }
 
-- (CALayer*)makeLayerWithName:(NSString*)name {
-    CALayer *newLayer = [CALayer layer];
-    newLayer.name = name;
-    newLayer.delegate = self;
-    newLayer.frame = CGRectMake(0, 0, _view.frame.size.width, _view.frame.size.height);
-    newLayer.contentsScale = _view.layer.contentsScale;
-    [newLayer setNeedsDisplay];
-    return newLayer;
+- (CALayer*)prepareAnimLayer:(CALayer*)layer withName:(NSString*)name {
+    layer.name = name;
+    layer.delegate = self;
+    layer.frame = CGRectMake(0, 0, _view.frame.size.width, _view.frame.size.height);
+    layer.contentsScale = _view.layer.contentsScale;
+    layer.anchorPoint = CGPointZero;
+    [layer setNeedsDisplay];
+    return layer;
 }
 
-- (AnimatableLayer*)makeAnimatableLayerWithName:(NSString*)name {
-    CALayer *newLayer = [[AnimatableLayer alloc] init];
-    newLayer.name = name;
-    newLayer.delegate = self;
-    newLayer.frame = CGRectMake(0, 0, _view.frame.size.width, _view.frame.size.height);
-    newLayer.contentsScale = _view.layer.contentsScale;
-    [newLayer setNeedsDisplay];
+- (CALayer*)makeLayerWithName:(NSString*)name {
+    CALayer *newLayer = [CALayer layer];
+    return [self prepareAnimLayer:newLayer withName:name];
+}
+
+- (ComplexAnimLayer*)makeComplexAnimLayerWithName:(NSString*)name {
+    ComplexAnimLayer *newLayer = [[ComplexAnimLayer alloc] init];
+    [self prepareAnimLayer:newLayer withName:name];
     return newLayer;
 }
 

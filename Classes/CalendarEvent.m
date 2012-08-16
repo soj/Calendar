@@ -32,7 +32,7 @@
                                       UI_RAIL_COLOR_WIDTH, self.frame.size.height);
         [self disableAnimationsOnLayer:_railLayer];
         
-        _depthLayer = [_sublayerDelegate makeAnimatableLayerWithName:@"Depth"];
+        _depthLayer = [_sublayerDelegate makeComplexAnimLayerWithName:@"Depth"];
         [_depthLayer setNeedsDisplayOnBoundsChange:YES];
         [self disableAnimationsOnLayer:_depthLayer];
         _depthLayer.hidden = YES;
@@ -206,6 +206,21 @@
     return CGRectMake(x, y, MAX(width, 0), MAX(height, 0));
 }
 
+- (CGRect)reframeName:(BlockState)state {
+}
+
+- (CGRect)reframeBox:(BlockState)state {
+}
+
+- (CGRect)reframeRail:(BlockState)state {
+}
+
+- (CGRect)reframeDepth:(BlockState)state {
+}
+
+- (CGRect)reframeDepthMask:(BlockState)state {
+}
+
 - (void)layoutSubviews {
     [_nameField setFrame:CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
                                     [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
@@ -219,11 +234,11 @@
     [_railLayer setFrame:CGRectMake(_railLayer.frame.origin.x, _railLayer.frame.origin.y,
                                     _railLayer.frame.size.width, self.frame.size.height)];
     
-    [_depthLayer setFrame:CGRectMake(-UI_DEPTH_BORDER_WIDTH/2, -UI_DEPTH_BORDER_HEIGHT/2,
+    [_depthLayer setFrame:CGRectMake(-UI_DEPTH_BORDER_WIDTH, -UI_DEPTH_BORDER_HEIGHT,
                                      self.frame.size.width, self.frame.size.height)];
     [_depthLayer setBounds:CGRectMake(0, 0, _depthLayer.frame.size.width + UI_DEPTH_BORDER_WIDTH,
                                       _depthLayer.frame.size.height + UI_DEPTH_BORDER_HEIGHT)];
-    _depthLayer.customprop = _depthLayer.bounds.size.width;
+    _depthLayer.animValue = _depthLayer.bounds.size.width;
     
     _depthMask.frame = CGRectMake(_depthMask.frame.origin.x, _depthMask.frame.origin.y,
                                   self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
@@ -261,13 +276,13 @@
     [self animateBoundsOfLayer:_boxLayer to:CGRectMake(0, 0,
                                                        [self reframe].size.width, [self reframe].size.height)];
     
-    CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"customprop"];
+    CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:ComplexAnimLayer.animPropName];
     anim.duration = UI_ANIM_DURATION_RAISE;
-    anim.fromValue = [NSNumber numberWithFloat:_depthLayer.customprop];
+    anim.fromValue = [NSNumber numberWithFloat:_depthLayer.animValue];
     anim.toValue = [NSNumber numberWithFloat:[self reframe].size.width + UI_DEPTH_BORDER_WIDTH];
     anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     [_depthLayer addAnimation:anim forKey:@"dummy"];
-    _depthLayer.customprop = [self reframe].size.width + UI_DEPTH_BORDER_WIDTH;
+    _depthLayer.animValue = [self reframe].size.width + UI_DEPTH_BORDER_WIDTH;
     
     self.frame = [self reframe];
 }
@@ -399,8 +414,8 @@
 #pragma mark -
 #pragma mark Drawing
 
-- (void)drawDepthLayer:(CALayer*)layer inContext:(CGContextRef)context {
-    float width = ((AnimatableLayer*)layer).customprop;
+- (void)drawDepthLayer:(ComplexAnimLayer*)layer inContext:(CGContextRef)context {
+    float width = layer.animValue;
     float x = self.frame.size.width + UI_DEPTH_BORDER_WIDTH - width;
     
     CGPoint rightLines[] = {
