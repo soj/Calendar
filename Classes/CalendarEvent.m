@@ -38,7 +38,7 @@
         [self disableAnimationsOnLayer:_railLayer];
         
         _depthLayer = [[DepthLayer alloc] initWithParent:self.layer];
-        [LayerAnimationFactory animate:_depthLayer toFrame:[_depthLayer defaultFrame]];
+        [_depthLayer setFrame:[_depthLayer defaultFrame]];
         [self.layer addSublayer:_depthLayer];
         
         _depthMask = [CAShapeLayer layer];
@@ -222,13 +222,7 @@
     
     [_railLayer setFrame:CGRectMake(_railLayer.frame.origin.x, _railLayer.frame.origin.y,
                                     _railLayer.frame.size.width, self.frame.size.height)];
-    
-    [_depthLayer setFrame:CGRectMake(-UI_DEPTH_BORDER_WIDTH, -UI_DEPTH_BORDER_HEIGHT,
-                                     self.frame.size.width, self.frame.size.height)];
-    [_depthLayer setBounds:CGRectMake(0, 0, _depthLayer.frame.size.width + UI_DEPTH_BORDER_WIDTH,
-                                      _depthLayer.frame.size.height + UI_DEPTH_BORDER_HEIGHT)];
-    _depthLayer.depthWidth = _depthLayer.bounds.size.width;
-    
+        
     _depthMask.frame = CGRectMake(_depthMask.frame.origin.x, _depthMask.frame.origin.y,
                                   self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
                                   self.frame.size.height + UI_DEPTH_BORDER_HEIGHT);
@@ -238,13 +232,15 @@
 
 - (void)setDeletionProgress:(float)dX {
     if (dX < 0) dX = 0;
-    
+        
     float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
     _deletionProgress = MIN(dX, natWidth - UI_DELETION_WIDTH);
     
+    [_depthLayer setFrame:[_depthLayer squashFrameWithProgress:_deletionProgress]];
+    
     [_boxLayer removeAllAnimations];
     [_depthLayer removeAllAnimations];
-    [self setFrame:[self reframe]];
+//    [self setFrame:[self reframe]];
 }
 
 - (void)nullDeletionProgress {
@@ -265,7 +261,7 @@
     [self animateBoundsOfLayer:_boxLayer to:CGRectMake(0, 0,
                                                        [self reframe].size.width, [self reframe].size.height)];
     
-    CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:ComplexAnimLayer.animPropName];
+    CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"depthWidth"];
     anim.duration = UI_ANIM_DURATION_RAISE;
     anim.fromValue = [NSNumber numberWithFloat:_depthLayer.depthWidth];
     anim.toValue = [NSNumber numberWithFloat:[self reframe].size.width + UI_DEPTH_BORDER_WIDTH];
@@ -274,6 +270,7 @@
     _depthLayer.depthWidth = [self reframe].size.width + UI_DEPTH_BORDER_WIDTH;
     
     self.frame = [self reframe];
+    [_depthLayer setFrame:[_depthLayer activeFrame]];
 }
 
 - (BOOL)pointInsideTextView:(CGPoint)pt {

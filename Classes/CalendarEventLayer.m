@@ -7,6 +7,10 @@
 - (id)initWithParent:(CALayer*)parentLayer {
     if (self == [super init]) {
         self.parent = parentLayer;
+        
+        self.contentsScale = parent.contentsScale;
+        self.anchorPoint = CGPointZero;
+        
         [self disableAnims];
     }
     return self;
@@ -16,6 +20,7 @@
     NSMutableDictionary *disableAnims = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
                                          [NSNull null], @"bounds",
                                          [NSNull null], @"position",
+                                         [NSNull null], @"frame",
                                          nil];
     self.actions = disableAnims;
 }

@@ -1,24 +1,5 @@
 #import "LayerDelegate.h"
 
-@implementation ComplexAnimLayer
-
-@synthesize animValue;
-
-static NSString *animPropName = @"animValue";
-
-+ (NSString *)animPropName {
-    return animPropName;
-}
-
-+ (BOOL)needsDisplayForKey:(NSString *)key{
-    if ([key isEqualToString:animPropName]) {
-        return YES;
-    }
-    return [super needsDisplayForKey:key];
-}
-
-@end
-
 @implementation LayerDelegate
 
 - (id)initWithView:(UIView*)view {
@@ -51,12 +32,6 @@ static NSString *animPropName = @"animValue";
 - (CALayer*)makeLayerWithName:(NSString*)name {
     CALayer *newLayer = [CALayer layer];
     return [self prepareAnimLayer:newLayer withName:name];
-}
-
-- (ComplexAnimLayer*)makeComplexAnimLayerWithName:(NSString*)name {
-    ComplexAnimLayer *newLayer = [[ComplexAnimLayer alloc] init];
-    [self prepareAnimLayer:newLayer withName:name];
-    return newLayer;
 }
 
 @end

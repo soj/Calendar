@@ -6,8 +6,8 @@
 
 - (id)initWithParent:(CALayer *)parent {
     if (self == [super initWithParent:parent]) {
+        self.name = @"Depth";
         [self setNeedsDisplayOnBoundsChange:YES];
-        self.hidden = YES;
     }
     return self;
 }
@@ -19,26 +19,33 @@
     return [super needsDisplayForKey:key];
 }
 
-- (CGRect)defaultFrame {
-    return CGRectMake(-UI_DEPTH_BORDER_WIDTH, -UI_DEPTH_BORDER_HEIGHT,
-                      self.parent.bounds.size.width, self.parent.bounds.size.height);
-    
-/*    [_depthLayer setFrame:CGRectMake(-UI_DEPTH_BORDER_WIDTH, -UI_DEPTH_BORDER_HEIGHT,
-                                     self.frame.size.width, self.frame.size.height)];
-    [_depthLayer setBounds:CGRectMake(0, 0, _depthLayer.frame.size.width + UI_DEPTH_BORDER_WIDTH,
-                                      _depthLayer.frame.size.height + UI_DEPTH_BORDER_HEIGHT)];*/
+- (void)setFrame:(CGRect)frame {
+    [super setFrame:frame];
+    // Depth width is necessary to make the layer redraw at every frame of animation
+    self.depthWidth = frame.size.width;
 }
 
-- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)finished {
-    if (finished) {
-        self.depthWidth = self.bounds.size.width;
-    }
+- (CGRect)defaultFrame {
+    return CGRectMake(-UI_DEPTH_BORDER_WIDTH, -UI_DEPTH_BORDER_HEIGHT,
+                      self.parent.bounds.size.width + UI_DEPTH_BORDER_WIDTH,
+                      self.parent.bounds.size.height + UI_DEPTH_BORDER_HEIGHT);
+}
+
+- (CGRect)activeFrame {
+    return [self defaultFrame];
+}
+
+- (CGRect)squashFrameWithProgress:(float)prog {
+    CGRect def = [self defaultFrame];
+    return CGRectMake(def.origin.x + prog, def.origin.y, def.size.width - prog, def.size.height);
 }
 
 - (void)drawInContext:(CGContextRef)context {
-    float width = self.depthWidth;
-    float height = self.bounds.size.height;
-    float x = self.bounds.size.width + UI_DEPTH_BORDER_WIDTH - width;
+    int width = floorf(self.depthWidth);
+    int height = floorf(self.bounds.size.height);
+    int x = floorf(self.bounds.size.width - width);
+    
+    CGContextClearRect(context, self.bounds);
     
     CGPoint rightLines[] = {
         CGPointMake(x + width - UI_DEPTH_BORDER_WIDTH, 0),

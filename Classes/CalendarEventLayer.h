@@ -2,8 +2,8 @@
 
 @interface CalendarEventLayer : CALayer
 
-@property (nonatomic, retain) UIColor *baseColor;
-@property (nonatomic, retain) CALayer *parent;
+@property (nonatomic, strong) UIColor *baseColor;
+@property (nonatomic, strong) CALayer *parent;
 
 - (id)initWithParent:(CALayer*)parent;
 

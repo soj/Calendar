@@ -6,6 +6,6 @@
 @interface DepthLayer : CalendarEventLayer
 
 @property (nonatomic) float depthWidth;
-@property (nonatomic, retain) UIColor *darkenedColor;
+@property (nonatomic, strong) UIColor *darkenedColor;
 
 @end
