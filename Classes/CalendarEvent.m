@@ -15,7 +15,7 @@
     
     if (self) {
         _delegate = delegate;
-        
+                
         _boxLayer = [[BoxLayer alloc] initWithParent:self.layer];
         [_boxLayer setFrame:[_boxLayer defaultFrame]];
 
@@ -27,23 +27,20 @@
         [_depthMask setFrame:[_depthMask defaultFrame]];
         _depthLayer.mask = _depthMask;
         
-        _highlightLayer = [[HighlightLayer alloc] initWithParent:self.layer];
+        _highlightLayer = [[HighlightBoxLayer alloc] initWithParent:self.layer];
         [_highlightLayer setFrame:[_highlightLayer defaultFrame]];
         _highlightLayer.hidden = YES;
 
         _railLayer = [[RailLayer alloc] initWithParent:self.layer];
         [_railLayer setFrame:[_railLayer defaultFrame]];
-                
-        _categoryLayer = [CAShapeLayer layer];
-        _categoryLayer.anchorPoint = CGPointZero;
-        _categoryLayer.frame = CGRectMake(UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_PADDING,
-                                          0, UI_HIGHLIGHT_HEIGHT);
+        
+        _categoryLayer = [[CategoryLayer alloc] initWithParent:self.layer];
+        [_categoryLayer setFrame:[_categoryLayer defaultFrame]];
         
         [self.layer addSublayer:_boxLayer];
         [self.layer addSublayer:_depthLayer];
         [self.layer addSublayer:_highlightLayer];
         [self.layer addSublayer:_railLayer];
-        
         [self.layer addSublayer:_categoryLayer];
 
         _nameField = [[UITextView alloc] init];
@@ -71,13 +68,11 @@
 
 - (void)setStartTime:(NSTimeInterval)startTime {
 	[super setStartTime:startTime];
-    [self removeAllAnimations];
     [self setFrame:[self reframe]];
 }
 
 - (void)setEndTime:(NSTimeInterval)endTime {
 	[super setEndTime:endTime];
-    [self removeAllAnimations];
     [self setFrame:[self reframe]];
 }
 
@@ -87,19 +82,19 @@
     _isActive = isActive;
     
     if (!_isActive) {
+        [self.layer.sublayers enumerateObjectsUsingBlock:^(CalendarEventLayer* layer, 
+                                                           NSUInteger idx, BOOL *stop) {
+            if ([layer isKindOfClass:CalendarEventLayer.class]) {
+                [LayerAnimationFactory animate:layer toFrame:[layer defaultFrame]];
+            }
+        }];
+        [LayerAnimationFactory animate:_depthMask toFrame:[_depthMask defaultFrame]];
+        [LayerAnimationFactory animate:_railLayer toAlpha:1.0];
+        
         _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor
                                                                secondColor:UI_EVENT_BG_COLOR
                                                                    atRatio:UI_BOX_BG_WHITENESS].CGColor;
         
-        [self animateBoundsOfLayer:_categoryLayer to:CGRectMake(0, 0, 0, UI_HIGHLIGHT_HEIGHT)];
-        [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x + UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y + UI_DEPTH_BORDER_HEIGHT)];
-        
-        [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer defaultFrame]];
-        [LayerAnimationFactory animate:_highlightLayer toFrame:[_highlightLayer defaultFrame]];
-        [LayerAnimationFactory animate:_railLayer toFrame:[_railLayer defaultFrame]];
-        [LayerAnimationFactory animate:_depthMask toFrame:[_depthMask defaultFrame]];
-        
-        [LayerAnimationFactory animate:_railLayer toAlpha:1.0];
                 
         CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x + UI_DEPTH_BORDER_WIDTH -
                                            UI_HIGHLIGHT_HEIGHT - UI_BOX_BORDER_PADDING_Y,
@@ -108,18 +103,17 @@
         
         [self performSelector:@selector(hideDepthLayer) withObject:self afterDelay:UI_ANIM_DURATION_RAISE];
     } else {
+        [self.layer.sublayers enumerateObjectsUsingBlock:^(CalendarEventLayer* layer, 
+                                                           NSUInteger idx, BOOL *stop) {
+            if ([layer isKindOfClass:CalendarEventLayer.class]) {
+                [LayerAnimationFactory animate:layer toFrame:[layer activeFrame]];
+            }
+        }];
+        [LayerAnimationFactory animate:_depthMask toFrame:[_depthMask activeFrame]];
+        [LayerAnimationFactory animate:_railLayer toAlpha:0];
+        
         _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
         [self showDepthLayer];
-        
-        [self animateBoundsOfLayer:_categoryLayer to:CGRectMake(0, 0, UI_HIGHLIGHT_HEIGHT, UI_HIGHLIGHT_HEIGHT)];
-        [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x - UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y - UI_DEPTH_BORDER_HEIGHT)];
-        
-        [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer activeFrame]];
-        [LayerAnimationFactory animate:_highlightLayer toFrame:[_highlightLayer activeFrame]];
-        [LayerAnimationFactory animate:_railLayer toFrame:[_railLayer activeFrame]];
-        [LayerAnimationFactory animate:_depthMask toFrame:[_depthMask activeFrame]];
-        
-        [LayerAnimationFactory animate:_railLayer toAlpha:0];
                 
         CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x - UI_DEPTH_BORDER_WIDTH +
                                            UI_HIGHLIGHT_HEIGHT + UI_BOX_BORDER_PADDING_Y,
@@ -184,14 +178,6 @@
 #pragma mark -
 #pragma mark Framing Helpers
 
-- (void)removeAllAnimations {
-    [_boxLayer removeAllAnimations];
-    [_depthLayer removeAllAnimations];
-    [_depthMask removeAllAnimations];
-    [_highlightLayer removeAllAnimations];
-    [_railLayer removeAllAnimations];
-}
-
 - (CGRect)reframe {
     NSTimeInterval length = _endTime - _startTime;
     float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
@@ -204,23 +190,19 @@
 }
 
 - (void)layoutSubviews {
-    if (_deletionProgress) {
-        [_boxLayer setFrame:[_boxLayer squashFrameWithProgress:_deletionProgress]];
-        [_depthLayer setFrame:[_depthLayer squashFrameWithProgress:_deletionProgress]];
-        [_highlightLayer setFrame:[_highlightLayer squashFrameWithProgress:_deletionProgress]];
-    } else if (_isActive) {
-        [_boxLayer setFrame:[_boxLayer activeFrame]];
-        [_depthLayer setFrame:[_depthLayer activeFrame]];
-        [_highlightLayer setFrame:[_highlightLayer activeFrame]];
-        [_railLayer setFrame:[_railLayer activeFrame]];
-        [_depthMask setFrame:[_depthMask activeFrame]];
-    } else {
-        [_boxLayer setFrame:[_boxLayer defaultFrame]];
-        [_depthLayer setFrame:[_depthLayer defaultFrame]];
-        [_highlightLayer setFrame:[_highlightLayer defaultFrame]];
-        [_railLayer setFrame:[_railLayer defaultFrame]];
-        [_depthMask setFrame:[_depthMask defaultFrame]];
-    }
+    [self.layer.sublayers enumerateObjectsUsingBlock:^(CalendarEventLayer* layer, 
+                                                       NSUInteger idx, BOOL *stop) {
+        if ([layer isKindOfClass:CalendarEventLayer.class]) {
+            if (_deletionProgress) {
+                [layer setFrame:[layer squashFrameWithProgress:_deletionProgress]];
+            } else if (_isActive) {
+                [layer setFrame:[layer activeFrame]];
+            } else {
+                [layer setFrame:[layer defaultFrame]];
+            }
+        }
+    }];
+    [_depthMask setFrame:(_isActive ? [_depthMask activeFrame] : [_depthMask defaultFrame])];
     
     [_nameField setFrame:CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
                                     [self frame].size.width - UI_BOX_BORDER_PADDING_Y * 2 - UI_RAIL_COLOR_WIDTH,
@@ -231,7 +213,6 @@
     if (dX < 0) dX = 0;
     float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
     _deletionProgress = MIN(dX, natWidth - UI_DELETION_WIDTH);
-    [self removeAllAnimations];
     [self layoutSubviews];
 }
 
@@ -247,6 +228,7 @@
     _deletionProgress = 0;
 
     [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer activeFrame]];
+    [LayerAnimationFactory animate:_categoryLayer toFrame:[_categoryLayer activeFrame]];
     
     CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"depthWidth"];
     anim.duration = UI_ANIM_DURATION_RAISE;
@@ -259,13 +241,13 @@
     [_depthLayer setFrame:[_depthLayer activeFrame]];
 }
 
-- (BOOL)pointInsideTextView:(CGPoint)pt {
+- (BOOL)isPointInsideTextView:(CGPoint)pt {
     CGRect rect = CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
                              _nameField.contentSize.width, _nameField.contentSize.height);
     return CGRectContainsPoint(rect, pt);
 }
 
-- (BOOL)pointInsideCatView:(CGPoint)pt {
+- (BOOL)isPointInsideCatView:(CGPoint)pt {
     return CGRectContainsPoint(_categoryLayer.frame, pt);
 }
 
@@ -281,18 +263,6 @@
     _highlightLayer.hidden = YES;
 }
 
-- (void)animateBoundsOfLayer:(CALayer*)layer to:(CGRect)bounds {
-    CABasicAnimation *resize = [CABasicAnimation animationWithKeyPath:@"bounds"];
-    resize.fromValue = [NSValue valueWithCGRect:layer.bounds];
-    resize.toValue = [NSNumber valueWithCGRect:bounds];
-    resize.duration = UI_ANIM_DURATION_RAISE;
-    resize.removedOnCompletion = NO;
-    resize.fillMode = kCAFillModeForwards;
-    resize.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    layer.bounds = bounds;
-    [layer addAnimation:resize forKey:@"bounds"];
-}
-
 - (void)animateOffsetOfLayer:(CALayer*)layer to:(CGPoint)pos {
     CABasicAnimation *moveBox = [CABasicAnimation animationWithKeyPath:@"position"];
     moveBox.fromValue = [NSValue valueWithCGPoint:layer.position];
@@ -306,9 +276,12 @@
 
 - (void)setNeedsDisplay {
     [super setNeedsDisplay];
-    [_depthLayer setNeedsDisplay];
-    [_highlightLayer setNeedsDisplay];
     [_depthMask setNeedsDisplay];
+    [self.layer.sublayers enumerateObjectsUsingBlock:^(CALayer* layer, NSUInteger idx, BOOL *stop) {
+        if ([layer isKindOfClass:CalendarEventLayer.class]) {
+            [layer setNeedsDisplay];
+        }
+    }];
 }
 
 #pragma mark -

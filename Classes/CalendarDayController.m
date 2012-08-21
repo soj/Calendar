@@ -425,9 +425,9 @@
 - (void)handleTapOnEventBlock:(UITapGestureRecognizer*)recognizer {
     CGPoint pt = [recognizer locationInView:_activeEventBlock];
     if ([recognizer view] == _activeEventBlock) {
-        if ([_activeEventBlock pointInsideTextView:pt]) {
+        if ([_activeEventBlock isPointInsideTextView:pt]) {
             [_activeEventBlock setNameFocus];
-        } else if ([_activeEventBlock pointInsideCatView:pt]) {
+        } else if ([_activeEventBlock isPointInsideCatView:pt]) {
             [_activeEventBlock setCategoryFocus];
         } else if ([_activeEventBlock hasFocus]) {
             [_activeEventBlock resignFocus];

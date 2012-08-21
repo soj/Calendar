@@ -12,7 +12,6 @@
     resize.fromValue = [NSValue valueWithCGRect:layer.bounds];
     resize.toValue = [NSNumber valueWithCGRect:bounds];
     resize.duration = UI_ANIM_DURATION_RAISE;
-    resize.removedOnCompletion = NO;
     resize.fillMode = kCAFillModeForwards;
     resize.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     layer.bounds = bounds;
@@ -29,7 +28,7 @@
     moveBox.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     layer.position = pos;
     moveBox.delegate = layer;
-    [layer addAnimation:moveBox forKey:@"activeInactive"];
+    [layer addAnimation:moveBox forKey:@"position"];
 }
 
 + (void)animate:(CALayer *)layer toAlpha:(float)alpha {
@@ -37,7 +36,6 @@
     fadeIn.fromValue = [NSNumber numberWithFloat:layer.opacity];
     fadeIn.toValue = [NSNumber numberWithFloat:alpha];
     fadeIn.duration = UI_ANIM_DURATION_RAISE;
-    fadeIn.removedOnCompletion = NO;
     fadeIn.fillMode = kCAFillModeForwards;
     layer.opacity = alpha;
     [layer addAnimation:fadeIn forKey:@"opacity"];    

@@ -1,7 +1,7 @@
 #import "HighlightLayer.h"
 #import "UIColor+Tools.h"
 
-@implementation HighlightLayer
+@implementation HighlightBoxLayer
 
 @synthesize highlightArea;
 

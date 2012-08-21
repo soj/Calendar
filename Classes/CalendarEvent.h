@@ -11,6 +11,7 @@
 #import "HighlightLayer.h"
 #import "RailLayer.h"
 #import "DepthMaskLayer.h"
+#import "CategoryLayer.h"
 
 #define UI_EVENT_DX             75.0
 #define UI_RIGHT_PADDING        5.0
@@ -34,13 +35,13 @@
 
 @interface CalendarEvent : CalendarEntity <UITextViewDelegate> {
     id<CalendarEventDelegate> _delegate;
-    
+        
     BoxLayer *_boxLayer;
-    HighlightLayer *_highlightLayer;
+    HighlightBoxLayer *_highlightLayer;
     RailLayer *_railLayer;
     DepthLayer *_depthLayer;
     DepthMaskLayer *_depthMask;
-    CAShapeLayer *_categoryLayer;
+    CategoryLayer *_categoryLayer;
 
     BOOL _hasFocus;
     BOOL _isActive;
@@ -62,8 +63,8 @@
 - (id)initWithBaseTime:(NSTimeInterval)baseTime startTime:(NSTimeInterval)startTime
                endTime:(NSTimeInterval)endTime andDelegate:(id<CalendarEventDelegate>)delegate;
 
-- (BOOL)pointInsideTextView:(CGPoint)pt;
-- (BOOL)pointInsideCatView:(CGPoint)pt;
+- (BOOL)isPointInsideTextView:(CGPoint)pt;
+- (BOOL)isPointInsideCatView:(CGPoint)pt;
 
 - (void)setDeletionProgress:(float)dX;
 - (void)nullDeletionProgress;
