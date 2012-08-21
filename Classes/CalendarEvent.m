@@ -23,22 +23,17 @@
         [_depthLayer setFrame:[_depthLayer defaultFrame]];
         _depthLayer.hidden = YES;
         
+        _depthMask = [[DepthMaskLayer alloc] initWithParent:self.layer];
+        [_depthMask setFrame:[_depthMask defaultFrame]];
+        _depthLayer.mask = _depthMask;
+        
         _highlightLayer = [[HighlightLayer alloc] initWithParent:self.layer];
         [_highlightLayer setFrame:[_highlightLayer defaultFrame]];
         _highlightLayer.hidden = YES;
 
         _railLayer = [[RailLayer alloc] initWithParent:self.layer];
         [_railLayer setFrame:[_railLayer defaultFrame]];
-        
-        _depthMask = [CAShapeLayer layer];
-        _depthMask.fillColor = [[UIColor blackColor] CGColor];
-        _depthMask.frame = CGRectMake(UI_DEPTH_BORDER_WIDTH, UI_DEPTH_BORDER_HEIGHT + UI_BOX_BORDER_WIDTH,
-                                      self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
-                                      self.frame.size.height + UI_DEPTH_BORDER_HEIGHT);
-        _depthMask.path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, _depthMask.frame.size.width,
-                                                                      _depthMask.frame.size.height)].CGPath;
-        [self disableAnimationsOnLayer:_depthMask];
-        
+                
         _categoryLayer = [CAShapeLayer layer];
         _categoryLayer.anchorPoint = CGPointZero;
         _categoryLayer.frame = CGRectMake(UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_PADDING,
@@ -50,7 +45,6 @@
         [self.layer addSublayer:_railLayer];
         
         [self.layer addSublayer:_categoryLayer];
-        _depthLayer.mask = _depthMask;
 
         _nameField = [[UITextView alloc] init];
         [_nameField setFont:UI_NAME_FONT];
@@ -103,10 +97,10 @@
         [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer defaultFrame]];
         [LayerAnimationFactory animate:_highlightLayer toFrame:[_highlightLayer defaultFrame]];
         [LayerAnimationFactory animate:_railLayer toFrame:[_railLayer defaultFrame]];
+        [LayerAnimationFactory animate:_depthMask toFrame:[_depthMask defaultFrame]];
+        
         [LayerAnimationFactory animate:_railLayer toAlpha:1.0];
-        
-        [self animateOffsetToInactivePosition:_depthMask];
-        
+                
         CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x + UI_DEPTH_BORDER_WIDTH -
                                            UI_HIGHLIGHT_HEIGHT - UI_BOX_BORDER_PADDING_Y,
                                            _nameField.layer.position.y + UI_DEPTH_BORDER_HEIGHT);
@@ -123,10 +117,10 @@
         [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer activeFrame]];
         [LayerAnimationFactory animate:_highlightLayer toFrame:[_highlightLayer activeFrame]];
         [LayerAnimationFactory animate:_railLayer toFrame:[_railLayer activeFrame]];
+        [LayerAnimationFactory animate:_depthMask toFrame:[_depthMask activeFrame]];
+        
         [LayerAnimationFactory animate:_railLayer toAlpha:0];
-        
-        [self animateOffsetToActivePosition:_depthMask];
-        
+                
         CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x - UI_DEPTH_BORDER_WIDTH +
                                            UI_HIGHLIGHT_HEIGHT + UI_BOX_BORDER_PADDING_Y,
                                            _nameField.layer.position.y - UI_DEPTH_BORDER_HEIGHT);
@@ -193,7 +187,9 @@
 - (void)removeAllAnimations {
     [_boxLayer removeAllAnimations];
     [_depthLayer removeAllAnimations];
+    [_depthMask removeAllAnimations];
     [_highlightLayer removeAllAnimations];
+    [_railLayer removeAllAnimations];
 }
 
 - (CGRect)reframe {
@@ -216,22 +212,19 @@
         [_boxLayer setFrame:[_boxLayer activeFrame]];
         [_depthLayer setFrame:[_depthLayer activeFrame]];
         [_highlightLayer setFrame:[_highlightLayer activeFrame]];
+        [_railLayer setFrame:[_railLayer activeFrame]];
+        [_depthMask setFrame:[_depthMask activeFrame]];
     } else {
         [_boxLayer setFrame:[_boxLayer defaultFrame]];
         [_depthLayer setFrame:[_depthLayer defaultFrame]];
         [_highlightLayer setFrame:[_highlightLayer defaultFrame]];
         [_railLayer setFrame:[_railLayer defaultFrame]];
+        [_depthMask setFrame:[_depthMask defaultFrame]];
     }
     
     [_nameField setFrame:CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
                                     [self frame].size.width - UI_BOX_BORDER_PADDING_Y * 2 - UI_RAIL_COLOR_WIDTH,
                                     self.frame.size.height - UI_BOX_BORDER_PADDING_Y * 2)];
-        
-    _depthMask.frame = CGRectMake(_depthMask.frame.origin.x, _depthMask.frame.origin.y,
-                                  self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
-                                  self.frame.size.height + UI_DEPTH_BORDER_HEIGHT);
-    _depthMask.path = [UIBezierPath bezierPathWithRect:CGRectMake(0, 0, _depthMask.frame.size.width,
-                                                                  _depthMask.frame.size.height)].CGPath;
 }
 
 - (void)setDeletionProgress:(float)dX {
@@ -311,30 +304,11 @@
     [layer addAnimation:moveBox forKey:@"activeInactive"];
 }
 
-- (void)animateOffsetToActivePosition:(CALayer*)layer {
-    CGPoint newPos = CGPointMake(layer.position.x - UI_DEPTH_BORDER_WIDTH,
-                                 layer.position.y - UI_DEPTH_BORDER_HEIGHT);
-    [self animateOffsetOfLayer:layer to:newPos];
-}
-
-- (void)animateOffsetToInactivePosition:(CALayer*)layer {
-    CGPoint newPos = CGPointMake(layer.position.x + UI_DEPTH_BORDER_WIDTH,
-                                 layer.position.y + UI_DEPTH_BORDER_HEIGHT);
-    [self animateOffsetOfLayer:layer to:newPos];
-}
-
-- (void)disableAnimationsOnLayer:(CALayer*)layer {
-    NSMutableDictionary *disableAnims = [[NSMutableDictionary alloc] initWithObjectsAndKeys:
-                                         [NSNull null], @"bounds",
-                                         [NSNull null], @"position",
-                                         nil];
-    layer.actions = disableAnims;
-}
-
 - (void)setNeedsDisplay {
     [super setNeedsDisplay];
     [_depthLayer setNeedsDisplay];
     [_highlightLayer setNeedsDisplay];
+    [_depthMask setNeedsDisplay];
 }
 
 #pragma mark -

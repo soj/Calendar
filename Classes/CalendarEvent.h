@@ -10,6 +10,7 @@
 #import "DepthLayer.h"
 #import "HighlightLayer.h"
 #import "RailLayer.h"
+#import "DepthMaskLayer.h"
 
 #define UI_EVENT_DX             75.0
 #define UI_RIGHT_PADDING        5.0
@@ -38,7 +39,7 @@
     HighlightLayer *_highlightLayer;
     RailLayer *_railLayer;
     DepthLayer *_depthLayer;
-    CAShapeLayer *_depthMask;
+    DepthMaskLayer *_depthMask;
     CAShapeLayer *_categoryLayer;
 
     BOOL _hasFocus;
