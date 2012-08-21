@@ -37,8 +37,8 @@
         _categoryLayer = [[CategoryLayer alloc] initWithParent:self.layer];
         [_categoryLayer setFrame:[_categoryLayer defaultFrame]];
         
-        [self.layer addSublayer:_boxLayer];
         [self.layer addSublayer:_depthLayer];
+        [self.layer addSublayer:_boxLayer];
         [self.layer addSublayer:_highlightLayer];
         [self.layer addSublayer:_railLayer];
         [self.layer addSublayer:_categoryLayer];
