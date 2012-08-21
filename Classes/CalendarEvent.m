@@ -22,10 +22,8 @@
     if (self) {
         _delegate = delegate;
         
-        _boxLayer = [_sublayerDelegate makeLayerWithName:@"Box"];
-        _boxLayer.borderWidth = UI_BOX_BORDER_WIDTH;
-        _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
-        [self disableAnimationsOnLayer:_boxLayer];
+        _boxLayer = [[BoxLayer alloc] initWithParent:self.layer];
+        [_boxLayer setFrame:[_boxLayer defaultFrame]];
         
         _highlightLayer = [_sublayerDelegate makeLayerWithName:@"Highlight"];
         [_highlightLayer setNeedsDisplayOnBoundsChange:YES];
@@ -33,7 +31,7 @@
         _highlightLayer.hidden = YES;
 
         _railLayer = [_sublayerDelegate makeLayerWithName:@"Rail"];
-        _railLayer.frame = CGRectMake(_boxLayer.frame.size.width - UI_RAIL_COLOR_WIDTH, 0,
+        _railLayer.frame = CGRectMake(self.frame.size.width - UI_RAIL_COLOR_WIDTH, 0,
                                       UI_RAIL_COLOR_WIDTH, self.frame.size.height);
         [self disableAnimationsOnLayer:_railLayer];
         
@@ -86,13 +84,13 @@
 
 - (void)setStartTime:(NSTimeInterval)startTime {
 	[super setStartTime:startTime];
-    [_boxLayer removeAllAnimations];
+    [self removeAllAnimations];
     [self setFrame:[self reframe]];
 }
 
 - (void)setEndTime:(NSTimeInterval)endTime {
 	[super setEndTime:endTime];
-    [_boxLayer removeAllAnimations];
+    [self removeAllAnimations];
     [self setFrame:[self reframe]];
 }
 
@@ -111,7 +109,8 @@
         [self animateBoundsOfLayer:_categoryLayer to:CGRectMake(0, 0, 0, UI_HIGHLIGHT_HEIGHT)];
         [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x + UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y + UI_DEPTH_BORDER_HEIGHT)];
         
-        [self animateOffsetToInactivePosition:_boxLayer];
+        [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer defaultFrame]];
+        
         [self animateOffsetToInactivePosition:_highlightLayer];
         [self animateOffsetToInactivePosition:_depthMask];
         [self animateOffsetToInactivePosition:_railLayer];
@@ -131,7 +130,8 @@
         [self animateBoundsOfLayer:_categoryLayer to:CGRectMake(0, 0, UI_HIGHLIGHT_HEIGHT, UI_HIGHLIGHT_HEIGHT)];
         [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x - UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y - UI_DEPTH_BORDER_HEIGHT)];
         
-        [self animateOffsetToActivePosition:_boxLayer];
+        [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer activeFrame]];
+
         [self animateOffsetToActivePosition:_highlightLayer];
         [self animateOffsetToActivePosition:_depthMask];
         [self animateOffsetToActivePosition:_railLayer];
@@ -147,7 +147,7 @@
     _baseColor = color;
     _depthLayer.baseColor = color;
     _depthLayer.darkenedColor = [color colorByDarkeningColor:UI_DEPTH_BORDER_DARKEN];
-    _boxLayer.borderColor = [_baseColor CGColor];
+    _boxLayer.baseColor = color;
     _railLayer.backgroundColor = [_baseColor CGColor];
     _categoryLayer.backgroundColor = [_baseColor CGColor];
     
@@ -158,7 +158,6 @@
     }
     
     [self setNeedsDisplay]; 
-    [_depthLayer setNeedsDisplay];
 }
 
 - (void)setTitle:(NSString*)title {
@@ -199,6 +198,11 @@
 #pragma mark -
 #pragma mark Framing Helpers
 
+- (void)removeAllAnimations {
+    [_boxLayer removeAllAnimations];
+    [_depthLayer removeAllAnimations];
+}
+
 - (CGRect)reframe {
     NSTimeInterval length = _endTime - _startTime;
     float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
@@ -211,12 +215,20 @@
 }
 
 - (void)layoutSubviews {
+    if (_deletionProgress) {
+        [_boxLayer setFrame:[_boxLayer squashFrameWithProgress:_deletionProgress]];
+        [_depthLayer setFrame:[_depthLayer squashFrameWithProgress:_deletionProgress]];
+    } else if (_isActive) {
+        [_boxLayer setFrame:[_boxLayer activeFrame]];
+        [_depthLayer setFrame:[_depthLayer activeFrame]];
+    } else {
+        [_boxLayer setFrame:[_boxLayer defaultFrame]];
+        [_depthLayer setFrame:[_depthLayer defaultFrame]];
+    }
+    
     [_nameField setFrame:CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
                                     [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
                                     self.frame.size.height - UI_BORDER_PADDING_Y * 2)];
-    
-    [_boxLayer setFrame:CGRectMake(_boxLayer.frame.origin.x, _boxLayer.frame.origin.y,
-                                   self.frame.size.width, self.frame.size.height)];
     
     _highlightLayer.frame = _boxLayer.frame;
     
@@ -232,13 +244,10 @@
 
 - (void)setDeletionProgress:(float)dX {
     if (dX < 0) dX = 0;
-        
     float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
     _deletionProgress = MIN(dX, natWidth - UI_DELETION_WIDTH);
-    
-    [_depthLayer setFrame:[_depthLayer squashFrameWithProgress:_deletionProgress]];
-    
-    [_boxLayer removeAllAnimations];
+    [self removeAllAnimations];
+    [self layoutSubviews];
 }
 
 - (void)nullDeletionProgress {
@@ -251,13 +260,8 @@
     [_categoryLayer addAnimation:catAnim forKey:@"dummy"];
     
     _deletionProgress = 0;
-    
-    _boxLayer.position = CGPointMake([self reframe].size.width - _boxLayer.bounds.size.width - UI_DEPTH_BORDER_WIDTH, -UI_DEPTH_BORDER_HEIGHT);
-    NSLog(@"%f", _boxLayer.bounds.size.width);
-    [self animateOffsetOfLayer:_boxLayer to:CGPointMake(-UI_DEPTH_BORDER_WIDTH, -UI_DEPTH_BORDER_HEIGHT)];
-    
-    [self animateBoundsOfLayer:_boxLayer to:CGRectMake(0, 0,
-                                                       [self reframe].size.width, [self reframe].size.height)];
+
+    [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer activeFrame]];
     
     CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"depthWidth"];
     anim.duration = UI_ANIM_DURATION_RAISE;
@@ -267,7 +271,6 @@
     [_depthLayer addAnimation:anim forKey:@"dummy"];
     _depthLayer.depthWidth = [self reframe].size.width + UI_DEPTH_BORDER_WIDTH;
     
-    self.frame = [self reframe];
     [_depthLayer setFrame:[_depthLayer activeFrame]];
 }
 
@@ -482,7 +485,7 @@
 
 - (void)setNeedsDisplay {
     [super setNeedsDisplay];
-    [_boxLayer setNeedsDisplay];
+    [_depthLayer setNeedsDisplay];
 }
 
 @end

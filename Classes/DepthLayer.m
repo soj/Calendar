@@ -4,6 +4,13 @@
 
 @synthesize depthWidth, darkenedColor;
 
++ (BOOL)needsDisplayForKey:(NSString *)key {
+    if ([key isEqualToString:@"depthWidth"]) {
+        return YES;
+    }
+    return [super needsDisplayForKey:key];
+}
+
 - (id)initWithParent:(CALayer *)parent {
     if (self == [super initWithParent:parent]) {
         self.name = @"Depth";
@@ -19,13 +26,6 @@
     self.baseColor = layer.baseColor;
     self.darkenedColor = layer.darkenedColor;
     return self;
-}
-
-+ (BOOL)needsDisplayForKey:(NSString *)key {
-    if ([key isEqualToString:@"depthWidth"]) {
-        return YES;
-    }
-    return [super needsDisplayForKey:key];
 }
 
 - (void)setFrame:(CGRect)frame {
@@ -46,7 +46,8 @@
 
 - (CGRect)squashFrameWithProgress:(float)prog {
     CGRect def = [self defaultFrame];
-    return CGRectMake(def.origin.x + prog, def.origin.y, def.size.width - prog, def.size.height);
+    return CGRectMake(def.origin.x + prog, def.origin.y,
+                      def.size.width - prog, def.size.height);
 }
 
 - (void)drawInContext:(CGContextRef)context {

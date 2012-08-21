@@ -19,7 +19,6 @@
 #define UI_HIGHLIGHT_WIDTH      UI_BOX_BORDER_WIDTH
 #define UI_HIGHLIGHT_PADDING    UI_BORDER_PADDING_X
 
-#define UI_BOX_BORDER_WIDTH     1.0
 #define UI_RAIL_COLOR_WIDTH     22.0
 
 #define UI_BOX_BG_WHITENESS     0.9
@@ -31,7 +30,6 @@
 
 #define UI_NAME_FIELD_HEIGHT    35.0f
 
-#define UI_EVENT_BG_COLOR       [UIColor colorWithRed:0.98 green:0.98 blue:0.98 alpha:1.0]
 #define UI_NAME_COLOR           [UIColor colorWithRed:0.059 green:0.059 blue:0.059 alpha:1.0]
 #define UI_NAME_FONT            [UIFont fontWithName:@"Helvetica-Light" size:26.0f]
 
@@ -67,7 +65,7 @@ typedef enum {
 @interface CalendarEvent : CalendarEntity <UITextViewDelegate> {
     id<CalendarEventDelegate> _delegate;
     
-    CALayer *_boxLayer;
+    BoxLayer *_boxLayer;
     CALayer *_highlightLayer;
     CALayer *_railLayer;
     DepthLayer *_depthLayer;

@@ -26,12 +26,15 @@
 }
 
 - (CGRect)defaultFrame {
+    return CGRectMake(0, 0, self.parent.bounds.size.width, self.parent.bounds.size.height);
 }
 
 - (CGRect)activeFrame {
+    return [self defaultFrame];
 }
 
 - (CGRect)squashFrameWithProgress:(float)prog {
+    return [self defaultFrame];
 }
 
 @end
