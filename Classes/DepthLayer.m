@@ -12,6 +12,15 @@
     return self;
 }
 
+- (id)initWithLayer:(DepthLayer*)layer {
+    // During animation, CA makes a copy of the layer via this method
+    // Instance variables are *not* automatically copied over, so do it here
+    self.parent = layer.parent;
+    self.baseColor = layer.baseColor;
+    self.darkenedColor = layer.darkenedColor;
+    return self;
+}
+
 + (BOOL)needsDisplayForKey:(NSString *)key {
     if ([key isEqualToString:@"depthWidth"]) {
         return YES;

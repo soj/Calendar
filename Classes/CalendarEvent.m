@@ -239,8 +239,6 @@
     [_depthLayer setFrame:[_depthLayer squashFrameWithProgress:_deletionProgress]];
     
     [_boxLayer removeAllAnimations];
-    [_depthLayer removeAllAnimations];
-//    [self setFrame:[self reframe]];
 }
 
 - (void)nullDeletionProgress {
