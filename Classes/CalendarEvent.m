@@ -24,20 +24,19 @@
         
         _boxLayer = [[BoxLayer alloc] initWithParent:self.layer];
         [_boxLayer setFrame:[_boxLayer defaultFrame]];
+
+        _depthLayer = [[DepthLayer alloc] initWithParent:self.layer];
+        [_depthLayer setFrame:[_depthLayer defaultFrame]];
+        _depthLayer.hidden = YES;
         
-        _highlightLayer = [_sublayerDelegate makeLayerWithName:@"Highlight"];
-        [_highlightLayer setNeedsDisplayOnBoundsChange:YES];
-        [self disableAnimationsOnLayer:_highlightLayer];
+        _highlightLayer = [[HighlightLayer alloc] initWithParent:self.layer];
+        [_highlightLayer setFrame:[_highlightLayer defaultFrame]];
         _highlightLayer.hidden = YES;
 
         _railLayer = [_sublayerDelegate makeLayerWithName:@"Rail"];
         _railLayer.frame = CGRectMake(self.frame.size.width - UI_RAIL_COLOR_WIDTH, 0,
                                       UI_RAIL_COLOR_WIDTH, self.frame.size.height);
         [self disableAnimationsOnLayer:_railLayer];
-        
-        _depthLayer = [[DepthLayer alloc] initWithParent:self.layer];
-        [_depthLayer setFrame:[_depthLayer defaultFrame]];
-        [self.layer addSublayer:_depthLayer];
         
         _depthMask = [CAShapeLayer layer];
         _depthMask.fillColor = [[UIColor blackColor] CGColor];
@@ -54,7 +53,9 @@
                                           0, UI_HIGHLIGHT_HEIGHT);
         
         [self.layer addSublayer:_boxLayer];
+        [self.layer addSublayer:_depthLayer];
         [self.layer addSublayer:_highlightLayer];
+        
         [self.layer addSublayer:_railLayer];
         [self.layer addSublayer:_categoryLayer];
         _depthLayer.mask = _depthMask;
@@ -70,8 +71,8 @@
         [_nameField setContentInset:UIEdgeInsetsMake(-8,-8,0,0)];
         [self addSubview:_nameField];
         
-        [_nameField setFrame:CGRectMake(UI_BORDER_PADDING_X, UI_BORDER_PADDING_Y,
-                                        [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
+        [_nameField setFrame:CGRectMake(UI_BOX_BORDER_PADDING_Y, UI_BOX_BORDER_PADDING_Y,
+                                        [self frame].size.width - UI_BOX_BORDER_PADDING_Y * 2 - UI_RAIL_COLOR_WIDTH,
                                         MIN(UI_NAME_FIELD_HEIGHT, self.frame.size.height))];
         
         [_nameField setUserInteractionEnabled:NO];
@@ -110,13 +111,13 @@
         [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x + UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y + UI_DEPTH_BORDER_HEIGHT)];
         
         [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer defaultFrame]];
+        [LayerAnimationFactory animate:_highlightLayer toFrame:[_highlightLayer defaultFrame]];
         
-        [self animateOffsetToInactivePosition:_highlightLayer];
         [self animateOffsetToInactivePosition:_depthMask];
         [self animateOffsetToInactivePosition:_railLayer];
         
         CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x + UI_DEPTH_BORDER_WIDTH -
-                                           UI_HIGHLIGHT_HEIGHT - UI_BORDER_PADDING_X,
+                                           UI_HIGHLIGHT_HEIGHT - UI_BOX_BORDER_PADDING_Y,
                                            _nameField.layer.position.y + UI_DEPTH_BORDER_HEIGHT);
         [self animateOffsetOfLayer:_nameField.layer to:nameFieldPos];
         
@@ -131,13 +132,13 @@
         [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x - UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y - UI_DEPTH_BORDER_HEIGHT)];
         
         [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer activeFrame]];
+        [LayerAnimationFactory animate:_highlightLayer toFrame:[_highlightLayer activeFrame]];
 
-        [self animateOffsetToActivePosition:_highlightLayer];
         [self animateOffsetToActivePosition:_depthMask];
         [self animateOffsetToActivePosition:_railLayer];
         
         CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x - UI_DEPTH_BORDER_WIDTH +
-                                           UI_HIGHLIGHT_HEIGHT + UI_BORDER_PADDING_X,
+                                           UI_HIGHLIGHT_HEIGHT + UI_BOX_BORDER_PADDING_Y,
                                            _nameField.layer.position.y - UI_DEPTH_BORDER_HEIGHT);
         [self animateOffsetOfLayer:_nameField.layer to:nameFieldPos];
     }
@@ -146,8 +147,9 @@
 - (void)setColor:(UIColor*)color {
     _baseColor = color;
     _depthLayer.baseColor = color;
-    _depthLayer.darkenedColor = [color colorByDarkeningColor:UI_DEPTH_BORDER_DARKEN];
     _boxLayer.baseColor = color;
+    _highlightLayer.baseColor = color;
+    
     _railLayer.backgroundColor = [_baseColor CGColor];
     _categoryLayer.backgroundColor = [_baseColor CGColor];
     
@@ -186,9 +188,9 @@
 }
 
 - (void)highlightArea:(HighlightArea)area {
-    _highlightArea = area;
-    [_highlightLayer setNeedsDisplay];
+    _highlightLayer.highlightArea = area;
     _highlightLayer.hidden = NO;
+    [self setNeedsDisplay];
 }
 
 - (void)unhighlight {
@@ -201,16 +203,17 @@
 - (void)removeAllAnimations {
     [_boxLayer removeAllAnimations];
     [_depthLayer removeAllAnimations];
+    [_highlightLayer removeAllAnimations];
 }
 
 - (CGRect)reframe {
     NSTimeInterval length = _endTime - _startTime;
     float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
     float x = UI_EVENT_DX + _deletionProgress;
-    float y = [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + UI_BORDER_MARGIN_Y;
+    float y = [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + UI_BOX_BORDER_MARGIN_Y;
     float width = (natWidth - _deletionProgress);
     width = MAX(width, UI_DELETION_WIDTH);
-    float height = [[CalendarMath getInstance] pixelsPerHour] * length / SECONDS_PER_HOUR - UI_BORDER_MARGIN_Y * 2;
+    float height = [[CalendarMath getInstance] pixelsPerHour] * length / SECONDS_PER_HOUR - UI_BOX_BORDER_MARGIN_Y * 2;
     return CGRectMake(x, y, MAX(width, 0), MAX(height, 0));
 }
 
@@ -218,20 +221,21 @@
     if (_deletionProgress) {
         [_boxLayer setFrame:[_boxLayer squashFrameWithProgress:_deletionProgress]];
         [_depthLayer setFrame:[_depthLayer squashFrameWithProgress:_deletionProgress]];
+        [_highlightLayer setFrame:[_highlightLayer squashFrameWithProgress:_deletionProgress]];
     } else if (_isActive) {
         [_boxLayer setFrame:[_boxLayer activeFrame]];
         [_depthLayer setFrame:[_depthLayer activeFrame]];
+        [_highlightLayer setFrame:[_highlightLayer activeFrame]];
     } else {
         [_boxLayer setFrame:[_boxLayer defaultFrame]];
         [_depthLayer setFrame:[_depthLayer defaultFrame]];
+        [_highlightLayer setFrame:[_highlightLayer defaultFrame]];
     }
     
     [_nameField setFrame:CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
-                                    [self frame].size.width - UI_BORDER_PADDING_X * 2 - UI_RAIL_COLOR_WIDTH,
-                                    self.frame.size.height - UI_BORDER_PADDING_Y * 2)];
-    
-    _highlightLayer.frame = _boxLayer.frame;
-    
+                                    [self frame].size.width - UI_BOX_BORDER_PADDING_Y * 2 - UI_RAIL_COLOR_WIDTH,
+                                    self.frame.size.height - UI_BOX_BORDER_PADDING_Y * 2)];
+        
     [_railLayer setFrame:CGRectMake(_railLayer.frame.origin.x, _railLayer.frame.origin.y,
                                     _railLayer.frame.size.width, self.frame.size.height)];
         
@@ -398,94 +402,10 @@
     return YES;
 }
 
-#pragma mark -
-#pragma mark Drawing
-
-- (void)drawUpperHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
-    CGPoint points[] = {
-        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_LINE_SIZE, UI_HIGHLIGHT_PADDING),
-        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_PADDING),
-        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_LINE_SIZE + UI_HIGHLIGHT_PADDING)
-    };
-    CGContextAddLines(context, points, 3);
-    CGContextStrokePath(context);
-}
-
-- (void)drawLowerHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
-    CGPoint pointsLeft[] = {
-        CGPointMake(UI_HIGHLIGHT_PADDING, layer.frame.size.height - UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_LINE_SIZE),
-        CGPointMake(UI_HIGHLIGHT_PADDING, layer.frame.size.height - UI_HIGHLIGHT_PADDING),
-        CGPointMake(UI_HIGHLIGHT_PADDING + UI_HIGHLIGHT_LINE_SIZE, layer.frame.size.height - UI_HIGHLIGHT_PADDING)
-    };
-    CGContextAddLines(context, pointsLeft, 3);
-    CGContextStrokePath(context);
-    
-    CGPoint pointsRight[] = {
-        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING - UI_HIGHLIGHT_LINE_SIZE,
-                    layer.frame.size.height - UI_HIGHLIGHT_PADDING),
-        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING,
-                    layer.frame.size.height - UI_HIGHLIGHT_PADDING),
-        CGPointMake(layer.frame.size.width - UI_HIGHLIGHT_PADDING,
-                    layer.frame.size.height - UI_HIGHLIGHT_LINE_SIZE - UI_HIGHLIGHT_PADDING)
-    };
-    CGContextAddLines(context, pointsRight, 3);
-    CGContextStrokePath(context);
-}
-
-- (void)drawHighlightLayer:(CALayer*)layer inContext:(CGContextRef)context {
-    CGContextSetStrokeColorWithColor(context, _baseColor.CGColor);
-    CGContextSetLineWidth(context, UI_HIGHLIGHT_WIDTH);
-
-    CGRect highlight;
-    float highlightHeight = UI_HIGHLIGHT_PADDING + UI_HIGHLIGHT_HEIGHT;
-    
-    CGColorRef fill = [UIColor colorForFadeBetweenFirstColor:_baseColor
-                                                 secondColor:UI_EVENT_BG_COLOR
-                                                     atRatio:UI_BOX_BG_WHITENESS].CGColor;
-    switch (_highlightArea) {
-        case kHighlightTop: {
-            highlight = CGRectMake(UI_BOX_BORDER_WIDTH, UI_BOX_BORDER_WIDTH,
-                                   layer.frame.size.width - UI_BOX_BORDER_WIDTH * 2, highlightHeight);
-            CGContextSetFillColorWithColor(context, fill);
-            CGContextFillRect(context, highlight);
-            break;
-        }
-        case kHighlightBottom: {
-            highlight = CGRectMake(UI_BOX_BORDER_WIDTH, layer.frame.size.height - highlightHeight - UI_BOX_BORDER_WIDTH,
-                                   layer.frame.size.width - UI_BOX_BORDER_WIDTH * 2, highlightHeight);
-            CGContextSetFillColorWithColor(context, fill);
-            CGContextFillRect(context, highlight);
-            break;
-        }
-        case kHighlightAll: {
-            highlight = CGRectMake(0, 0, layer.frame.size.width, layer.frame.size.height);
-            highlight = CGRectInset(highlight, UI_BOX_BORDER_WIDTH * 2, UI_BOX_BORDER_WIDTH * 2);
-            CGContextSetFillColorWithColor(context, fill);
-            CGContextFillRect(context, highlight);
-            break;
-        }
-    }
-        
-    switch (_highlightArea) {
-        case kHighlightTop: {
-            [self drawUpperHighlightLayer:layer inContext:context];
-            break;
-        }
-        case kHighlightBottom: {
-            [self drawLowerHighlightLayer:layer inContext:context];
-            break;
-        }
-        case kHighlightAll: {
-            [self drawUpperHighlightLayer:layer inContext:context];
-            [self drawLowerHighlightLayer:layer inContext:context];
-            break;
-        }
-    }
-}
-
 - (void)setNeedsDisplay {
     [super setNeedsDisplay];
     [_depthLayer setNeedsDisplay];
+    [_highlightLayer setNeedsDisplay];
 }
 
 @end

@@ -1,4 +1,5 @@
 #import "DepthLayer.h"
+#import "UIColor+Tools.h"
 
 @implementation DepthLayer
 
@@ -32,6 +33,11 @@
     [super setFrame:frame];
     // Depth width is necessary to make the layer redraw at every frame of animation
     self.depthWidth = frame.size.width;
+}
+
+- (void)setBaseColor:(UIColor *)baseColor {
+    [super setBaseColor:baseColor];
+    self.darkenedColor = [self.baseColor colorByDarkeningColor:UI_DEPTH_BORDER_DARKEN];
 }
 
 - (CGRect)defaultFrame {

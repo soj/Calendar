@@ -8,25 +8,14 @@
 #import "CalendarEventLayer.h"
 #import "BoxLayer.h"
 #import "DepthLayer.h"
+#import "HighlightLayer.h"
 
 #define UI_EVENT_DX             75.0
 #define UI_RIGHT_PADDING        5.0
 #define UI_EDGE_DRAG_PIXELS     35.0f
 #define UI_DELETION_WIDTH       50.0
 
-#define UI_HIGHLIGHT_LINE_SIZE  20.0
-#define UI_HIGHLIGHT_HEIGHT     25.0
-#define UI_HIGHLIGHT_WIDTH      UI_BOX_BORDER_WIDTH
-#define UI_HIGHLIGHT_PADDING    UI_BORDER_PADDING_X
-
 #define UI_RAIL_COLOR_WIDTH     22.0
-
-#define UI_BOX_BG_WHITENESS     0.9
-#define UI_DEPTH_BORDER_DARKEN  0.8
-
-#define UI_BORDER_PADDING_X     10.0
-#define UI_BORDER_PADDING_Y     5.0
-#define UI_BORDER_MARGIN_Y      2.0
 
 #define UI_NAME_FIELD_HEIGHT    35.0f
 
@@ -43,19 +32,6 @@
 - (void)calendarEvent:(CalendarEvent*)event didChangeTitle:(NSString*)title;
 @end
 
-typedef enum {
-    kHighlightTop,
-    kHighlightBottom,
-    kHighlightAll,
-    kHighlightDelete
-} HighlightArea;
-
-typedef enum {
-    kBlockStateNormal,
-    kBlockStateActive,
-    kBlockStateDeleting
-} BlockState;
-
 @interface RailLayer : CalendarEventLayer
 @end
 
@@ -66,13 +42,12 @@ typedef enum {
     id<CalendarEventDelegate> _delegate;
     
     BoxLayer *_boxLayer;
-    CALayer *_highlightLayer;
+    HighlightLayer *_highlightLayer;
     CALayer *_railLayer;
     DepthLayer *_depthLayer;
     CAShapeLayer *_depthMask;
     CAShapeLayer *_categoryLayer;
 
-    HighlightArea _highlightArea;
     BOOL _hasFocus;
     BOOL _isActive;
     BOOL _hasCategory;

@@ -26,7 +26,7 @@
 }
 
 - (CGRect)defaultFrame {
-    return CGRectMake(0, 0, self.parent.bounds.size.width, self.parent.bounds.size.height);
+    return CGRectMake(0, 0, self.parent.frame.size.width, self.parent.frame.size.height);
 }
 
 - (CGRect)activeFrame {

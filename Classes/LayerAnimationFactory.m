@@ -3,7 +3,7 @@
 @implementation LayerAnimationFactory
 
 + (void)animate:(CALayer*)layer toFrame:(CGRect)frame {
-    [self animateBoundsOfLayer:layer to:frame];
+    [self animateBoundsOfLayer:layer to:CGRectMake(0, 0, frame.size.width, frame.size.height)];
     [self animatePositionOfLayer:layer to:frame.origin];
 }
 
