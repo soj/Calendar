@@ -2,6 +2,10 @@
 
 @implementation CategoryLayer
 
+- (void)setBaseColor:(UIColor *)baseColor {
+    self.backgroundColor = baseColor.CGColor;
+}
+
 - (CGRect)defaultFrame {
     return CGRectMake(UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_PADDING,
                       0, UI_HIGHLIGHT_HEIGHT);

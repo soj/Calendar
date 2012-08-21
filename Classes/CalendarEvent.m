@@ -128,8 +128,7 @@
     _boxLayer.baseColor = color;
     _highlightLayer.baseColor = color;
     _railLayer.baseColor = color;
-    
-    _categoryLayer.backgroundColor = [_baseColor CGColor];
+    _categoryLayer.baseColor = color;
     
     if (!_isActive) {
         _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor
@@ -144,26 +143,8 @@
     [_nameField setText:title];
 }
 
-- (void)setNameFocus {
-    _hasFocus = YES;
-    [_nameField setUserInteractionEnabled:YES];
-    [_nameField setEditable:YES];
-    
-    [_nameField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:UI_ANIM_DURATION_RAISE];
-}
-
-- (void)setCategoryFocus {
-    _hasFocus = YES;
-    [_delegate showCategoryChooser];
-}
-
-- (void)resignFocus {
-    _hasFocus = NO;
-    [_nameField resignFirstResponder];
-    [_nameField setUserInteractionEnabled:NO];
-    [_nameField setEditable:NO];
-    [_delegate dismissCategoryChooser];
-}
+#pragma mark -
+#pragma mark Highlighting and Depth Visibility
 
 - (void)highlightArea:(HighlightArea)area {
     _highlightLayer.highlightArea = area;
@@ -175,17 +156,31 @@
     [self performSelector:@selector(hideHighlightLayer) withObject:self afterDelay:0.1];
 }
 
+- (void)showDepthLayer {
+    _depthLayer.hidden = NO;
+}
+
+- (void)hideDepthLayer {
+    _depthLayer.hidden = YES;
+}
+
+- (void)hideHighlightLayer {
+    _highlightLayer.hidden = YES;
+}
+
+
 #pragma mark -
-#pragma mark Framing Helpers
+#pragma mark Framing and Display Helpers
 
 - (CGRect)reframe {
     NSTimeInterval length = _endTime - _startTime;
+    
     float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
     float x = UI_EVENT_DX + _deletionProgress;
     float y = [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + UI_BOX_BORDER_MARGIN_Y;
-    float width = (natWidth - _deletionProgress);
-    width = MAX(width, UI_DELETION_WIDTH);
+    float width = MAX(natWidth - _deletionProgress, UI_DELETION_WIDTH);
     float height = [[CalendarMath getInstance] pixelsPerHour] * length / SECONDS_PER_HOUR - UI_BOX_BORDER_MARGIN_Y * 2;
+    
     return CGRectMake(x, y, MAX(width, 0), MAX(height, 0));
 }
 
@@ -216,15 +211,7 @@
     [self layoutSubviews];
 }
 
-- (void)nullDeletionProgress {
-    CGPoint catStartPos = CGPointMake(_deletionProgress + UI_HIGHLIGHT_PADDING - UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y);
-    CABasicAnimation *catAnim = [CABasicAnimation animationWithKeyPath:@"position"];
-    catAnim.duration = UI_ANIM_DURATION_RAISE;
-    catAnim.fromValue = [NSValue valueWithCGPoint:catStartPos];
-    catAnim.toValue = [NSValue valueWithCGPoint:_categoryLayer.position];
-    catAnim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    [_categoryLayer addAnimation:catAnim forKey:@"dummy"];
-    
+- (void)nullDeletionProgress {    
     _deletionProgress = 0;
 
     [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer activeFrame]];
@@ -233,34 +220,10 @@
     CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"depthWidth"];
     anim.duration = UI_ANIM_DURATION_RAISE;
     anim.fromValue = [NSNumber numberWithFloat:_depthLayer.depthWidth];
-    anim.toValue = [NSNumber numberWithFloat:[self reframe].size.width + UI_DEPTH_BORDER_WIDTH];
+    anim.toValue = [NSNumber numberWithFloat:[_depthLayer activeFrame].size.width];
     anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    [_depthLayer addAnimation:anim forKey:@"dummy"];
-    _depthLayer.depthWidth = [self reframe].size.width + UI_DEPTH_BORDER_WIDTH;
-    
     [_depthLayer setFrame:[_depthLayer activeFrame]];
-}
-
-- (BOOL)isPointInsideTextView:(CGPoint)pt {
-    CGRect rect = CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
-                             _nameField.contentSize.width, _nameField.contentSize.height);
-    return CGRectContainsPoint(rect, pt);
-}
-
-- (BOOL)isPointInsideCatView:(CGPoint)pt {
-    return CGRectContainsPoint(_categoryLayer.frame, pt);
-}
-
-- (void)showDepthLayer {
-    _depthLayer.hidden = NO;
-}
-
-- (void)hideDepthLayer {
-    _depthLayer.hidden = YES;
-}
-
-- (void)hideHighlightLayer {
-    _highlightLayer.hidden = YES;
+    [_depthLayer addAnimation:anim forKey:@"dummy"];
 }
 
 - (void)animateOffsetOfLayer:(CALayer*)layer to:(CGPoint)pos {
@@ -282,6 +245,40 @@
             [layer setNeedsDisplay];
         }
     }];
+}
+
+#pragma mark -
+#pragma mark Focus Handling
+
+- (BOOL)isPointInsideTextView:(CGPoint)pt {
+    CGRect rect = CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
+                             _nameField.contentSize.width, _nameField.contentSize.height);
+    return CGRectContainsPoint(rect, pt);
+}
+
+- (BOOL)isPointInsideCatView:(CGPoint)pt {
+    return CGRectContainsPoint(_categoryLayer.frame, pt);
+}
+
+- (void)setNameFocus {
+    _hasFocus = YES;
+    [_nameField setUserInteractionEnabled:YES];
+    [_nameField setEditable:YES];
+    
+    [_nameField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:UI_ANIM_DURATION_RAISE];
+}
+
+- (void)setCategoryFocus {
+    _hasFocus = YES;
+    [_delegate showCategoryChooser];
+}
+
+- (void)resignFocus {
+    _hasFocus = NO;
+    [_nameField resignFirstResponder];
+    [_nameField setUserInteractionEnabled:NO];
+    [_nameField setEditable:NO];
+    [_delegate dismissCategoryChooser];
 }
 
 #pragma mark -
