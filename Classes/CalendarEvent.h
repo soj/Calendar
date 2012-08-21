@@ -9,13 +9,12 @@
 #import "BoxLayer.h"
 #import "DepthLayer.h"
 #import "HighlightLayer.h"
+#import "RailLayer.h"
 
 #define UI_EVENT_DX             75.0
 #define UI_RIGHT_PADDING        5.0
 #define UI_EDGE_DRAG_PIXELS     35.0f
 #define UI_DELETION_WIDTH       50.0
-
-#define UI_RAIL_COLOR_WIDTH     22.0
 
 #define UI_NAME_FIELD_HEIGHT    35.0f
 
@@ -32,18 +31,12 @@
 - (void)calendarEvent:(CalendarEvent*)event didChangeTitle:(NSString*)title;
 @end
 
-@interface RailLayer : CalendarEventLayer
-@end
-
-@interface DepthMaskLayer : CalendarEventLayer
-@end
-
 @interface CalendarEvent : CalendarEntity <UITextViewDelegate> {
     id<CalendarEventDelegate> _delegate;
     
     BoxLayer *_boxLayer;
     HighlightLayer *_highlightLayer;
-    CALayer *_railLayer;
+    RailLayer *_railLayer;
     DepthLayer *_depthLayer;
     CAShapeLayer *_depthMask;
     CAShapeLayer *_categoryLayer;

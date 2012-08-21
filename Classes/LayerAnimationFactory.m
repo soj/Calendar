@@ -32,4 +32,15 @@
     [layer addAnimation:moveBox forKey:@"activeInactive"];
 }
 
++ (void)animate:(CALayer *)layer toAlpha:(float)alpha {
+    CABasicAnimation *fadeIn = [CABasicAnimation animationWithKeyPath:@"opacity"];
+    fadeIn.fromValue = [NSNumber numberWithFloat:layer.opacity];
+    fadeIn.toValue = [NSNumber numberWithFloat:alpha];
+    fadeIn.duration = UI_ANIM_DURATION_RAISE;
+    fadeIn.removedOnCompletion = NO;
+    fadeIn.fillMode = kCAFillModeForwards;
+    layer.opacity = alpha;
+    [layer addAnimation:fadeIn forKey:@"opacity"];    
+}
+
 @end

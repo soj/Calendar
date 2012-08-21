@@ -5,12 +5,6 @@
 #import "CalendarMath.h"
 #import "LayerAnimationFactory.h"
 
-@implementation RailLayer
-@end
-
-@implementation DepthMaskLayer
-@end
-
 @implementation CalendarEvent
 
 @synthesize eventId=_eventId, delegate=_delegate, hasFocus=_hasFocus, hasCategory=_hasCategory;
@@ -33,10 +27,8 @@
         [_highlightLayer setFrame:[_highlightLayer defaultFrame]];
         _highlightLayer.hidden = YES;
 
-        _railLayer = [_sublayerDelegate makeLayerWithName:@"Rail"];
-        _railLayer.frame = CGRectMake(self.frame.size.width - UI_RAIL_COLOR_WIDTH, 0,
-                                      UI_RAIL_COLOR_WIDTH, self.frame.size.height);
-        [self disableAnimationsOnLayer:_railLayer];
+        _railLayer = [[RailLayer alloc] initWithParent:self.layer];
+        [_railLayer setFrame:[_railLayer defaultFrame]];
         
         _depthMask = [CAShapeLayer layer];
         _depthMask.fillColor = [[UIColor blackColor] CGColor];
@@ -55,8 +47,8 @@
         [self.layer addSublayer:_boxLayer];
         [self.layer addSublayer:_depthLayer];
         [self.layer addSublayer:_highlightLayer];
-        
         [self.layer addSublayer:_railLayer];
+        
         [self.layer addSublayer:_categoryLayer];
         _depthLayer.mask = _depthMask;
 
@@ -105,16 +97,15 @@
                                                                secondColor:UI_EVENT_BG_COLOR
                                                                    atRatio:UI_BOX_BG_WHITENESS].CGColor;
         
-        [self animateAlphaOfLayer:_railLayer to:1.0];
-
         [self animateBoundsOfLayer:_categoryLayer to:CGRectMake(0, 0, 0, UI_HIGHLIGHT_HEIGHT)];
         [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x + UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y + UI_DEPTH_BORDER_HEIGHT)];
         
         [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer defaultFrame]];
         [LayerAnimationFactory animate:_highlightLayer toFrame:[_highlightLayer defaultFrame]];
+        [LayerAnimationFactory animate:_railLayer toFrame:[_railLayer defaultFrame]];
+        [LayerAnimationFactory animate:_railLayer toAlpha:1.0];
         
         [self animateOffsetToInactivePosition:_depthMask];
-        [self animateOffsetToInactivePosition:_railLayer];
         
         CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x + UI_DEPTH_BORDER_WIDTH -
                                            UI_HIGHLIGHT_HEIGHT - UI_BOX_BORDER_PADDING_Y,
@@ -126,16 +117,15 @@
         _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
         [self showDepthLayer];
         
-        [self animateAlphaOfLayer:_railLayer to:0];
-
         [self animateBoundsOfLayer:_categoryLayer to:CGRectMake(0, 0, UI_HIGHLIGHT_HEIGHT, UI_HIGHLIGHT_HEIGHT)];
         [self animateOffsetOfLayer:_categoryLayer to:CGPointMake(_categoryLayer.position.x - UI_DEPTH_BORDER_WIDTH, _categoryLayer.position.y - UI_DEPTH_BORDER_HEIGHT)];
         
         [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer activeFrame]];
         [LayerAnimationFactory animate:_highlightLayer toFrame:[_highlightLayer activeFrame]];
-
+        [LayerAnimationFactory animate:_railLayer toFrame:[_railLayer activeFrame]];
+        [LayerAnimationFactory animate:_railLayer toAlpha:0];
+        
         [self animateOffsetToActivePosition:_depthMask];
-        [self animateOffsetToActivePosition:_railLayer];
         
         CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x - UI_DEPTH_BORDER_WIDTH +
                                            UI_HIGHLIGHT_HEIGHT + UI_BOX_BORDER_PADDING_Y,
@@ -149,8 +139,8 @@
     _depthLayer.baseColor = color;
     _boxLayer.baseColor = color;
     _highlightLayer.baseColor = color;
+    _railLayer.baseColor = color;
     
-    _railLayer.backgroundColor = [_baseColor CGColor];
     _categoryLayer.backgroundColor = [_baseColor CGColor];
     
     if (!_isActive) {
@@ -230,14 +220,12 @@
         [_boxLayer setFrame:[_boxLayer defaultFrame]];
         [_depthLayer setFrame:[_depthLayer defaultFrame]];
         [_highlightLayer setFrame:[_highlightLayer defaultFrame]];
+        [_railLayer setFrame:[_railLayer defaultFrame]];
     }
     
     [_nameField setFrame:CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
                                     [self frame].size.width - UI_BOX_BORDER_PADDING_Y * 2 - UI_RAIL_COLOR_WIDTH,
                                     self.frame.size.height - UI_BOX_BORDER_PADDING_Y * 2)];
-        
-    [_railLayer setFrame:CGRectMake(_railLayer.frame.origin.x, _railLayer.frame.origin.y,
-                                    _railLayer.frame.size.width, self.frame.size.height)];
         
     _depthMask.frame = CGRectMake(_depthMask.frame.origin.x, _depthMask.frame.origin.y,
                                   self.frame.size.width + UI_DEPTH_BORDER_WIDTH,
@@ -300,17 +288,6 @@
     _highlightLayer.hidden = YES;
 }
 
-- (void)animateAlphaOfLayer:(CALayer*)layer to:(float)alpha {
-    CABasicAnimation *fadeIn = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    fadeIn.fromValue = [NSNumber numberWithFloat:layer.opacity];
-    fadeIn.toValue = [NSNumber numberWithFloat:alpha];
-    fadeIn.duration = UI_ANIM_DURATION_RAISE;
-    fadeIn.removedOnCompletion = NO;
-    fadeIn.fillMode = kCAFillModeForwards;
-    layer.opacity = alpha;
-    [layer addAnimation:fadeIn forKey:@"opacity"];
-}
-
 - (void)animateBoundsOfLayer:(CALayer*)layer to:(CGRect)bounds {
     CABasicAnimation *resize = [CABasicAnimation animationWithKeyPath:@"bounds"];
     resize.fromValue = [NSValue valueWithCGRect:layer.bounds];
@@ -354,6 +331,12 @@
     layer.actions = disableAnims;
 }
 
+- (void)setNeedsDisplay {
+    [super setNeedsDisplay];
+    [_depthLayer setNeedsDisplay];
+    [_highlightLayer setNeedsDisplay];
+}
+
 #pragma mark -
 #pragma mark UITextFieldDelegate Methods
 
@@ -394,18 +377,13 @@
     [self endHackToStopAutoScrollOnTextField:textView];
 }
 
-- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text {
+- (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range
+                                        replacementText:(NSString *)text {
     if (textView == _nameField && [text isEqualToString:@"\n"]) {
         [textView resignFirstResponder];
         return NO;
     }
     return YES;
-}
-
-- (void)setNeedsDisplay {
-    [super setNeedsDisplay];
-    [_depthLayer setNeedsDisplay];
-    [_highlightLayer setNeedsDisplay];
 }
 
 @end

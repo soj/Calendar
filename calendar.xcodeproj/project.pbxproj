@@ -40,6 +40,7 @@
 		52B1642C15B0179300269D10 /* Background.png in Resources */ = {isa = PBXBuildFile; fileRef = 52B1642B15B0179300269D10 /* Background.png */; };
 		52B1642E15B23DDA00269D10 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52B1642D15B23DD900269D10 /* QuartzCore.framework */; };
 		52B1643115B247BC00269D10 /* LayerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B1643015B247BC00269D10 /* LayerDelegate.m */; };
+		52B69C7B15E40FC5006BD2CE /* RailLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B69C7A15E40FC5006BD2CE /* RailLayer.m */; };
 		52E40D4215E362C900186DE2 /* HighlightLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52E40D4115E362C900186DE2 /* HighlightLayer.m */; };
 /* End PBXBuildFile section */
 
@@ -99,6 +100,8 @@
 		52B1642D15B23DD900269D10 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		52B1642F15B247BB00269D10 /* LayerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayerDelegate.h; sourceTree = "<group>"; };
 		52B1643015B247BC00269D10 /* LayerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LayerDelegate.m; sourceTree = "<group>"; };
+		52B69C7915E40FC5006BD2CE /* RailLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RailLayer.h; sourceTree = "<group>"; };
+		52B69C7A15E40FC5006BD2CE /* RailLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RailLayer.m; sourceTree = "<group>"; };
 		52E40D4015E362C900186DE2 /* HighlightLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HighlightLayer.h; sourceTree = "<group>"; };
 		52E40D4115E362C900186DE2 /* HighlightLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HighlightLayer.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* calendar-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "calendar-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
@@ -251,12 +254,7 @@
 				29D98124151C14BC00B1E158 /* CalendarEvent.m */,
 				52779B5B15DD95200053BFF7 /* CalendarEventLayer.h */,
 				52779B5C15DD95200053BFF7 /* CalendarEventLayer.m */,
-				52779B5515DD94760053BFF7 /* BoxLayer.h */,
-				52779B5615DD94760053BFF7 /* BoxLayer.m */,
-				52779B5815DD94990053BFF7 /* DepthLayer.h */,
-				52779B5915DD94990053BFF7 /* DepthLayer.m */,
-				52E40D4015E362C900186DE2 /* HighlightLayer.h */,
-				52E40D4115E362C900186DE2 /* HighlightLayer.m */,
+				52B69C7715E36FF7006BD2CE /* Sublayers */,
 			);
 			name = CalendarEvent;
 			sourceTree = "<group>";
@@ -279,6 +277,21 @@
 				52B1642B15B0179300269D10 /* Background.png */,
 			);
 			path = Images;
+			sourceTree = "<group>";
+		};
+		52B69C7715E36FF7006BD2CE /* Sublayers */ = {
+			isa = PBXGroup;
+			children = (
+				52779B5515DD94760053BFF7 /* BoxLayer.h */,
+				52779B5615DD94760053BFF7 /* BoxLayer.m */,
+				52779B5815DD94990053BFF7 /* DepthLayer.h */,
+				52779B5915DD94990053BFF7 /* DepthLayer.m */,
+				52E40D4015E362C900186DE2 /* HighlightLayer.h */,
+				52E40D4115E362C900186DE2 /* HighlightLayer.m */,
+				52B69C7915E40FC5006BD2CE /* RailLayer.h */,
+				52B69C7A15E40FC5006BD2CE /* RailLayer.m */,
+			);
+			name = Sublayers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -372,6 +385,7 @@
 				52779B5A15DD949A0053BFF7 /* DepthLayer.m in Sources */,
 				52779B5D15DD95200053BFF7 /* CalendarEventLayer.m in Sources */,
 				52E40D4215E362C900186DE2 /* HighlightLayer.m in Sources */,
+				52B69C7B15E40FC5006BD2CE /* RailLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
