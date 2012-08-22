@@ -8,12 +8,13 @@
 
 - (CGRect)defaultFrame {
     return CGRectMake(UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_PADDING,
-                      0, UI_HIGHLIGHT_HEIGHT);
+                      0, UI_CATEGORY_BOX_SIZE);
 }
 
 - (CGRect)activeFrame {
-    return CGRectMake(UI_HIGHLIGHT_PADDING, UI_HIGHLIGHT_PADDING,
-                      UI_HIGHLIGHT_HEIGHT, UI_HIGHLIGHT_HEIGHT);
+    CGRect def = [super activeFrame];
+    return CGRectMake(def.origin.x, def.origin.y,
+                      UI_CATEGORY_BOX_SIZE, def.size.height);
 }
 
 - (CGRect)squashFrameWithProgress:(float)prog {

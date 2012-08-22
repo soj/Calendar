@@ -1,5 +1,7 @@
 #import "RailLayer.h"
 
+#import "UIConstants.h"
+
 @implementation RailLayer
 
 - (void)setBaseColor:(UIColor *)baseColor {

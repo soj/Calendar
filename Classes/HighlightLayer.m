@@ -26,7 +26,6 @@
 
 - (void)drawInContext:(CGContextRef)context {
     CGContextSetStrokeColorWithColor(context, self.baseColor.CGColor);
-    CGContextSetLineWidth(context, UI_HIGHLIGHT_WIDTH);
     
     float highlightHeight = UI_HIGHLIGHT_PADDING + UI_HIGHLIGHT_HEIGHT;
     

@@ -5,6 +5,8 @@
 #import "CalendarMath.h"
 #import "LayerAnimationFactory.h"
 
+#import "UIConstants.h"
+
 @implementation CalendarEvent
 
 @synthesize eventId=_eventId, delegate=_delegate, hasFocus=_hasFocus, hasCategory=_hasCategory;
@@ -37,33 +39,30 @@
         _categoryLayer = [[CategoryLayer alloc] initWithParent:self.layer];
         [_categoryLayer setFrame:[_categoryLayer defaultFrame]];
         
+        _nameView = [[CalendarEventName alloc] init];
+        _nameLayer = (NameLayer*)_nameView.layer;
+        _nameLayer.parent = self.layer;
+        [_nameLayer setFrame:[_nameLayer defaultFrame]];
+        _nameView.delegate = self;
+        
         [self.layer addSublayer:_depthLayer];
         [self.layer addSublayer:_boxLayer];
         [self.layer addSublayer:_highlightLayer];
         [self.layer addSublayer:_railLayer];
         [self.layer addSublayer:_categoryLayer];
-
-        _nameField = [[UITextView alloc] init];
-        [_nameField setFont:UI_NAME_FONT];
-        [_nameField setTextColor:UI_NAME_COLOR];
-        [_nameField setReturnKeyType:UIReturnKeyDone];
-        [_nameField setDelegate:self];
-        [_nameField setEditable:NO];
-        [_nameField setScrollEnabled:NO];
-        [_nameField setBackgroundColor:[UIColor clearColor]];
-        [_nameField setContentInset:UIEdgeInsetsMake(-8,-8,0,0)];
-        [self addSubview:_nameField];
         
-        [_nameField setFrame:CGRectMake(UI_BOX_BORDER_PADDING_Y, UI_BOX_BORDER_PADDING_Y,
-                                        [self frame].size.width - UI_BOX_BORDER_PADDING_Y * 2 - UI_RAIL_COLOR_WIDTH,
-                                        MIN(UI_NAME_FIELD_HEIGHT, self.frame.size.height))];
-        
-        [_nameField setUserInteractionEnabled:NO];
+        [self addSubview:_nameView];
                 
         [self setIsActive:NO];
     }
 		
 	return self;
+}
+
+- (UITextView*)createNameView {
+    UITextView *nameView = [[UITextView alloc] init];
+
+    return nameView;
 }
 
 - (void)setStartTime:(NSTimeInterval)startTime {
@@ -95,12 +94,6 @@
                                                                secondColor:UI_EVENT_BG_COLOR
                                                                    atRatio:UI_BOX_BG_WHITENESS].CGColor;
         
-                
-        CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x + UI_DEPTH_BORDER_WIDTH -
-                                           UI_HIGHLIGHT_HEIGHT - UI_BOX_BORDER_PADDING_Y,
-                                           _nameField.layer.position.y + UI_DEPTH_BORDER_HEIGHT);
-        [self animateOffsetOfLayer:_nameField.layer to:nameFieldPos];
-        
         [self performSelector:@selector(hideDepthLayer) withObject:self afterDelay:UI_ANIM_DURATION_RAISE];
     } else {
         [self.layer.sublayers enumerateObjectsUsingBlock:^(CalendarEventLayer* layer, 
@@ -114,11 +107,6 @@
         
         _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
         [self showDepthLayer];
-                
-        CGPoint nameFieldPos = CGPointMake(_nameField.layer.position.x - UI_DEPTH_BORDER_WIDTH +
-                                           UI_HIGHLIGHT_HEIGHT + UI_BOX_BORDER_PADDING_Y,
-                                           _nameField.layer.position.y - UI_DEPTH_BORDER_HEIGHT);
-        [self animateOffsetOfLayer:_nameField.layer to:nameFieldPos];
     }
 }
 
@@ -140,7 +128,7 @@
 }
 
 - (void)setTitle:(NSString*)title {
-    [_nameField setText:title];
+    [_nameView setText:title];
 }
 
 #pragma mark -
@@ -197,11 +185,11 @@
             }
         }
     }];
-    [_depthMask setFrame:(_isActive ? [_depthMask activeFrame] : [_depthMask defaultFrame])];
-    
-    [_nameField setFrame:CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
-                                    [self frame].size.width - UI_BOX_BORDER_PADDING_Y * 2 - UI_RAIL_COLOR_WIDTH,
-                                    self.frame.size.height - UI_BOX_BORDER_PADDING_Y * 2)];
+    if (_isActive) {
+        [_depthMask setFrame:[_depthMask activeFrame]];
+    } else {
+        [_depthMask setFrame:[_depthMask defaultFrame]];
+    }
 }
 
 - (void)setDeletionProgress:(float)dX {
@@ -216,6 +204,7 @@
 
     [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer activeFrame]];
     [LayerAnimationFactory animate:_categoryLayer toFrame:[_categoryLayer activeFrame]];
+    [LayerAnimationFactory animate:_nameLayer toFrame:[_nameLayer activeFrame]];
     
     CABasicAnimation *anim = [CABasicAnimation animationWithKeyPath:@"depthWidth"];
     anim.duration = UI_ANIM_DURATION_RAISE;
@@ -251,8 +240,8 @@
 #pragma mark Focus Handling
 
 - (BOOL)isPointInsideTextView:(CGPoint)pt {
-    CGRect rect = CGRectMake(_nameField.frame.origin.x, _nameField.frame.origin.y,
-                             _nameField.contentSize.width, _nameField.contentSize.height);
+    CGRect rect = CGRectMake(_nameView.frame.origin.x, _nameView.frame.origin.y,
+                             _nameView.contentSize.width, _nameView.contentSize.height);
     return CGRectContainsPoint(rect, pt);
 }
 
@@ -262,10 +251,10 @@
 
 - (void)setNameFocus {
     _hasFocus = YES;
-    [_nameField setUserInteractionEnabled:YES];
-    [_nameField setEditable:YES];
+    [_nameView setUserInteractionEnabled:YES];
+    [_nameView setEditable:YES];
     
-    [_nameField performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:UI_ANIM_DURATION_RAISE];
+    [_nameView performSelector:@selector(becomeFirstResponder) withObject:nil afterDelay:UI_ANIM_DURATION_RAISE];
 }
 
 - (void)setCategoryFocus {
@@ -275,9 +264,9 @@
 
 - (void)resignFocus {
     _hasFocus = NO;
-    [_nameField resignFirstResponder];
-    [_nameField setUserInteractionEnabled:NO];
-    [_nameField setEditable:NO];
+    [_nameView resignFirstResponder];
+    [_nameView setUserInteractionEnabled:NO];
+    [_nameView setEditable:NO];
     [_delegate dismissCategoryChooser];
 }
 
@@ -305,13 +294,13 @@
 }
 
 - (void)textViewDidEndEditing:(UITextView*)textView {
-    if (textView == _nameField) {
+    if (textView == _nameView) {
         NSString *trimmed = [textView.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
         textView.text = trimmed;
         [_delegate calendarEvent:self didChangeTitle:trimmed];
         
-        [_nameField resignFirstResponder];
-        [_nameField setEditable:NO];
+        [_nameView resignFirstResponder];
+        [_nameView setEditable:NO];
         
         if (!_hasCategory) {
             [_delegate showCategoryChooser];
@@ -323,7 +312,7 @@
 
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range
                                         replacementText:(NSString *)text {
-    if (textView == _nameField && [text isEqualToString:@"\n"]) {
+    if (textView == _nameView && [text isEqualToString:@"\n"]) {
         [textView resignFirstResponder];
         return NO;
     }

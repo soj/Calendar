@@ -5,6 +5,8 @@
 #import "CategoryChooserController.h"
 #import "LayerDelegate.h"
 
+#import "CalendarEventName.h"
+
 #import "CalendarEventLayer.h"
 #import "BoxLayer.h"
 #import "DepthLayer.h"
@@ -12,18 +14,6 @@
 #import "RailLayer.h"
 #import "DepthMaskLayer.h"
 #import "CategoryLayer.h"
-
-#define UI_EVENT_DX             75.0
-#define UI_RIGHT_PADDING        5.0
-#define UI_EDGE_DRAG_PIXELS     35.0f
-#define UI_DELETION_WIDTH       50.0
-
-#define UI_NAME_FIELD_HEIGHT    35.0f
-
-#define UI_NAME_COLOR           [UIColor colorWithRed:0.059 green:0.059 blue:0.059 alpha:1.0]
-#define UI_NAME_FONT            [UIFont fontWithName:@"Helvetica-Light" size:26.0f]
-
-#define UI_ANIM_DURATION_RAISE  1.15
 
 @class CalendarEvent;
 
@@ -36,19 +26,21 @@
 @interface CalendarEvent : CalendarEntity <UITextViewDelegate> {
     id<CalendarEventDelegate> _delegate;
         
+    CalendarEventName *_nameView;
+    
     BoxLayer *_boxLayer;
     HighlightBoxLayer *_highlightLayer;
     RailLayer *_railLayer;
     DepthLayer *_depthLayer;
     DepthMaskLayer *_depthMask;
     CategoryLayer *_categoryLayer;
+    NameLayer *_nameLayer;
 
     BOOL _hasFocus;
     BOOL _isActive;
     BOOL _hasCategory;
     
 	NSString *_eventId;
-	UITextView *_nameField;
 
     UIColor *_baseColor;
     

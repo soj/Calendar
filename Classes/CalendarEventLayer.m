@@ -4,14 +4,18 @@
 
 @synthesize baseColor, parent;
 
-- (id)initWithParent:(CALayer*)parentLayer {
-    if (self == [super init]) {
-        self.parent = parentLayer;
-        
-        self.contentsScale = parent.contentsScale;
+- (id)init {
+    if (self = [super init]) {
         self.anchorPoint = CGPointZero;
-        
         [self disableAnims];
+    }
+    return self;
+}
+
+- (id)initWithParent:(CALayer*)parentLayer {
+    if (self == [self init]) {
+        self.parent = parentLayer;
+        self.contentsScale = parent.contentsScale;
     }
     return self;
 }
@@ -37,7 +41,7 @@
 }
 
 - (CGRect)squashFrameWithProgress:(float)prog {
-    return [self defaultFrame];
+    return [self activeFrame];
 }
 
 @end

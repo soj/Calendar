@@ -43,6 +43,8 @@
 		52B69C7B15E40FC5006BD2CE /* RailLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B69C7A15E40FC5006BD2CE /* RailLayer.m */; };
 		52B69C7E15E41308006BD2CE /* DepthMaskLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B69C7D15E41307006BD2CE /* DepthMaskLayer.m */; };
 		52B69C8115E417BE006BD2CE /* CategoryLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B69C8015E417BD006BD2CE /* CategoryLayer.m */; };
+		52C7604715E4619C0078152C /* CalendarEventName.m in Sources */ = {isa = PBXBuildFile; fileRef = 52C7604615E4619C0078152C /* CalendarEventName.m */; };
+		52C7604B15E463240078152C /* NameLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52C7604A15E463240078152C /* NameLayer.m */; };
 		52E40D4215E362C900186DE2 /* HighlightLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52E40D4115E362C900186DE2 /* HighlightLayer.m */; };
 /* End PBXBuildFile section */
 
@@ -109,6 +111,10 @@
 		52B69C7F15E417BD006BD2CE /* CategoryLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CategoryLayer.h; sourceTree = "<group>"; };
 		52B69C8015E417BD006BD2CE /* CategoryLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CategoryLayer.m; sourceTree = "<group>"; };
 		52B69C8215E41830006BD2CE /* UIConstants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIConstants.h; sourceTree = "<group>"; };
+		52C7604515E4619C0078152C /* CalendarEventName.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarEventName.h; sourceTree = "<group>"; };
+		52C7604615E4619C0078152C /* CalendarEventName.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarEventName.m; sourceTree = "<group>"; };
+		52C7604915E463240078152C /* NameLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NameLayer.h; sourceTree = "<group>"; };
+		52C7604A15E463240078152C /* NameLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NameLayer.m; sourceTree = "<group>"; };
 		52E40D4015E362C900186DE2 /* HighlightLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HighlightLayer.h; sourceTree = "<group>"; };
 		52E40D4115E362C900186DE2 /* HighlightLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HighlightLayer.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* calendar-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "calendar-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
@@ -262,6 +268,8 @@
 				29D98124151C14BC00B1E158 /* CalendarEvent.m */,
 				52779B5B15DD95200053BFF7 /* CalendarEventLayer.h */,
 				52779B5C15DD95200053BFF7 /* CalendarEventLayer.m */,
+				52C7604515E4619C0078152C /* CalendarEventName.h */,
+				52C7604615E4619C0078152C /* CalendarEventName.m */,
 				52B69C7715E36FF7006BD2CE /* Sublayers */,
 			);
 			name = CalendarEvent;
@@ -302,6 +310,8 @@
 				52B69C7A15E40FC5006BD2CE /* RailLayer.m */,
 				52B69C7F15E417BD006BD2CE /* CategoryLayer.h */,
 				52B69C8015E417BD006BD2CE /* CategoryLayer.m */,
+				52C7604915E463240078152C /* NameLayer.h */,
+				52C7604A15E463240078152C /* NameLayer.m */,
 			);
 			name = Sublayers;
 			sourceTree = "<group>";
@@ -400,6 +410,8 @@
 				52B69C7B15E40FC5006BD2CE /* RailLayer.m in Sources */,
 				52B69C7E15E41308006BD2CE /* DepthMaskLayer.m in Sources */,
 				52B69C8115E417BE006BD2CE /* CategoryLayer.m in Sources */,
+				52C7604715E4619C0078152C /* CalendarEventName.m in Sources */,
+				52C7604B15E463240078152C /* NameLayer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
