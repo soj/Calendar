@@ -40,10 +40,10 @@
         [_categoryLayer setFrame:[_categoryLayer defaultFrame]];
         
         _nameView = [[CalendarEventName alloc] init];
+        _nameView.delegate = self;
         _nameLayer = (NameLayer*)_nameView.layer;
         _nameLayer.parent = self.layer;
         [_nameLayer setFrame:[_nameLayer defaultFrame]];
-        _nameView.delegate = self;
         
         [self.layer addSublayer:_depthLayer];
         [self.layer addSublayer:_boxLayer];
@@ -57,12 +57,6 @@
     }
 		
 	return self;
-}
-
-- (UITextView*)createNameView {
-    UITextView *nameView = [[UITextView alloc] init];
-
-    return nameView;
 }
 
 - (void)setStartTime:(NSTimeInterval)startTime {
@@ -80,7 +74,7 @@
     
     _isActive = isActive;
     
-    if (!_isActive) {
+    if (!isActive) {
         [self.layer.sublayers enumerateObjectsUsingBlock:^(CalendarEventLayer* layer, 
                                                            NSUInteger idx, BOOL *stop) {
             if ([layer isKindOfClass:CalendarEventLayer.class]) {
@@ -90,10 +84,7 @@
         [LayerAnimationFactory animate:_depthMask toFrame:[_depthMask defaultFrame]];
         [LayerAnimationFactory animate:_railLayer toAlpha:1.0];
         
-        _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor
-                                                               secondColor:UI_EVENT_BG_COLOR
-                                                                   atRatio:UI_BOX_BG_WHITENESS].CGColor;
-        
+        _boxLayer.backgroundColor = [self highlightColor].CGColor;
         [self performSelector:@selector(hideDepthLayer) withObject:self afterDelay:UI_ANIM_DURATION_RAISE];
     } else {
         [self.layer.sublayers enumerateObjectsUsingBlock:^(CalendarEventLayer* layer, 
@@ -105,7 +96,7 @@
         [LayerAnimationFactory animate:_depthMask toFrame:[_depthMask activeFrame]];
         [LayerAnimationFactory animate:_railLayer toAlpha:0];
         
-        _boxLayer.backgroundColor = [UI_EVENT_BG_COLOR CGColor];
+        _boxLayer.backgroundColor = UI_EVENT_BG_COLOR.CGColor;
         [self showDepthLayer];
     }
 }
@@ -119,9 +110,7 @@
     _categoryLayer.baseColor = color;
     
     if (!_isActive) {
-        _boxLayer.backgroundColor = [UIColor colorForFadeBetweenFirstColor:_baseColor
-                                                               secondColor:UI_EVENT_BG_COLOR
-                                                                   atRatio:UI_BOX_BG_WHITENESS].CGColor;
+        _boxLayer.backgroundColor = [self highlightColor].CGColor;
     }
     
     [self setNeedsDisplay]; 
@@ -154,6 +143,12 @@
 
 - (void)hideHighlightLayer {
     _highlightLayer.hidden = YES;
+}
+
+- (UIColor*)highlightColor {
+    return [UIColor colorForFadeBetweenFirstColor:_baseColor
+                                      secondColor:UI_EVENT_BG_COLOR
+                                          atRatio:UI_BOX_BG_WHITENESS];
 }
 
 
@@ -212,18 +207,7 @@
     anim.toValue = [NSNumber numberWithFloat:[_depthLayer activeFrame].size.width];
     anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     [_depthLayer setFrame:[_depthLayer activeFrame]];
-    [_depthLayer addAnimation:anim forKey:@"dummy"];
-}
-
-- (void)animateOffsetOfLayer:(CALayer*)layer to:(CGPoint)pos {
-    CABasicAnimation *moveBox = [CABasicAnimation animationWithKeyPath:@"position"];
-    moveBox.fromValue = [NSValue valueWithCGPoint:layer.position];
-    moveBox.toValue = [NSValue valueWithCGPoint:pos];
-    moveBox.duration = UI_ANIM_DURATION_RAISE;
-    moveBox.fillMode = kCAFillModeForwards;
-    moveBox.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    [layer setPosition:pos];
-    [layer addAnimation:moveBox forKey:@"activeInactive"];
+    [_depthLayer addAnimation:anim forKey:@"depthWidth"];
 }
 
 - (void)setNeedsDisplay {

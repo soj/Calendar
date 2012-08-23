@@ -33,4 +33,4 @@
 
 #pragma mark Animation Durations
 
-#define UI_ANIM_DURATION_RAISE  1.15
+#define UI_ANIM_DURATION_RAISE  0.15
