@@ -1,8 +1,10 @@
 #import "CategoryLayer.h"
+#import "UIColor+Tools.h"
 
 @implementation CategoryLayer
 
 - (void)setBaseColor:(UIColor *)baseColor {
+    [super setBaseColor:baseColor];
     self.backgroundColor = baseColor.CGColor;
 }
 
@@ -21,6 +23,11 @@
     CGRect def = [self activeFrame];
     return CGRectMake(def.origin.x + prog, def.origin.y,
                       def.size.width, def.size.height);
+}
+
+- (void)setDeletionPercentage:(float)perc {
+    UIColor *fadeOut = [self.baseColor colorByChangingAlphaTo:(1 - perc)];
+    self.backgroundColor = fadeOut.CGColor;
 }
 
 @end

@@ -160,7 +160,7 @@
     
     float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
     float x = UI_EVENT_DX + _deletionProgress;
-    float y = [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + UI_BOX_BORDER_MARGIN_Y;
+    float y = [[CalendarMath getInstance] timeOffsetToPixel:(_startTime - _baseTime)] + UI_BOX_BORDER_MARGIN_Y + UI_DAY_TOP_OFFSET;
     float width = MAX(natWidth - _deletionProgress, UI_DELETION_WIDTH);
     float height = [[CalendarMath getInstance] pixelsPerHour] * length / SECONDS_PER_HOUR - UI_BOX_BORDER_MARGIN_Y * 2;
     
@@ -172,6 +172,7 @@
                                                        NSUInteger idx, BOOL *stop) {
         if ([layer isKindOfClass:CalendarEventLayer.class]) {
             if (_deletionProgress) {
+                [layer removeAllAnimations];
                 [layer setFrame:[layer squashFrameWithProgress:_deletionProgress]];
             } else if (_isActive) {
                 [layer setFrame:[layer activeFrame]];
@@ -191,12 +192,11 @@
     if (dX < 0) dX = 0;
     float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
     _deletionProgress = MIN(dX, natWidth - UI_DELETION_WIDTH);
+    [_categoryLayer setDeletionPercentage:(_deletionProgress / (natWidth - UI_DELETION_WIDTH))];
     [self layoutSubviews];
 }
 
 - (void)nullDeletionProgress {    
-    _deletionProgress = 0;
-
     [LayerAnimationFactory animate:_boxLayer toFrame:[_boxLayer activeFrame]];
     [LayerAnimationFactory animate:_categoryLayer toFrame:[_categoryLayer activeFrame]];
     [LayerAnimationFactory animate:_nameLayer toFrame:[_nameLayer activeFrame]];
@@ -206,8 +206,10 @@
     anim.fromValue = [NSNumber numberWithFloat:_depthLayer.depthWidth];
     anim.toValue = [NSNumber numberWithFloat:[_depthLayer activeFrame].size.width];
     anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
-    [_depthLayer setFrame:[_depthLayer activeFrame]];
     [_depthLayer addAnimation:anim forKey:@"depthWidth"];
+    
+    [_categoryLayer setDeletionPercentage:0];
+    _deletionProgress = 0;
 }
 
 - (void)setNeedsDisplay {

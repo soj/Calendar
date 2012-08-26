@@ -1,6 +1,10 @@
 #import "CalendarDay.h"
 #import "CalendarMath.h"
 
+#import "UIConstants.h"
+
+#define UI_DAY_BOTTOM_PADDING   20.0
+
 @implementation CalendarDay
 
 @synthesize currentTime=_currentTime;
@@ -9,15 +13,14 @@
 	self = [super initWithBaseTime:baseTime startTime:startTime endTime:endTime];
 	
 	if (self) {
-		CGRect bounds = self.bounds;
-		bounds.origin.y = -UI_DAY_TOP_OFFSET;
-		bounds.size.height = bounds.size.height + UI_DAY_TOP_OFFSET;
-		[self setBounds:bounds];
+        _backgroundLayer = [_sublayerDelegate makeLayerWithName:@"Background"];
+        [self.layer addSublayer:_backgroundLayer];
+        
+        _fullTimeLinesLayer = [_sublayerDelegate makeLayerWithName:@"FullTimelines"];
+        _fullTimeLinesLayer.opacity = 0;
+        [self.layer addSublayer:_fullTimeLinesLayer];
         
         _timeLinesLayer = [_sublayerDelegate makeLayerWithName:@"Timelines"];
-        _timeLinesLayer.frame = CGRectMake(0, -UI_DAY_TOP_OFFSET, self.frame.size.width, self.frame.size.height);
-        _timeLinesLayer.bounds = self.bounds;
-        _timeLinesLayer.opacity = 0;
         [self.layer addSublayer:_timeLinesLayer];
 	}
 	
@@ -25,31 +28,31 @@
 }
 
 - (CGRect)reframe {
-    return CGRectMake(0, UI_DAY_TOP_OFFSET,
+    return CGRectMake(0, 0,
                       [[CalendarMath getInstance] dayWidth],
-                      [[CalendarMath getInstance] pixelsPerHour] * HOURS_PER_DAY);
+                      [[CalendarMath getInstance] pixelsPerHour] * HOURS_PER_DAY + UI_DAY_TOP_OFFSET + UI_DAY_BOTTOM_PADDING);
 }
 
 - (void)fadeInTimeLines {
     CABasicAnimation *fadeIn = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    fadeIn.fromValue = [NSNumber numberWithFloat:_timeLinesLayer.opacity];
+    fadeIn.fromValue = [NSNumber numberWithFloat:_fullTimeLinesLayer.opacity];
     fadeIn.toValue = [NSNumber numberWithFloat:1.0];
     fadeIn.duration = UI_ANIM_DURATION_FADE;
     fadeIn.removedOnCompletion = NO;
     fadeIn.fillMode = kCAFillModeForwards;
-    _timeLinesLayer.opacity = 1.0;
-    [_timeLinesLayer addAnimation:fadeIn forKey:@"opacity"];
+    _fullTimeLinesLayer.opacity = 1.0;
+    [_fullTimeLinesLayer addAnimation:fadeIn forKey:@"opacity"];
 }
 
 - (void)fadeOutTimeLines {
     CABasicAnimation *fadeOut = [CABasicAnimation animationWithKeyPath:@"opacity"];
-    fadeOut.fromValue = [NSNumber numberWithFloat:_timeLinesLayer.opacity];
+    fadeOut.fromValue = [NSNumber numberWithFloat:_fullTimeLinesLayer.opacity];
     fadeOut.toValue = [NSNumber numberWithFloat:0];
     fadeOut.duration = UI_ANIM_DURATION_FADE;
     fadeOut.removedOnCompletion = NO;
     fadeOut.fillMode = kCAFillModeForwards;
-    _timeLinesLayer.opacity = 0.0;
-    [_timeLinesLayer addAnimation:fadeOut forKey:@"opacity"];
+    _fullTimeLinesLayer.opacity = 0.0;
+    [_fullTimeLinesLayer addAnimation:fadeOut forKey:@"opacity"];
 }
 
 #pragma mark -
@@ -63,11 +66,18 @@
 }
 
 - (float)yPosFromTime:(NSTimeInterval)time {
-	return [[CalendarMath getInstance] timeOffsetToPixel:(time - _startTime)];
+	return [[CalendarMath getInstance] timeOffsetToPixel:(time - _startTime)] + UI_DAY_TOP_OFFSET;
 }
 
 #pragma mark -
 #pragma mark Shape Drawing
+
+- (void)drawBackgroundInContext:(CGContextRef)context {
+    CGContextSetFillColorWithColor(context, UI_LEFT_RAIL_BG_COLOR.CGColor);
+    CGContextFillRect(context, CGRectMake(0, -UI_DAY_TOP_OFFSET,
+                                          UI_TIME_LINES_FULL_X + UI_LEFT_RAIL_PADDING,
+                                          self.frame.size.height + UI_DAY_TOP_OFFSET));
+}
 
 - (void)drawLineAtY:(int)yPos startX:(int)startX endX:(int)endX inContext:(CGContextRef)context {
 	CGContextMoveToPoint(context, startX, yPos);
@@ -77,7 +87,7 @@
 
 - (void)drawFullBleedLineAtY:(int)yPos inContext:(CGContextRef)context {
 	CGContextMoveToPoint(context, 0, yPos);
-	CGContextAddLineToPoint(context, 0 + [self frame].size.width, yPos);
+	CGContextAddLineToPoint(context, 0 + self.frame.size.width, yPos);
 	CGContextStrokePath(context);
 }
 
@@ -100,7 +110,7 @@
     CGContextSetRGBStrokeColor(context, UI_TIME_LINE_COLOR);
     CGContextSetRGBFillColor(context, UI_TIME_LINE_COLOR);
     CGContextSetShouldAntialias(context, NO);
-	CGContextSetLineWidth(context, 5.0);
+	CGContextSetLineWidth(context, UI_TIME_LINE_WIDTH);
     
     if (shortened) {
         [self drawLineAtY:yPos startX:UI_TIME_LINES_X endX:UI_TIME_LINES_FULL_X inContext:context];
@@ -115,7 +125,7 @@
     CGContextSetRGBStrokeColor(context, UI_TIME_LINE_COLOR);
     CGContextSetRGBFillColor(context, UI_TIME_LINE_COLOR);
     CGContextSetShouldAntialias(context, NO);
-	CGContextSetLineWidth(context, 1.0);
+	CGContextSetLineWidth(context, UI_TIME_LINE_WIDTH);
     
     if (shortened) {
         [self drawLineAtY:yPos startX:UI_TIME_LINES_X endX:UI_TIME_LINES_FULL_X inContext:context];
@@ -130,7 +140,7 @@
     CGContextSetRGBStrokeColor(context, UI_TIME_LINE_COLOR);
     CGContextSetRGBFillColor(context, UI_TIME_LINE_COLOR);
     CGContextSetShouldAntialias(context, NO);
-	CGContextSetLineWidth(context, 1.0);
+	CGContextSetLineWidth(context, UI_TIME_LINE_WIDTH);
     
 	CGFloat lineDashPattern[] = {10, 10};
 	CGContextSetLineDash(context, 0, lineDashPattern, 2);
@@ -146,7 +156,7 @@
     CGContextSetRGBStrokeColor(context, UI_CURRENT_LINE_COLOR);
     CGContextSetRGBFillColor(context, UI_CURRENT_LINE_COLOR);
     CGContextSetShouldAntialias(context, YES);
-    CGContextSetLineWidth(context, 2.0);
+    CGContextSetLineWidth(context, UI_CURRENT_LINE_WIDTH);
 
 	[self drawFullBleedLineAtY:yPos inContext:context];
     [self drawRightFacingTriangleAtX:57 y:yPos inContext:context];
@@ -193,7 +203,11 @@
 #pragma mark -
 #pragma mark Draw Delegates
 
-- (void)drawTimelinesLayer:(CALayer*)layer inContext:(CGContextRef)context {
+- (void)drawBackgroundLayer:(CALayer*)layer inContext:(CGContextRef)context {
+    [self drawBackgroundInContext:context];
+}
+
+- (void)drawFullTimelinesLayer:(CALayer*)layer inContext:(CGContextRef)context {
     [self drawDayLine:_startTime shortened:NO inContext:context];
     
     for (int time = _startTime + SECONDS_PER_HOUR; time < _startTime + SECONDS_PER_DAY; time += SECONDS_PER_HOUR) {
@@ -202,7 +216,7 @@
     }
 }
 
-- (void)drawInContext:(CGContextRef)context {
+- (void)drawTimelinesLayer:(CALayer*)layer inContext:(CGContextRef)context {
 	[self drawCurrentTimeLine:_currentTime inContext:context];    
     [self drawDayTextForTime:_startTime inContext:context];
     [self drawDayLine:_startTime shortened:YES inContext:context];

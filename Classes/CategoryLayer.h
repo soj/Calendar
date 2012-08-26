@@ -3,4 +3,6 @@
 
 @interface CategoryLayer : CalendarEventLayer
 
+- (void)setDeletionPercentage:(float)perc;
+
 @end

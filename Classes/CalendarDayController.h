@@ -4,7 +4,6 @@
 #import "Event.h"
 
 #define MIN_EVENT_TIME_INTERVAL     SECONDS_PER_HOUR / 2
-#define FINGER_TAP_TIME_OFFSET      SECONDS_PER_MINUTE * 15
 
 typedef enum {
     kDragStartTime,

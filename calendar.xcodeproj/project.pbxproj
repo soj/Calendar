@@ -37,7 +37,6 @@
 		52779B5715DD94760053BFF7 /* BoxLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52779B5615DD94760053BFF7 /* BoxLayer.m */; };
 		52779B5A15DD949A0053BFF7 /* DepthLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52779B5915DD94990053BFF7 /* DepthLayer.m */; };
 		52779B5D15DD95200053BFF7 /* CalendarEventLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52779B5C15DD95200053BFF7 /* CalendarEventLayer.m */; };
-		52B1642C15B0179300269D10 /* Background.png in Resources */ = {isa = PBXBuildFile; fileRef = 52B1642B15B0179300269D10 /* Background.png */; };
 		52B1642E15B23DDA00269D10 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52B1642D15B23DD900269D10 /* QuartzCore.framework */; };
 		52B1643115B247BC00269D10 /* LayerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B1643015B247BC00269D10 /* LayerDelegate.m */; };
 		52B69C7B15E40FC5006BD2CE /* RailLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B69C7A15E40FC5006BD2CE /* RailLayer.m */; };
@@ -45,6 +44,8 @@
 		52B69C8115E417BE006BD2CE /* CategoryLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B69C8015E417BD006BD2CE /* CategoryLayer.m */; };
 		52C7604715E4619C0078152C /* CalendarEventName.m in Sources */ = {isa = PBXBuildFile; fileRef = 52C7604615E4619C0078152C /* CalendarEventName.m */; };
 		52C7604B15E463240078152C /* NameLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52C7604A15E463240078152C /* NameLayer.m */; };
+		52C7604F15E5AEAB0078152C /* Lato-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52C7604D15E5AEAB0078152C /* Lato-Black.ttf */; };
+		52C7605015E5AEAB0078152C /* Lato-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 52C7604E15E5AEAB0078152C /* Lato-Regular.ttf */; };
 		52E40D4215E362C900186DE2 /* HighlightLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52E40D4115E362C900186DE2 /* HighlightLayer.m */; };
 /* End PBXBuildFile section */
 
@@ -100,7 +101,6 @@
 		52779B5915DD94990053BFF7 /* DepthLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DepthLayer.m; sourceTree = "<group>"; };
 		52779B5B15DD95200053BFF7 /* CalendarEventLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarEventLayer.h; sourceTree = "<group>"; };
 		52779B5C15DD95200053BFF7 /* CalendarEventLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarEventLayer.m; sourceTree = "<group>"; };
-		52B1642B15B0179300269D10 /* Background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Background.png; sourceTree = "<group>"; };
 		52B1642D15B23DD900269D10 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		52B1642F15B247BB00269D10 /* LayerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayerDelegate.h; sourceTree = "<group>"; };
 		52B1643015B247BC00269D10 /* LayerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LayerDelegate.m; sourceTree = "<group>"; };
@@ -115,6 +115,8 @@
 		52C7604615E4619C0078152C /* CalendarEventName.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarEventName.m; sourceTree = "<group>"; };
 		52C7604915E463240078152C /* NameLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NameLayer.h; sourceTree = "<group>"; };
 		52C7604A15E463240078152C /* NameLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NameLayer.m; sourceTree = "<group>"; };
+		52C7604D15E5AEAB0078152C /* Lato-Black.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Black.ttf"; path = "Fonts/Lato-Black.ttf"; sourceTree = "<group>"; };
+		52C7604E15E5AEAB0078152C /* Lato-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "Lato-Regular.ttf"; path = "Fonts/Lato-Regular.ttf"; sourceTree = "<group>"; };
 		52E40D4015E362C900186DE2 /* HighlightLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HighlightLayer.h; sourceTree = "<group>"; };
 		52E40D4115E362C900186DE2 /* HighlightLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HighlightLayer.m; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* calendar-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "calendar-Info.plist"; plistStructureDefinitionIdentifier = "com.apple.xcode.plist.structure-definition.iphone.info-plist"; sourceTree = "<group>"; };
@@ -237,6 +239,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				52C7604C15E5ADE50078152C /* Fonts */,
 				52B1642A15B0179300269D10 /* Images */,
 				292CB7B6158F1328006367C4 /* CalendarDayController.xib */,
 				292CB7B7158F1328006367C4 /* CategoryChooserCell.xib */,
@@ -290,7 +293,6 @@
 		52B1642A15B0179300269D10 /* Images */ = {
 			isa = PBXGroup;
 			children = (
-				52B1642B15B0179300269D10 /* Background.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -314,6 +316,15 @@
 				52C7604A15E463240078152C /* NameLayer.m */,
 			);
 			name = Sublayers;
+			sourceTree = "<group>";
+		};
+		52C7604C15E5ADE50078152C /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				52C7604D15E5AEAB0078152C /* Lato-Black.ttf */,
+				52C7604E15E5AEAB0078152C /* Lato-Regular.ttf */,
+			);
+			name = Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -374,7 +385,8 @@
 				292CB7B9158F1328006367C4 /* CalendarDayController.xib in Resources */,
 				292CB7BA158F1328006367C4 /* CategoryChooserCell.xib in Resources */,
 				292CB7BB158F1328006367C4 /* MainWindow.xib in Resources */,
-				52B1642C15B0179300269D10 /* Background.png in Resources */,
+				52C7604F15E5AEAB0078152C /* Lato-Black.ttf in Resources */,
+				52C7605015E5AEAB0078152C /* Lato-Regular.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

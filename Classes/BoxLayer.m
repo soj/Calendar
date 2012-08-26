@@ -12,6 +12,7 @@
 }
 
 - (void)setBaseColor:(UIColor *)baseColor {
+    [super setBaseColor:baseColor];
     self.borderColor = baseColor.CGColor;
 }
 

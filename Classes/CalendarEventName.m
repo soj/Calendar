@@ -10,7 +10,7 @@
 
 - (id)init {
     if (self = [super init]) {
-        self.font = UI_NAME_FONT;
+        self.font = UI_MEDIUM_FONT;
         self.textColor = UI_NAME_COLOR;
         self.returnKeyType = UIReturnKeyDone;
         self.editable = NO;

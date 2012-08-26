@@ -11,7 +11,7 @@
 
 	if (self) {
 		_delegate = delegate;
-		_startTime = startTime;		// TODO: Assert that this is midnight of some day
+		_startTime = startTime;
 		_eventBlocks = [[NSMutableSet alloc] init];
 		
 		NSAssert((int)_startTime == (int)[CalendarMath floorTimeToStartOfDay:_startTime],
@@ -35,7 +35,7 @@
 	[invoc setTarget:self];
 	[NSTimer scheduledTimerWithTimeInterval:SECONDS_PER_MINUTE invocation:invoc repeats:YES];
 	
-	[(UIScrollView*)self.view setContentSize:_calendarDay.frame.size];
+	[(UIScrollView*)self.view setContentSize:[_calendarDay reframe].size];
 	[self.view addSubview:_calendarDay];
 }
 
@@ -50,9 +50,13 @@
     }
     
     float pixelOffset = [(UIScrollView*)self.view contentOffset].y - UI_DAY_TOP_OFFSET;
-    NSTimeInterval topVisible = [[CalendarMath getInstance] pixelToTimeOffset:pixelOffset] + _startTime;
-    NSTimeInterval bottomVisible = topVisible + [[CalendarMath getInstance] pixelToTimeOffset:self.view.frame.size.height];
+    NSTimeInterval topVisible = [self pixelToTimeOffset:pixelOffset] + _startTime;
+    NSTimeInterval bottomVisible = topVisible + [self pixelToTimeOffset:self.view.frame.size.height];
     return time >= topVisible && time <= bottomVisible;
+}
+
+- (NSTimeInterval)pixelToTimeOffset:(float)pixel {
+    return [[CalendarMath getInstance] pixelToTimeOffset:(pixel - UI_DAY_TOP_OFFSET)];
 }
 
 #pragma mark -
@@ -396,7 +400,7 @@
 - (void)handleTap:(UITapGestureRecognizer*)recognizer {
     float xLoc = [recognizer locationInView:_calendarDay].x;
     float yLoc = [recognizer locationInView:_calendarDay].y;
-    NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime - FINGER_TAP_TIME_OFFSET)];
+    NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([self pixelToTimeOffset:yLoc] + _startTime)];
       
     if (xLoc < UI_EVENT_DX) {
         if (_activeEventBlock) {
@@ -412,6 +416,7 @@
         } else {
             CalendarEvent *new;
             if ((new = [self createNewEventWithStartTime:startTime])) {
+                NSLog(@"%f, %f", new.startTime, self.startTime);
                 [self setActiveEventBlock:new];
                 [self scrollToEntity:_activeEventBlock];
                 [_activeEventBlock setNameFocus];
@@ -442,7 +447,7 @@
     
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan: {
-            NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([[CalendarMath getInstance] pixelToTimeOffset:yLoc] + _startTime - FINGER_TAP_TIME_OFFSET)];
+            NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([self pixelToTimeOffset:yLoc] + _startTime)];
             CalendarEvent *new;
             if ([self isTimeEmptyBetween:startTime and:startTime] && (new = [self createNewEventWithStartTime:startTime])) {
                 [self setActiveEventBlock:new];
@@ -456,7 +461,7 @@
             // Fall through
         }
         case UIGestureRecognizerStateChanged: {
-            NSTimeInterval timeOffset = [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
+            NSTimeInterval timeOffset = [self pixelToTimeOffset:yLoc];
             [self continueActiveEventBlockDragWithTimeOffset:timeOffset];
             break;
         }
@@ -497,7 +502,7 @@
             // Fall through
         }
         case UIGestureRecognizerStateChanged: {
-            NSTimeInterval timeOffset = [[CalendarMath getInstance] pixelToTimeOffset:yLoc];
+            NSTimeInterval timeOffset = [self pixelToTimeOffset:yLoc];
             [self continueActiveEventBlockDragWithTimeOffset:timeOffset];
             break;
         }
