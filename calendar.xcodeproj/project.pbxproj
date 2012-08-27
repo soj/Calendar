@@ -37,6 +37,12 @@
 		52779B5715DD94760053BFF7 /* BoxLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52779B5615DD94760053BFF7 /* BoxLayer.m */; };
 		52779B5A15DD949A0053BFF7 /* DepthLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52779B5915DD94990053BFF7 /* DepthLayer.m */; };
 		52779B5D15DD95200053BFF7 /* CalendarEventLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52779B5C15DD95200053BFF7 /* CalendarEventLayer.m */; };
+		5289814615EAFC8E003ECD2F /* MPCJSONDataSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5289813915EAFC8E003ECD2F /* MPCJSONDataSerializer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5289814715EAFC8E003ECD2F /* MPCJSONSerializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 5289813B15EAFC8E003ECD2F /* MPCJSONSerializer.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5289814815EAFC8E003ECD2F /* MPCSerializedJSONData.m in Sources */ = {isa = PBXBuildFile; fileRef = 5289813D15EAFC8E003ECD2F /* MPCSerializedJSONData.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5289814915EAFC8E003ECD2F /* NSData+MPBase64.m in Sources */ = {isa = PBXBuildFile; fileRef = 5289814015EAFC8E003ECD2F /* NSData+MPBase64.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5289814A15EAFC8E003ECD2F /* MixpanelAPI.m in Sources */ = {isa = PBXBuildFile; fileRef = 5289814215EAFC8E003ECD2F /* MixpanelAPI.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
+		5289814B15EAFC8E003ECD2F /* MixpanelEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = 5289814515EAFC8E003ECD2F /* MixpanelEvent.m */; settings = {COMPILER_FLAGS = "-fno-objc-arc"; }; };
 		52B1642E15B23DDA00269D10 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 52B1642D15B23DD900269D10 /* QuartzCore.framework */; };
 		52B1643115B247BC00269D10 /* LayerDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B1643015B247BC00269D10 /* LayerDelegate.m */; };
 		52B69C7B15E40FC5006BD2CE /* RailLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 52B69C7A15E40FC5006BD2CE /* RailLayer.m */; };
@@ -101,6 +107,19 @@
 		52779B5915DD94990053BFF7 /* DepthLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DepthLayer.m; sourceTree = "<group>"; };
 		52779B5B15DD95200053BFF7 /* CalendarEventLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarEventLayer.h; sourceTree = "<group>"; };
 		52779B5C15DD95200053BFF7 /* CalendarEventLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarEventLayer.m; sourceTree = "<group>"; };
+		5289813815EAFC8E003ECD2F /* MPCJSONDataSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCJSONDataSerializer.h; sourceTree = "<group>"; };
+		5289813915EAFC8E003ECD2F /* MPCJSONDataSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPCJSONDataSerializer.m; sourceTree = "<group>"; };
+		5289813A15EAFC8E003ECD2F /* MPCJSONSerializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCJSONSerializer.h; sourceTree = "<group>"; };
+		5289813B15EAFC8E003ECD2F /* MPCJSONSerializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPCJSONSerializer.m; sourceTree = "<group>"; };
+		5289813C15EAFC8E003ECD2F /* MPCSerializedJSONData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MPCSerializedJSONData.h; sourceTree = "<group>"; };
+		5289813D15EAFC8E003ECD2F /* MPCSerializedJSONData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MPCSerializedJSONData.m; sourceTree = "<group>"; };
+		5289813F15EAFC8E003ECD2F /* NSData+MPBase64.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+MPBase64.h"; sourceTree = "<group>"; };
+		5289814015EAFC8E003ECD2F /* NSData+MPBase64.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+MPBase64.m"; sourceTree = "<group>"; };
+		5289814115EAFC8E003ECD2F /* MixpanelAPI.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MixpanelAPI.h; sourceTree = "<group>"; };
+		5289814215EAFC8E003ECD2F /* MixpanelAPI.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelAPI.m; sourceTree = "<group>"; };
+		5289814315EAFC8E003ECD2F /* MixpanelAPI_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MixpanelAPI_Private.h; sourceTree = "<group>"; };
+		5289814415EAFC8E003ECD2F /* MixpanelEvent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MixpanelEvent.h; sourceTree = "<group>"; };
+		5289814515EAFC8E003ECD2F /* MixpanelEvent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MixpanelEvent.m; sourceTree = "<group>"; };
 		52B1642D15B23DD900269D10 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		52B1642F15B247BB00269D10 /* LayerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LayerDelegate.h; sourceTree = "<group>"; };
 		52B1643015B247BC00269D10 /* LayerDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LayerDelegate.m; sourceTree = "<group>"; };
@@ -239,6 +258,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				5289813515EAFC8E003ECD2F /* MPLib */,
 				52C7604C15E5ADE50078152C /* Fonts */,
 				52B1642A15B0179300269D10 /* Images */,
 				292CB7B6158F1328006367C4 /* CalendarDayController.xib */,
@@ -288,6 +308,51 @@
 				52779B5415DD94550053BFF7 /* CalendarEvent */,
 			);
 			name = CalendarEntity;
+			sourceTree = "<group>";
+		};
+		5289813515EAFC8E003ECD2F /* MPLib */ = {
+			isa = PBXGroup;
+			children = (
+				5289813615EAFC8E003ECD2F /* lib */,
+				5289814115EAFC8E003ECD2F /* MixpanelAPI.h */,
+				5289814215EAFC8E003ECD2F /* MixpanelAPI.m */,
+				5289814315EAFC8E003ECD2F /* MixpanelAPI_Private.h */,
+				5289814415EAFC8E003ECD2F /* MixpanelEvent.h */,
+				5289814515EAFC8E003ECD2F /* MixpanelEvent.m */,
+			);
+			name = MPLib;
+			path = lib/mixpanel/MPLib;
+			sourceTree = "<group>";
+		};
+		5289813615EAFC8E003ECD2F /* lib */ = {
+			isa = PBXGroup;
+			children = (
+				5289813715EAFC8E003ECD2F /* JSON */,
+				5289813E15EAFC8E003ECD2F /* NSData_Base64 */,
+			);
+			path = lib;
+			sourceTree = "<group>";
+		};
+		5289813715EAFC8E003ECD2F /* JSON */ = {
+			isa = PBXGroup;
+			children = (
+				5289813815EAFC8E003ECD2F /* MPCJSONDataSerializer.h */,
+				5289813915EAFC8E003ECD2F /* MPCJSONDataSerializer.m */,
+				5289813A15EAFC8E003ECD2F /* MPCJSONSerializer.h */,
+				5289813B15EAFC8E003ECD2F /* MPCJSONSerializer.m */,
+				5289813C15EAFC8E003ECD2F /* MPCSerializedJSONData.h */,
+				5289813D15EAFC8E003ECD2F /* MPCSerializedJSONData.m */,
+			);
+			path = JSON;
+			sourceTree = "<group>";
+		};
+		5289813E15EAFC8E003ECD2F /* NSData_Base64 */ = {
+			isa = PBXGroup;
+			children = (
+				5289813F15EAFC8E003ECD2F /* NSData+MPBase64.h */,
+				5289814015EAFC8E003ECD2F /* NSData+MPBase64.m */,
+			);
+			path = NSData_Base64;
 			sourceTree = "<group>";
 		};
 		52B1642A15B0179300269D10 /* Images */ = {
@@ -424,6 +489,12 @@
 				52B69C8115E417BE006BD2CE /* CategoryLayer.m in Sources */,
 				52C7604715E4619C0078152C /* CalendarEventName.m in Sources */,
 				52C7604B15E463240078152C /* NameLayer.m in Sources */,
+				5289814615EAFC8E003ECD2F /* MPCJSONDataSerializer.m in Sources */,
+				5289814715EAFC8E003ECD2F /* MPCJSONSerializer.m in Sources */,
+				5289814815EAFC8E003ECD2F /* MPCSerializedJSONData.m in Sources */,
+				5289814915EAFC8E003ECD2F /* NSData+MPBase64.m in Sources */,
+				5289814A15EAFC8E003ECD2F /* MixpanelAPI.m in Sources */,
+				5289814B15EAFC8E003ECD2F /* MixpanelEvent.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

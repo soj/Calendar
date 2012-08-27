@@ -1,4 +1,5 @@
 #import "calendarAppDelegate.h"
+#import "MixpanelAPI.h"
 
 @implementation calendarAppDelegate
 
@@ -12,7 +13,9 @@
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
     // Override point for customization after application launch.
-
+    [MixpanelAPI sharedAPIWithToken:MIXPANEL_TOKEN];
+    [[MixpanelAPI sharedAPI] track:@"Launch App"];
+    
     // Add the view controller's view to the window and display.
     [self.window addSubview:viewController.view];
     [self.window makeKeyAndVisible];
