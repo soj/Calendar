@@ -34,6 +34,7 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     [viewController prepareToExit];
+    [[MixpanelAPI sharedAPI] track:@"Enter Background"];
 }
 
 
@@ -45,11 +46,13 @@
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
+    [[MixpanelAPI sharedAPI] track:@"Enter Foreground"];
 }
 
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     [viewController prepareToExit];
+    [[MixpanelAPI sharedAPI] track:@"Close App"];
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {

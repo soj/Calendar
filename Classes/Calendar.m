@@ -1,6 +1,7 @@
 #import "Calendar.h"
 #import "Category.h"
 #import "CalendarMath.h"
+#import "MixpanelAPI.h"
 
 @implementation Calendar
 
@@ -159,7 +160,17 @@
     
     newEvent.startTime = startTime;
     newEvent.endTime = endTime;
-    [_events setObject:newEvent forKey:[newEvent identifier]];
+    [_events setObject:newEvent forKey:newEvent.identifier];
+    
+    [[MixpanelAPI sharedAPI] track:@"Create Event"
+        properties:[NSDictionary dictionaryWithObjectsAndKeys:
+                    newEvent.identifier, @"id",
+                    [NSNumber numberWithFloat:newEvent.startTime], @"start",
+                    [NSNumber numberWithFloat:newEvent.endTime], @"end",
+                    nil
+        ]
+     ];
+    
     return newEvent;
 }
 
@@ -171,6 +182,15 @@
         NSError *deleteError;
         [_ekEventStore removeEvent:e.ekEvent span:EKSpanThisEvent error:&deleteError];
     }
+    
+    [[MixpanelAPI sharedAPI] track:@"Delete Event"
+                        properties:[NSDictionary dictionaryWithObjectsAndKeys:
+                                    e.identifier, @"id",
+                                    [NSNumber numberWithFloat:e.startTime], @"start",
+                                    [NSNumber numberWithFloat:e.endTime], @"end",
+                                    nil
+                                    ]
+     ];
 }
 
 - (void)saveToEventKit {
