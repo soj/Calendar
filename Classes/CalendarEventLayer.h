@@ -20,6 +20,6 @@
 
 - (CGRect)defaultFrame;
 - (CGRect)activeFrame;
-- (CGRect)squashFrameWithProgress:(float)prog;
+- (CGRect)squashFrameWithProgress:(float)prog active:(BOOL)active;
 
 @end

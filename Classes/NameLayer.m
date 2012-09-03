@@ -20,7 +20,7 @@
                       def.size.height);
 }
 
-- (CGRect)squashFrameWithProgress:(float)prog {
+- (CGRect)squashFrameWithProgress:(float)prog active:(BOOL)active {
     CGRect def = [self activeFrame];
     return CGRectMake(def.origin.x + prog, def.origin.y,
                       def.size.width - prog, def.size.height);

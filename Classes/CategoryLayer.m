@@ -19,15 +19,10 @@
                       UI_CATEGORY_BOX_SIZE, def.size.height);
 }
 
-- (CGRect)squashFrameWithProgress:(float)prog {
+- (CGRect)squashFrameWithProgress:(float)prog active:(BOOL)active {
     CGRect def = [self activeFrame];
     return CGRectMake(def.origin.x + prog, def.origin.y,
                       def.size.width, def.size.height);
-}
-
-- (void)setDeletionPercentage:(float)perc {
-    UIColor *fadeOut = [self.baseColor colorByChangingAlphaTo:(1 - perc)];
-    self.backgroundColor = fadeOut.CGColor;
 }
 
 @end

@@ -40,8 +40,8 @@
                       def.size.width, def.size.height);
 }
 
-- (CGRect)squashFrameWithProgress:(float)prog {
-    return [self activeFrame];
+- (CGRect)squashFrameWithProgress:(float)prog active:(BOOL)active {
+    return active ? [self activeFrame] : [self defaultFrame];
 }
 
 @end

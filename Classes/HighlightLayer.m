@@ -18,8 +18,8 @@
     return CGRectInset(def, UI_BOX_BORDER_WIDTH, UI_BOX_BORDER_WIDTH);
 }
 
-- (CGRect)squashFrameWithProgress:(float)prog {
-    CGRect def = [self activeFrame];
+- (CGRect)squashFrameWithProgress:(float)prog active:(BOOL)active {
+    CGRect def = [super squashFrameWithProgress:prog active:active];
     return CGRectMake(def.origin.x + prog, def.origin.y,
                       def.size.width - prog, def.size.height);
 }

@@ -363,11 +363,11 @@
     event.endTime = [CalendarMath roundTimeToGranularity:event.endTime];
     
     if (event.endTime - event.startTime < MIN_EVENT_TIME_INTERVAL) {
-        [self deleteEventBlock:event];
-    } else {
-        [_delegate updateEvent:event.eventId startTime:event.startTime];
-        [_delegate updateEvent:event.eventId endTime:event.endTime];
+        event.endTime = event.startTime + MIN_EVENT_TIME_INTERVAL;
     }
+
+    [_delegate updateEvent:event.eventId startTime:event.startTime];
+    [_delegate updateEvent:event.eventId endTime:event.endTime];
 }
 
 #pragma mark -
@@ -400,7 +400,7 @@
 - (void)handleTap:(UITapGestureRecognizer*)recognizer {
     float xLoc = [recognizer locationInView:_calendarDay].x;
     float yLoc = [recognizer locationInView:_calendarDay].y;
-    NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([self pixelToTimeOffset:yLoc] + _startTime)];
+    NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([self pixelToTimeOffset:yLoc] + _startTime)] + UI_CREATE_BLOCK_OFFSET_TIME;
       
     if (xLoc < UI_EVENT_DX) {
         if (_activeEventBlock) {
@@ -416,7 +416,6 @@
         } else {
             CalendarEvent *new;
             if ((new = [self createNewEventWithStartTime:startTime])) {
-                NSLog(@"%f, %f", new.startTime, self.startTime);
                 [self setActiveEventBlock:new];
                 [self scrollToEntity:_activeEventBlock];
                 [_activeEventBlock setNameFocus];
@@ -447,7 +446,7 @@
     
     switch (recognizer.state) {
         case UIGestureRecognizerStateBegan: {
-            NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([self pixelToTimeOffset:yLoc] + _startTime)];
+            NSTimeInterval startTime = [CalendarMath roundTimeToGranularity:([self pixelToTimeOffset:yLoc] + _startTime)] + UI_CREATE_BLOCK_OFFSET_TIME;
             CalendarEvent *new;
             if ([self isTimeEmptyBetween:startTime and:startTime] && (new = [self createNewEventWithStartTime:startTime])) {
                 [self setActiveEventBlock:new];
@@ -535,8 +534,11 @@
             break;
         }
         case UIGestureRecognizerStateEnded: {
-            if (_activeEventBlock.frame.size.width < UI_DELETION_WIDTH) {
-                [self deleteEventBlock:_activeEventBlock];
+            if ([_activeEventBlock shouldDeleteFromActive]) {
+                [_activeEventBlock deleteFromActive];
+                [self performSelector:@selector(deleteEventBlock:)
+                           withObject:_activeEventBlock
+                           afterDelay:UI_ANIM_DURATION_RAISE];
             } else {
                 [_activeEventBlock nullDeletionProgress];
             }
@@ -551,17 +553,11 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)recognizer {
     CGPoint translation = [_eventBlockHorizontalPan translationInView:_activeEventBlock];
-    CGPoint position = [recognizer locationInView:_activeEventBlock];
     
-    if ((position.x < 50 && recognizer != _eventBlockHorizontalPan) ||
-        (position.x > 50 && recognizer == _eventBlockHorizontalPan)) {
-        return NO;
-    }
-    
-/*    if ((recognizer == _eventBlockHorizontalPan && fabs(translation.y) >= fabs(translation.x)) ||
+    if ((recognizer == _eventBlockHorizontalPan && fabs(translation.y) >= fabs(translation.x)) ||
         (recognizer == _eventBlockPan && fabs(translation.x) > fabs(translation.y))) {
         return NO;
-    }*/
+    }
     
     if (recognizer == _eventBlockPan || recognizer == _eventBlockLongPress) {
         if (![self beginDragForYPosInActiveEventBlock:[recognizer locationInView:_activeEventBlock].y]) {

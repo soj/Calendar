@@ -50,8 +50,8 @@
     return [self defaultFrame];
 }
 
-- (CGRect)squashFrameWithProgress:(float)prog {
-    CGRect def = [self defaultFrame];
+- (CGRect)squashFrameWithProgress:(float)prog active:(BOOL)active {
+    CGRect def = [super squashFrameWithProgress:prog active:active];
     return CGRectMake(def.origin.x + prog, def.origin.y,
                       def.size.width - prog, def.size.height);
 }

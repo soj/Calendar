@@ -171,9 +171,10 @@
     [self.layer.sublayers enumerateObjectsUsingBlock:^(CalendarEventLayer* layer, 
                                                        NSUInteger idx, BOOL *stop) {
         if ([layer isKindOfClass:CalendarEventLayer.class]) {
-            if (_deletionProgress) {
-                [layer removeAllAnimations];
-                [layer setFrame:[layer squashFrameWithProgress:_deletionProgress]];
+            if (_deletionProgress && !_isActive) {
+                return;
+            } else if (_deletionProgress) {
+                [layer setFrame:[layer squashFrameWithProgress:_deletionProgress active:YES]];
             } else if (_isActive) {
                 [layer setFrame:[layer activeFrame]];
             } else {
@@ -192,7 +193,6 @@
     if (dX < 0) dX = 0;
     float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
     _deletionProgress = MIN(dX, natWidth - UI_DELETION_WIDTH);
-    [_categoryLayer setDeletionPercentage:(_deletionProgress / (natWidth - UI_DELETION_WIDTH))];
     [self layoutSubviews];
 }
 
@@ -208,7 +208,6 @@
     anim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseInEaseOut];
     [_depthLayer addAnimation:anim forKey:@"depthWidth"];
     
-    [_categoryLayer setDeletionPercentage:0];
     _deletionProgress = 0;
 }
 
@@ -218,6 +217,23 @@
     [self.layer.sublayers enumerateObjectsUsingBlock:^(CALayer* layer, NSUInteger idx, BOOL *stop) {
         if ([layer isKindOfClass:CalendarEventLayer.class]) {
             [layer setNeedsDisplay];
+        }
+    }];
+}
+
+- (BOOL)shouldDeleteFromActive {
+    float natWidth = [[CalendarMath getInstance] dayWidth] - UI_EVENT_DX - UI_RIGHT_PADDING;
+    return _deletionProgress >= natWidth - UI_DELETION_WIDTH;
+}
+
+- (void)deleteFromActive {
+    [self.layer.sublayers enumerateObjectsUsingBlock:^(CalendarEventLayer* layer,
+                                                       NSUInteger idx, BOOL *stop) {
+        if ([layer isKindOfClass:CalendarEventLayer.class]) {
+            [LayerAnimationFactory animate:layer
+                                   toFrame:[layer squashFrameWithProgress:_deletionProgress
+                                                                   active:NO]];
+            [LayerAnimationFactory animate:layer toAlpha:0];
         }
     }];
 }

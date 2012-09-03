@@ -177,7 +177,7 @@
 	[[self dateStringFromTime:time withFormat:@"EEE"] drawAtPoint:textPoint withFont:UI_MEDIUM_BOLD_FONT];
 	
 	textPoint = CGPointMake(UI_LINE_TEXT_X, yPos + UI_LINE_TEXT_SUB_DY);
-	[[self dateStringFromTime:time withFormat:@"MMM dd"] drawAtPoint:textPoint withFont:UI_SMALL_FONT];
+	[[self dateStringFromTime:time withFormat:@"MMM d"] drawAtPoint:textPoint withFont:UI_SMALL_FONT];
     
     UIGraphicsPopContext();
 }

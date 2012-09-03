@@ -15,6 +15,14 @@
 	
 	CGSize totalSize = CGSizeMake(UI_DAY_WIDTH * 3, 480.0);
 	[_scrollView setContentSize:totalSize];
+    
+    [self preloadKeyboard];
+}
+
+- (void)preloadKeyboard {
+    UITextView *preloadKeyboard = [[UITextView alloc] init];
+    [preloadKeyboard becomeFirstResponder];
+    [preloadKeyboard resignFirstResponder];
 }
 
 #pragma mark -

@@ -74,7 +74,7 @@
 - (void)highlightArea:(HighlightArea)area;
 - (void)unhighlight;
 
+- (BOOL)shouldDeleteFromActive;
 - (void)deleteFromActive;
-- (void)deleteFromInactive;
 
 @end

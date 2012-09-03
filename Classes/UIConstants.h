@@ -25,14 +25,16 @@
 #define UI_TIME_LINE_WIDTH      1.0
 #define UI_CURRENT_LINE_WIDTH   2.0
 
-#define UI_ANIM_DURATION_FADE  0.25;
+#define UI_ANIM_DURATION_FADE   0.25;
+
+#define UI_CREATE_BLOCK_OFFSET_TIME     -60 * 15;
 
 #pragma mark Event Box General Layout
 
 #define UI_EVENT_DX             75.0
 #define UI_RIGHT_PADDING        5.0
 #define UI_EDGE_DRAG_PIXELS     35.0f
-#define UI_DELETION_WIDTH       50.0
+#define UI_DELETION_WIDTH       100.0
 
 #pragma mark Event Box Name Field
 
