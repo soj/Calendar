@@ -1,5 +1,4 @@
 #import "calendarAppDelegate.h"
-#import "MixpanelAPI.h"
 
 @implementation calendarAppDelegate
 
@@ -12,11 +11,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {    
     
-    // Override point for customization after application launch.
-    [MixpanelAPI sharedAPIWithToken:MIXPANEL_TOKEN];
-    [[MixpanelAPI sharedAPI] track:@"Launch App"];
-    
     // Add the view controller's view to the window and display.
+    self.window.rootViewController = viewController;
     [self.window addSubview:viewController.view];
     [self.window makeKeyAndVisible];
 
@@ -34,7 +30,6 @@
 
 - (void)applicationDidEnterBackground:(UIApplication *)application {
     [viewController prepareToExit];
-    [[MixpanelAPI sharedAPI] track:@"Enter Background"];
 }
 
 
@@ -46,13 +41,11 @@
 
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    [[MixpanelAPI sharedAPI] track:@"Enter Foreground"];
 }
 
 
 - (void)applicationWillTerminate:(UIApplication *)application {
     [viewController prepareToExit];
-    [[MixpanelAPI sharedAPI] track:@"Close App"];
 }
 
 - (void)application:(UIApplication *)application didReceiveLocalNotification:(UILocalNotification *)notification {

@@ -57,11 +57,17 @@
 	
 	NSEnumerator *e = [_calendarDays objectEnumerator];
 	CalendarDayController *calDay;
+    
+    NSMutableArray* toDelete = [NSMutableArray array];
+    
 	while (calDay = [e nextObject]) {
 		if ([calDay startTime] != _today) {
 			[calDay.view removeFromSuperview];
+            [toDelete addObject:[[_calendarDays allKeysForObject:calDay] firstObject]];
 		}
     }
+    
+    [_calendarDays removeObjectsForKeys:toDelete];
 	
 	[self createDayControllerForStartTime:_today];
 	[self createDayControllerForStartTime:_yesterday];

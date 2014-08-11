@@ -2,7 +2,6 @@
 
 #import "CategoryChooserController.h"
 #import "Category.h"
-#import "MixpanelAPI.h"
 
 @implementation CategoryChooserController
 
@@ -177,15 +176,7 @@
     [self sortCategories];
     
     [_categoryTableView reloadData];
-    
-    [[MixpanelAPI sharedAPI] track:@"New Category"
-                        properties:[NSDictionary dictionaryWithObjectsAndKeys:
-                                    newCat.identifier, @"id",
-                                    [NSNumber numberWithInt:_categories.count], @"count",
-                                    nil
-                                    ]
-     ];
-    
+        
     return YES;
 }
 

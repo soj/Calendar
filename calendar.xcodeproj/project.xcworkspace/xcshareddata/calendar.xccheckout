@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>A8F03DE5-21D8-49FA-809C-31984EC86FE3</string>
+	<key>IDESourceControlProjectName</key>
+	<string>calendar</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>DBF3FCC0-BC57-4C13-87FE-72FC90A8254B</key>
+		<string>https://github.com/fravic/Calendar.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>calendar.xcodeproj/project.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>DBF3FCC0-BC57-4C13-87FE-72FC90A8254B</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/fravic/Calendar.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>110</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>DBF3FCC0-BC57-4C13-87FE-72FC90A8254B</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>DBF3FCC0-BC57-4C13-87FE-72FC90A8254B</string>
+			<key>IDESourceControlWCCName</key>
+			<string>Calendar</string>
+		</dict>
+	</array>
+</dict>
+</plist>
