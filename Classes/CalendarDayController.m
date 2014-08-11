@@ -24,6 +24,11 @@
 	return self;
 }
 
+-(void)dealloc
+{
+    NSLog(@"dealoc!!!! uraaa!!!!!");
+}
+
 - (void)createCalendarDay {
 	NSTimeInterval endTime = _startTime + SECONDS_PER_HOUR * HOURS_PER_DAY;
 	_calendarDay = [[CalendarDay alloc] initWithBaseTime:_startTime startTime:_startTime endTime:endTime];
