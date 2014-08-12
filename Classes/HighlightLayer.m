@@ -6,7 +6,7 @@
 @synthesize highlightArea;
 
 - (id)initWithParent:(CALayer *)parent {
-    if (self == [super initWithParent:parent]) {
+    if (self = [super initWithParent:parent]) {
         self.name = @"Highlight";
         [self setNeedsDisplayOnBoundsChange:YES];
     }
@@ -52,6 +52,12 @@
             break;
         }
         case kHighlightDelete: {
+            highlight = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+            break;
+        }
+        default:{
+            highlight = CGRectMake(0, 0, self.frame.size.width, self.frame.size.height);
+            break;
         }
     }
     

@@ -13,7 +13,7 @@
 }
 
 - (id)initWithParent:(CALayer*)parentLayer {
-    if (self == [self init]) {
+    if (self = [self init]) {
         self.parent = parentLayer;
         self.contentsScale = parent.contentsScale;
     }

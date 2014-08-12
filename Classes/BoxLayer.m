@@ -3,7 +3,7 @@
 @implementation BoxLayer
 
 - (id)initWithParent:(CALayer *)parent {
-    if (self == [super initWithParent:parent]) {
+    if (self = [super initWithParent:parent]) {
         self.name = @"Box";
         self.borderWidth = UI_BOX_BORDER_WIDTH;
         self.backgroundColor = [UI_EVENT_BG_COLOR CGColor];

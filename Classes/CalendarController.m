@@ -63,16 +63,21 @@
 	while (calDay = [e nextObject]) {
 		if ([calDay startTime] != _today) {
 			[calDay.view removeFromSuperview];
+            [calDay.timer invalidate];
+            calDay.timer = nil;
             [toDelete addObject:[[_calendarDays allKeysForObject:calDay] firstObject]];
 		}
     }
     
     [_calendarDays removeObjectsForKeys:toDelete];
+    [toDelete removeAllObjects];
 	
 	[self createDayControllerForStartTime:_today];
 	[self createDayControllerForStartTime:_yesterday];
 	[self createDayControllerForStartTime:_tomorrow];
 	
+    NSLog(@"%d",[[_scrollView subviews] count]);
+    
 	[_scrollView setContentOffset:CGPointMake(UI_DAY_WIDTH, 0) animated:NO];
 }
 

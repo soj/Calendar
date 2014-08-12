@@ -13,7 +13,7 @@
 }
 
 - (id)initWithParent:(CALayer *)parent {
-    if (self == [super initWithParent:parent]) {
+    if (self = [super initWithParent:parent]) {
         self.name = @"Depth";
         [self setNeedsDisplayOnBoundsChange:YES];
     }

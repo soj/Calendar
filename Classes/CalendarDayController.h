@@ -27,7 +27,7 @@ typedef enum {
 @end
 
 @interface CalendarDayController : UIViewController <UIScrollViewDelegate, UIGestureRecognizerDelegate, CalendarEventDelegate, CategoryChooserDelegate> {
-	id<CalendarDayDelegate> _delegate;
+
 	CalendarDay *_calendarDay;
 	CalendarEvent *_activeEventBlock;
 	NSMutableSet *_eventBlocks;
@@ -44,6 +44,8 @@ typedef enum {
 }
 
 @property (readonly) NSTimeInterval startTime;
+@property (nonatomic,weak) id <CalendarDayDelegate> delegate;
+@property (nonatomic,strong) NSTimer *timer;
 
 - (id)initWithStartTime:(NSTimeInterval)startTime andDelegate:(id <CalendarDayDelegate>)delegate;
 - (void)setEvents:(NSArray*)events;

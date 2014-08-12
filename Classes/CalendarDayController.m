@@ -34,11 +34,12 @@
 	_calendarDay = [[CalendarDay alloc] initWithBaseTime:_startTime startTime:_startTime endTime:endTime];
 	
 	[_calendarDay setCurrentTime:[NSDate timeIntervalSinceReferenceDate]];
+    
 	NSMethodSignature *sig = [[self class] instanceMethodSignatureForSelector:@selector(updateCurrentTime)];
 	NSInvocation *invoc = [NSInvocation invocationWithMethodSignature:sig];
 	[invoc setSelector:@selector(updateCurrentTime)];
 	[invoc setTarget:self];
-	[NSTimer scheduledTimerWithTimeInterval:SECONDS_PER_MINUTE invocation:invoc repeats:YES];
+	self.timer = [NSTimer scheduledTimerWithTimeInterval:SECONDS_PER_MINUTE invocation:invoc repeats:YES];
 	
 	[(UIScrollView*)self.view setContentSize:[_calendarDay reframe].size];
 	[self.view addSubview:_calendarDay];
@@ -334,7 +335,7 @@
 
 - (void)dragActiveEventBlockTo:(NSTimeInterval)time {
     NSTimeInterval blockSize = _activeEventBlock.endTime - _activeEventBlock.startTime;
-    NSTimeInterval newStartTime = _activeEventBlock.startTime, newEndTime = _activeEventBlock.endTime;
+    NSTimeInterval newStartTime, newEndTime;
     
     newStartTime = time - _dragEventTimeOffset;
     newEndTime = newStartTime + blockSize;

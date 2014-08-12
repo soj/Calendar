@@ -173,6 +173,7 @@
     [textField resignFirstResponder]; // Do this first to animate correctly
     
     Category *newCat = [[Category alloc] initAndRegisterWithName:textField.text andColor:[_activeCell color]];
+
     [self sortCategories];
     
     [_categoryTableView reloadData];
